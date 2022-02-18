@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios"
+import { handleAxiosResponseError, handleAxiosResponseSuccess } from "./utils"
 
 const Http = axios.create()
 
@@ -12,3 +13,8 @@ function getData<T>(response: AxiosResponse<T>) {
 }
 
 Http.defaults.baseURL = 'http://localhost:8080'
+
+Http.interceptors.response.use(
+    handleAxiosResponseSuccess,
+    handleAxiosResponseError
+)

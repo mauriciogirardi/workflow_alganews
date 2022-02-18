@@ -5,6 +5,8 @@ export { default as FileService } from './services/FileService'
 export { default as MetricService } from './services/MetricService'
 export { default as PostService } from './services/PostService'
 export { default as UserService } from './services/UserService'
+export { default as CashFlow } from './services/CashFlow'
+export { default as Payroll } from './services/Payroll'
 
 export { generateQueryString } from './utils'
 

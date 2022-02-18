@@ -10,6 +10,8 @@ export { default as PayrollService } from './services/PayrollService'
 
 export { generateQueryString } from './utils'
 
+export * from './@types'
+
 export default {
     services,
     utils,

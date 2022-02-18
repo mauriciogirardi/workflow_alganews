@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from 'react';
 import { MdOutlineFileUpload } from 'react-icons/md';
-import { FileService } from 'sdk/services/FileService';
+import { FileService } from 'mauricio.girardi-sdk';
 import { Loading } from '../Loading';
 import { FaTrash } from 'react-icons/fa';
 import { Button } from '../Button';

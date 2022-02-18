@@ -9690,10 +9690,10 @@ markdown-to-jsx@^7.1.3:
   resolved "https://registry.yarnpkg.com/markdown-to-jsx/-/markdown-to-jsx-7.1.5.tgz#caf72ad8a8c34a2bb692c4d17e44aabbe4eb19fd"
   integrity sha512-YQEMMMCX3PYOWtUAQu8Fmz5/sH09s17eyQnDubwaAo8sWmnRTT1og96EFv1vL59l4nWfmtF3L91pqkuheVqRlA==
 
-mauricio.girardi-sdk@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/mauricio.girardi-sdk/-/mauricio.girardi-sdk-2.0.0.tgz#6534e6c97bb7d688e948d5f8839fbdf64d988a5c"
-  integrity sha512-d0wz4tHySXMQfsLrH01ZjeowDEIFyB3OGVVI2aB+1FiJy0+slLydKe/dkTFIPS/1r8Im+bTuQiBKxfcI/w20Vg==
+mauricio.girardi-sdk@^4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/mauricio.girardi-sdk/-/mauricio.girardi-sdk-4.1.0.tgz#eef81a36ad3ac6b6c8237d752fb2d8ec0cfe9551"
+  integrity sha512-3F/nOr5W+E+Gx+iDxuAlIgjAp3VGu1mIKnxLcvyH5a4QQt3DfVPcrn0uv+ScJJHMAhINPhvS54rY2xgQJH9xSA==
   dependencies:
     axios "^0.26.0"
     date-fns "^2.28.0"

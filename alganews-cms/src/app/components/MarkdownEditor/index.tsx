@@ -1,8 +1,8 @@
 import MarkdownIt from 'markdown-it'
+import { FileService } from 'mauricio.girardi-sdk'
 import MdEditor, { Plugins } from 'react-markdown-editor-lite'
 
 import 'react-markdown-editor-lite/lib/index.css'
-import { FileService } from 'sdk/services/FileService'
 
 MdEditor.unuse(Plugins.FontUnderline)
 

@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react'
+import { UserService, User } from 'mauricio.girardi-sdk'
 import { useParams } from 'react-router-dom'
 
 import { dateFormatDistance } from 'core/utils/dateFormatDistance'
 import { FieldDescriptor } from 'app/components/FieldDescriptor'
 import { ValueDescriptor } from 'app/components/ValueDescriptor'
 import { withBoundary } from 'core/hoc/withBoundary'
-import { UserService } from 'sdk/services/UserService'
 import { ProgressBar } from 'app/components/ProgressBar'
-import { User } from 'sdk/@types'
-
 
 import * as S from './styles'
 import Skeleton from 'react-loading-skeleton'

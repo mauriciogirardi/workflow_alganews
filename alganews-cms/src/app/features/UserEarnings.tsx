@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react'
+import { User, UserService } from 'mauricio.girardi-sdk';
 import Skeleton from "react-loading-skeleton";
 
 import { ValueDescriptor } from 'app/components/ValueDescriptor'
 import { withBoundary } from 'core/hoc/withBoundary'
-import { UserService } from 'sdk/services/UserService'
-import { User } from 'sdk/@types'
-
 
 import * as S from './styles'
 

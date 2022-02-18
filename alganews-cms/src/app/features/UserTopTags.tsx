@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react"
+import { Metric, MetricService } from "mauricio.girardi-sdk";
 import Skeleton from "react-loading-skeleton";
 
-import { MetricService } from "sdk/services/MetricService"
 import { withBoundary } from "core/hoc/withBoundary"
 import { CircleChart } from "app/components/CircleChart"
-import { Metric } from "sdk/@types"
 
 import * as S from './styles'
 

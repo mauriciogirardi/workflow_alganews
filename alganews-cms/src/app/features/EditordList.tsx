@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react'
+import { UserService, User } from 'mauricio.girardi-sdk'
 import Skeleton from 'react-loading-skeleton'
 
 import { dateFormatDistance } from 'core/utils/dateFormatDistance'
-import { UserService } from 'sdk/services/UserService'
+import { withBoundary } from 'core/hoc/withBoundary'
 import { Profile } from 'app/components/Profile'
-import { User } from 'sdk/@types'
 
 import * as S from './styles'
-import { withBoundary } from 'core/hoc/withBoundary'
 
 function EditorsList() {
     const [error, setError] = useState<Error>()

@@ -1,8 +1,8 @@
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale';
+import { Metric } from 'mauricio.girardi-sdk';
 
 import { ChartProps } from "app/components/Chart";
-import { Metric } from "sdk/@types";
 
 export const transformEditorMonthlyEarningsIntoChartJs = (
     editorEarnings: Metric.EditorMonthlyEarnings

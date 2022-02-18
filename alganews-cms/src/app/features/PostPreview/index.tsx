@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react"
+import { PostService, Post } from "mauricio.girardi-sdk"
 import Skeleton from "react-loading-skeleton"
 
 import { MarkdownEditor } from "app/components/MarkdownEditor"
 import { withBoundary } from "core/hoc/withBoundary"
-import { PostService } from "sdk/services/PostService"
 import { confirm } from "core/utils/confirm"
 import { Button } from "app/components/Button"
 import { info } from "core/utils/info"
-import { Post } from "sdk/@types"
 
 import modal from "core/utils/modal"
 

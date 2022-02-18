@@ -1,11 +1,11 @@
 import { FormEvent, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
+import { PostService } from 'mauricio.girardi-sdk';
 import { Tag } from 'react-tag-input';
 
 import { countWordsInMarkdown } from 'core/utils/countWordsInMarkdown';
 import { WordPriceCounter } from 'app/components/WordPriceCounter';
 import { MarkdownEditor } from 'app/components/MarkdownEditor'
-import { PostService } from 'sdk/services/PostService';
 import { ImageUpload } from 'app/components/ImageUpload'
 import { TagInput } from 'app/components/TagInput'
 import { Loading } from 'app/components/Loading';

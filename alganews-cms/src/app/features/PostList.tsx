@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Column, usePagination, useTable } from "react-table";
+import { Post, PostService } from "mauricio.girardi-sdk";
 import { MdOpenInNew } from "react-icons/md";
 import Skeleton from "react-loading-skeleton";
 
 import { dataDateRow, dataTitleWithImageRow, isPublished, positionHeaderName } from "core/utils/tableUtils";
 import { withBoundary } from "core/hoc/withBoundary";
-import { PostService } from "sdk/services/PostService";
-import { Post } from "sdk/@types";
 
 import Table from "app/components/Table";
 
@@ -29,7 +28,6 @@ function PostList() {
             .catch(err => setError(new Error(err.message)))
             .finally(() => setLoading(false))
     }, [page])
-
 
     const columns = useMemo<Column<Post.Summary>[]>(
         () => [

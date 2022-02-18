@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
+import { MetricService } from "mauricio.girardi-sdk";
 import Skeleton from "react-loading-skeleton";
 
 import { transformEditorMonthlyEarningsIntoChartJs } from "core/utils/transformEditorMonthlyEarningsIntoChartJs";
 import { Chart, ChartProps } from "app/components/Chart";
-import { MetricService } from "sdk/services/MetricService";
 import { withBoundary } from "core/hoc/withBoundary";
 
 function UsePerformance() {

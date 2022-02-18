@@ -2,7 +2,7 @@ import { generateQueryString } from '..';
 import { Payment } from '../@types'
 import { Service } from "../Service";
 
-class Payroll extends Service {
+class PayrollService extends Service {
     static getAllPayments(query: Payment.Query) {
         const queryString = generateQueryString(query);
         const uri = '/payments'.concat(queryString);
@@ -59,4 +59,4 @@ class Payroll extends Service {
     }
 }
 
-export default Payroll
+export default PayrollService

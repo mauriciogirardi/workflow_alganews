@@ -2,7 +2,7 @@ import { generateQueryString } from ".."
 import { CashFlow } from "../@types"
 import { Service } from "../Service"
 
-class CashFlow extends Service {
+class CashFlowService extends Service {
     static getAllEntries(query: CashFlow.Query) {
         const queryString = generateQueryString(query)
         const uri = '/cashflow/entries'.concat(queryString)
@@ -90,4 +90,4 @@ class CashFlow extends Service {
     }
 }
 
-export default CashFlow
+export default CashFlowService

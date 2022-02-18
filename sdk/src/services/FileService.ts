@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 import { Service } from "../Service";
 import { File } from "../@types";
 
-export class FileService extends Service {
+class FileService extends Service {
     private static getSignedUrl(fileInfo: File.UploadRequestInput) {
         return this.Http
             .post<File.UploadRequest>('/upload-requests', fileInfo)
@@ -42,3 +42,5 @@ export class FileService extends Service {
         return singedUrl.split('?')[0]
     }
 }
+
+export default FileService

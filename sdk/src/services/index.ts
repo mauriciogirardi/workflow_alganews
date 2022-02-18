@@ -1,4 +1,4 @@
-export { FileService } from './FileService'
-export { MetricService } from './MetricService'
-export { PostService } from './PostService'
-export { UserService } from './UserService'
+export { default as FileService } from './FileService'
+export { default as MetricService } from './MetricService'
+export { default as PostService } from './PostService'
+export { default as UserService } from './UserService'

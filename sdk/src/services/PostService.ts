@@ -2,7 +2,7 @@ import { generateQueryString } from "../utils";
 import { Service } from "../Service";
 import { Post } from "../@types";
 
-export class PostService extends Service {
+class PostService extends Service {
     static getAllPosts(search: Post.Query) {
         const queryString = generateQueryString(search)
 
@@ -35,3 +35,5 @@ export class PostService extends Service {
             .then(this.getData)
     }
 }
+
+export default PostService

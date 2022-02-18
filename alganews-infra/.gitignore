@@ -1,0 +1,12 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+./idea
+/.idea/$CACHE_FILE$
+/.idea/alganews-infra.iml
+/.idea/dictionaries
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/sonarIssues.xml
+/.idea/vcs.xml

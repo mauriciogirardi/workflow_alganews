@@ -1,0 +1,102 @@
+version: "3.3"
+
+networks:
+  alganews-network:
+    driver: bridge
+
+volumes:
+  alganews-mysql-dbs-data:
+  alganews-localstore-data:
+
+services:
+  alganews-mysql-database:
+    image: mysql:8.0.18
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD: "alganews"
+      MYSQL_DATABASE: "alganews"
+      MYSQL_USER: "alganews"
+      MYSQL_PASSWORD: "alganews"
+    ports:
+      - "3316:3306"
+    networks:
+      - alganews-network
+    volumes:
+      - alganews-mysql-dbs-data:/var/lib/mysql
+  alganews-setup-local:
+    build: ./storage-setup
+    volumes:
+      - alganews-localstore-data:/storage
+  alganews-api:
+    image: algaworks/alganews-api:latest
+    command:
+      [
+        "/wait-for-it.sh",
+        "-t",
+        "30",
+        "alganews-mysql-database:3306",
+        "--",
+        "java",
+        "-jar",
+        "/app.jar",
+      ]
+    ports:
+      - "8080:8080"
+    depends_on:
+      - alganews-mysql-database
+    networks:
+      - alganews-network
+    environment:
+      JAVA_OPTS: "-Xms256m -Xmx1024m"
+      SPRING_PROFILES_ACTIVE: "docker"
+      SPRING_FLYWAY_LOCATIONS: "classpath:db/migration,classpath:db/testdata"
+      ALGANEWS_SECURITY_DISABLED: "true"
+      ALGANEWS_SECURITY_DEFAULT_USER_ID_IF_DISABLED: "7"
+      SPRING_DATASOURCE_URL: "jdbc:mysql://alganews-mysql-database/alganews?createDatabaseIfNotExist=true&serverTimezone=UTC"
+      SPRING_DATASOURCE_USERNAME: "alganews"
+      SPRING_DATASOURCE_PASSWORD: "alganews"
+      ALGANEWS_STORAGE_DOWNLOAD_URL: "http://localhost:8080/files"
+      ALGANEWS_STORAGE_TYPE: "local"
+      ALGANEWS_AUTH_URL: "http://localhost:8081"
+      ALGANEWS_STORAGE_LOCAL_STORAGE_PATH: "/storage"
+    volumes:
+      - alganews-localstore-data:/storage
+  alganews-auth:
+    image: algaworks/alganews-auth-server:latest
+    command:
+      [
+        "/wait-for-it.sh",
+        "-t",
+        "30",
+        "alganews-api:8080",
+        "--",
+        "java",
+        "-jar",
+        "/app.jar",
+      ]
+    ports:
+      - "8081:8081"
+    networks:
+      - alganews-network
+    depends_on:
+      - alganews-mysql-database
+    environment:
+      JAVA_OPTS: "-Xms256m -Xmx1024m"
+      SPRING_PROFILES_ACTIVE: "docker"
+      ALGANEWS_AUTH_ACCESS_TOKEN_VALIDITY: "5m"
+      ALGANEWS_AUTH_REFRESH_TOKEN_VALIDITY: "30d"
+      SPRING_DATASOURCE_URL: "jdbc:mysql://alganews-mysql-database/alganews?createDatabaseIfNotExist=true&serverTimezone=UTC"
+      SPRING_DATASOURCE_USERNAME: "alganews"
+      SPRING_DATASOURCE_PASSWORD: "alganews"
+      ALGANEWS_AUTH_CLIENTS_ADMIN_CALLBACK_URLS: "http://localhost:9000/authorize,http://localhost:9001/authorize,http://localhost:9002/authorize,http://localhost:3000/authorize,http://localhost:3001/authorize,http://localhost:3002/authorize,http://localhost:8080/admin,http://localhost:8082/oauth2-redirect.html"
+      ALGANEWS_AUTH_CLIENTS_CMS_CALLBACK_URLS: "http://localhost:9000/authorize,http://localhost:9001/authorize,http://localhost:9002/authorize,http://localhost:3000/authorize,http://localhost:3001/authorize,http://localhost:3002/authorize,http://localhost:8080/cms,http://localhost:8082/oauth2-redirect.html"
+      ALGANEWS_AUTH_URL: "http://localhost:8081"
+  alganews-swagger-ui:
+    image: algaworks/alganews-swagger:latest
+    container_name: swagger-ui
+    ports:
+      - "8082:8080"
+    environment:
+      API_URL: swagger/alganews-api.yml
+      OAUTH_USE_PKCE: "true"

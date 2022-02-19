@@ -1,28 +1,19 @@
-import { useEffect, useState } from "react";
-import { MetricService } from "mauricio.girardi-sdk";
+import { useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 
-import { transformEditorMonthlyEarningsIntoChartJs } from "core/utils/transformEditorMonthlyEarningsIntoChartJs";
-import { Chart, ChartProps } from "app/components/Chart";
+import { Chart } from "app/components/Chart";
 import { withBoundary } from "core/hoc/withBoundary";
+import { usePerformance } from "core/hooks/usePerformance";
 
 function UsePerformance() {
-    const [error, setError] = useState<Error>()
-    const [editorEarnings, setEditorEarnings] = useState<ChartProps['data']>()
+    const { error, editorEarnings, fetchPerformance } = usePerformance()
 
     useEffect(() => {
-        MetricService
-            .getEditorMonthlyEarnings()
-            .then(transformEditorMonthlyEarningsIntoChartJs)
-            .then(setEditorEarnings)
-            .catch(err => setError(new Error(err.message)))
-    }, [])
+        fetchPerformance()
+    }, [fetchPerformance])
 
     if (error) throw error
-    if (!editorEarnings) {
-        return <Skeleton height={300} />
-
-    }
+    if (!editorEarnings) return <Skeleton height={300} />
 
     return (
         <Chart

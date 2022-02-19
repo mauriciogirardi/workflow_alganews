@@ -1,22 +1,17 @@
-import { useEffect, useState } from "react"
-import { Metric, MetricService } from "mauricio.girardi-sdk";
+import { useEffect } from "react"
 import Skeleton from "react-loading-skeleton";
 
 import { withBoundary } from "core/hoc/withBoundary"
 import { CircleChart } from "app/components/CircleChart"
 
 import * as S from './styles'
+import { useTopTags } from "core/hooks/useTopTags";
 
 function UserTopTags() {
-    const [error, setError] = useState<Error>()
-    const [topTags, setTopTags] = useState<Metric.EditorTagRatio>()
-
+    const { error, topTags, fetchMetric } = useTopTags()
     useEffect(() => {
-        MetricService
-            .getTop3Tags()
-            .then(setTopTags)
-            .catch(err => setError(new Error(err.message)))
-    }, [])
+        fetchMetric()
+    }, [fetchMetric])
 
     if (error) throw error
     if (!topTags?.length) {

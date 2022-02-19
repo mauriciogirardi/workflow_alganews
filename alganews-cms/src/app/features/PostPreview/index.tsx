@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react"
-import { PostService, Post } from "mauricio.girardi-sdk"
+import { useEffect } from "react"
 import Skeleton from "react-loading-skeleton"
 
 import { MarkdownEditor } from "app/components/MarkdownEditor"
+import { useSinglePost } from "core/hooks/useSinglePost"
 import { withBoundary } from "core/hoc/withBoundary"
 import { confirm } from "core/utils/confirm"
 import { Button } from "app/components/Button"
-import { info } from "core/utils/info"
 
 import modal from "core/utils/modal"
 
@@ -17,33 +16,17 @@ type PostPreviewProps = {
 }
 
 function PostPreview({ postId }: PostPreviewProps) {
-    const [post, setPost] = useState<Post.Detailed>()
-    const [error, setError] = useState<Error>()
-    const [loading, setLoading] = useState(false)
-
-    useEffect(() => {
-        setLoading(true)
-        PostService
-            .getExistingPost(postId)
-            .then(setPost)
-            .catch(err => setError(new Error(err.message)))
-            .finally(() => setLoading(false))
-    }, [postId])
-
-    const publishPost = async () => {
-        await PostService.publishExistingPost(postId)
-        info({
-            title: 'Post publicado',
-            description: 'Você publicou o post com sucesso',
-            status: 'success',
-        })
-    }
+    const { error, post, loading, fetchPost, publishPost } = useSinglePost()
 
     const reopenModal = () => {
         modal({
             children: <PostPreview postId={postId} />
         })
     }
+
+    useEffect(() => {
+        fetchPost(postId)
+    }, [postId, fetchPost])
 
     if (error) throw error
     if (!post || loading) {
@@ -74,8 +57,8 @@ function PostPreview({ postId }: PostPreviewProps) {
                         disabled={post.published}
                         onClick={() => {
                             confirm({
-                                title: 'Publicar o post?',
-                                onConfirm: publishPost,
+                                title: 'Deseja publicar o post?',
+                                onConfirm: () => publishPost(postId),
                                 onCancel: reopenModal,
                             })
                         }}
@@ -83,7 +66,7 @@ function PostPreview({ postId }: PostPreviewProps) {
                     <Button
                         label="Editar"
                         disabled={post.published}
-                        onClick={() => window.location.pathname = `/posts/editar/${postId}`}
+                        onClick={() => (window.location.pathname = `/posts/editar/${postId}`)}
                     />
                 </S.PostPreviewWrapperButtons>
             </S.PostPreviewHeader>

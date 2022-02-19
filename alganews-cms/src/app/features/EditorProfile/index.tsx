@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import { UserService, User } from 'mauricio.girardi-sdk'
+import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { dateFormatDistance } from 'core/utils/dateFormatDistance'
@@ -10,6 +9,7 @@ import { ProgressBar } from 'app/components/ProgressBar'
 
 import * as S from './styles'
 import Skeleton from 'react-loading-skeleton'
+import { useSingleEditor } from 'core/hooks/useSingleEditor'
 
 type EditorProfileProps = {
     hidePersonalData?: boolean
@@ -17,22 +17,14 @@ type EditorProfileProps = {
 
 function EditorProfile({ hidePersonalData }: EditorProfileProps) {
     const params = useParams<{ id: string }>()
-    const [error, setError] = useState<Error>()
-    const [editor, setEditor] = useState<User.EditorDetailed>()
+    const { editor, error, fetchEditor } = useSingleEditor()
 
     useEffect(() => {
-        UserService
-            .getExistingEditor(Number(params.id))
-            .then(setEditor)
-            .catch(err => setError(new Error(err.message)))
-    }, [params.id])
+        fetchEditor(Number(params.id))
+    }, [params.id, fetchEditor])
 
     if (error) throw error
-    if (!editor) {
-        return (
-            <Skeleton height={311} />
-        )
-    }
+    if (!editor) return <Skeleton height={311} />
 
     return (
         <S.EditorProfileWrapper>

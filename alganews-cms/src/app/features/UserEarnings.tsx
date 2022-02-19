@@ -1,22 +1,18 @@
-import { useEffect, useState } from 'react'
-import { User, UserService } from 'mauricio.girardi-sdk';
+import { useEffect } from 'react'
 import Skeleton from "react-loading-skeleton";
 
 import { ValueDescriptor } from 'app/components/ValueDescriptor'
 import { withBoundary } from 'core/hoc/withBoundary'
+import { useEarning } from 'core/hooks/useEarnings'
 
 import * as S from './styles'
 
 function UserEarnings() {
-    const [error, setError] = useState<Error>()
-    const [user, setUser] = useState<User.Detailed>()
+    const { error, user, fetchEarnings } = useEarning()
 
     useEffect(() => {
-        UserService
-            .getDetailedUser(7)
-            .then(setUser)
-            .catch(err => setError(new Error(err.message)))
-    }, [])
+        fetchEarnings()
+    }, [fetchEarnings])
 
     if (error) throw error
     if (!user) {

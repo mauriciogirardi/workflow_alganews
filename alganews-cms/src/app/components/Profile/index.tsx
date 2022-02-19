@@ -1,3 +1,4 @@
+import Skeleton from 'react-loading-skeleton'
 import * as S from './styles'
 
 type ProfileProps = {
@@ -5,12 +6,16 @@ type ProfileProps = {
     description: string
     url: string
     editorId: number
+    loading?: boolean
 }
 
-export const Profile = ({ description, name, url, editorId }: ProfileProps) => {
+export const Profile = ({ description, name, url, editorId, loading = false }: ProfileProps) => {
     return (
         <S.Wrapper to={`/editores/${editorId}`}>
-            <S.Image src={url} alt={name} />
+            {loading
+                ? <Skeleton width={48} height={48} />
+                : <S.Image src={url} alt={name} />
+            }
 
             <S.WrapperContent>
                 <p>{name}</p>

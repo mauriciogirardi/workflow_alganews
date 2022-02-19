@@ -1,33 +1,34 @@
-import { useEffect, useMemo, useState } from "react";
 import { Column, usePagination, useTable } from "react-table";
-import { Post, PostService } from "mauricio.girardi-sdk";
+import { useEffect, useMemo, useState } from "react";
 import { MdOpenInNew } from "react-icons/md";
+import { Post } from "mauricio.girardi-sdk";
 import Skeleton from "react-loading-skeleton";
 
-import { dataDateRow, dataTitleWithImageRow, isPublished, positionHeaderName } from "core/utils/tableUtils";
+import {
+    dataDateRow,
+    dataTitleWithImageRow,
+    isPublished,
+    positionHeaderName
+} from "core/utils/tableUtils";
 import { withBoundary } from "core/hoc/withBoundary";
 
 import Table from "app/components/Table";
+import { usePosts } from "core/hooks/usePosts";
 
 function PostList() {
-    const [posts, setPosts] = useState<Post.Paginated>()
-    const [loading, setLoading] = useState(false)
+    const { fetchingPosts, loading, paginatedPosts } = usePosts()
     const [error, setError] = useState<Error>()
     const [page, setPage] = useState(0)
 
     useEffect(() => {
-        setLoading(true)
-        PostService
-            .getAllPosts({
-                page,
-                size: 7,
-                showAll: true,
-                sort: ['createdAt', 'desc']
-            })
-            .then(setPosts)
+        fetchingPosts({
+            page,
+            size: 7,
+            showAll: true,
+            sort: ['createdAt', 'desc']
+        })
             .catch(err => setError(new Error(err.message)))
-            .finally(() => setLoading(false))
-    }, [page])
+    }, [page, fetchingPosts])
 
     const columns = useMemo<Column<Post.Summary>[]>(
         () => [
@@ -63,19 +64,19 @@ function PostList() {
 
     const instance = useTable<Post.Summary>(
         {
-            data: posts?.content || [],
+            data: paginatedPosts?.content || [],
             columns,
             manualPagination: true,
             initialState: {
                 pageIndex: 0,
             },
-            pageCount: posts?.totalPages,
+            pageCount: paginatedPosts?.totalPages,
         },
         usePagination
     )
 
     if (error) throw error
-    if (!posts || loading) {
+    if (!paginatedPosts || loading) {
         return (
             <div>
                 <Skeleton height={32} />

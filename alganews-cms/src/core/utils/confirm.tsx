@@ -4,8 +4,8 @@ import "react-confirm-alert/src/react-confirm-alert.css"
 
 type ConfirmProps = {
     title: string
-    onConfirm?: () => void
-    onCancel?: () => void
+    onConfirm?: (...args: any[]) => void
+    onCancel?: (...args: any[]) => void
 }
 
 export const confirm = ({ title, onCancel, onConfirm }: ConfirmProps) => {

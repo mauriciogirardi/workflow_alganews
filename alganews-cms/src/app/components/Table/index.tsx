@@ -41,7 +41,7 @@ export default function Table<T extends Object>({
                     {headerGroups.map(headerGroup => (
                         <S.TrHeading {...headerGroup.getHeaderGroupProps()}>
                             {headerGroup.headers.map(column => (
-                                <S.Th {...column.getHeaderProps()}>
+                                <S.Th  {...column.getHeaderProps()}>
                                     {column.render('Header')}
                                 </S.Th>
                             ))}
@@ -56,7 +56,7 @@ export default function Table<T extends Object>({
                         return (
                             <S.TrBody {...row.getRowProps()}>
                                 {row.cells.map(cell => (
-                                    <S.Td {...cell.getCellProps}>
+                                    <S.Td key={cell.column.id} {...cell.getCellProps}>
                                         {cell.render('Cell')}
                                     </S.Td>
                                 ))}

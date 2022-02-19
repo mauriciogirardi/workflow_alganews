@@ -49,7 +49,7 @@ export const dataTitleWithImageRow = (props: any) => {
             display: 'flex',
             alignItems: 'center',
             gap: 8,
-            maxWidth: 200,
+            maxWidth: 320,
         }}>
             <img
                 width={24}
@@ -74,12 +74,16 @@ export const dataTitleWithImageRow = (props: any) => {
 
 export const isPublished = ({ value }: { value: boolean }) => {
     const name = value
-        ? <GiConfirmed size={18} color="#1ea82c" />
-        : <CgCloseO size={18} color="#c92222" />
+        ? <p style={{ display: 'flex', textAlign: 'center' }}>
+            Publicado <GiConfirmed style={{ marginLeft: 5 }} size={15} color="#1ea82c" />
+        </p>
+        : <p style={{ display: 'flex', textAlign: 'center' }}>
+            Privado <CgCloseO style={{ marginLeft: 5 }} size={15} color="#c92222" />
+        </p>
 
     return (
-        <p style={{ textAlign: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'right' }}>
             {name}
-        </p>
+        </div>
     )
 }

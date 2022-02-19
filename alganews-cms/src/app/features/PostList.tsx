@@ -11,9 +11,10 @@ import {
     positionHeaderName
 } from "core/utils/tableUtils";
 import { withBoundary } from "core/hoc/withBoundary";
+import { usePosts } from "core/hooks/usePosts";
+import { Loading } from "app/components/Loading";
 
 import Table from "app/components/Table";
-import { usePosts } from "core/hooks/usePosts";
 
 function PostList() {
     const { fetchingPosts, loading, paginatedPosts } = usePosts()
@@ -49,14 +50,9 @@ function PostList() {
                 Cell: (props) => dataDateRow({ value: props.value })
             },
             {
-                Header: positionHeaderName({ title: 'Última atualização', position: 'right' }),
-                accessor: 'updatedAt',
-                Cell: (props) => dataDateRow({ value: props.value })
-            },
-            {
                 Header: positionHeaderName({ title: 'Publicado?', position: 'right' }),
                 accessor: 'published',
-                Cell: (props) => isPublished({ value: props.value })
+                Cell: (props) => isPublished({ value: props.value }),
             },
         ],
         []
@@ -67,16 +63,14 @@ function PostList() {
             data: paginatedPosts?.content || [],
             columns,
             manualPagination: true,
-            initialState: {
-                pageIndex: 0,
-            },
+            initialState: { pageIndex: 0 },
             pageCount: paginatedPosts?.totalPages,
         },
         usePagination
     )
 
     if (error) throw error
-    if (!paginatedPosts || loading) {
+    if (!paginatedPosts) {
         return (
             <div>
                 <Skeleton height={32} />
@@ -91,6 +85,7 @@ function PostList() {
 
     return (
         <>
+            <Loading show={loading} />
             <Table instance={instance} onPaginate={setPage} />
         </>
     )

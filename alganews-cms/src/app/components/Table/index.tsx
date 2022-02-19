@@ -1,7 +1,8 @@
+import { BsChevronLeft, BsChevronRight } from 'react-icons/bs'
 import { transparentize } from 'polished'
 import { TableInstance } from 'react-table'
-import { BsChevronLeft, BsChevronRight } from 'react-icons/bs'
 import { useEffect } from 'react'
+
 import ReactPaginate from 'react-paginate'
 
 import { NoData } from '../NoData'
@@ -18,21 +19,19 @@ export default function Table<T extends Object>({
     onPaginate
 }: TableProps<T>) {
     const {
-        getTableBodyProps,
         getTableProps,
-        headerGroups,
+        getTableBodyProps,
         prepareRow,
+        headerGroups,
         rows,
         pageCount,
         gotoPage,
-        state: {
-            pageIndex
-        }
+        state: { pageIndex }
     } = instance
 
     useEffect(() => {
         onPaginate && onPaginate(pageIndex)
-    }, [onPaginate, pageIndex])
+    }, [pageIndex, onPaginate])
 
     return (
         <>
@@ -71,11 +70,11 @@ export default function Table<T extends Object>({
             <S.Pagination>
                 <ReactPaginate
                     pageCount={pageCount}
-                    onPageChange={page => gotoPage(page.selected)}
-                    marginPagesDisplayed={3}
+                    onPageChange={(page) => gotoPage(page.selected)}
+                    marginPagesDisplayed={1}
                     pageRangeDisplayed={4}
-                    nextLabel={<BsChevronRight size={16} style={{ paddingTop: 2 }} />}
-                    previousLabel={<BsChevronLeft size={16} style={{ paddingTop: 2 }} />}
+                    nextLabel={<BsChevronRight size={16} />}
+                    previousLabel={<BsChevronLeft size={16} />}
                 />
             </S.Pagination>
         </>

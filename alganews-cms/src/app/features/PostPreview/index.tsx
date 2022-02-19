@@ -1,10 +1,10 @@
 import { useEffect } from "react"
-import Skeleton from "react-loading-skeleton"
 
 import { MarkdownEditor } from "app/components/MarkdownEditor"
 import { useSinglePost } from "core/hooks/useSinglePost"
 import { withBoundary } from "core/hoc/withBoundary"
 import { confirm } from "core/utils/confirm"
+import { Loading } from "app/components/Loading"
 import { Button } from "app/components/Button"
 
 import modal from "core/utils/modal"
@@ -29,21 +29,8 @@ function PostPreview({ postId }: PostPreviewProps) {
     }, [postId, fetchPost])
 
     if (error) throw error
-    if (!post || loading) {
-        return (
-            <S.PostPreviewWrapper>
-                <S.PostPreviewHeader>
-                    <Skeleton width={322} height={22} />
-                    <S.PostPreviewWrapperButtons>
-                        <Skeleton width={66} height={25} />
-                        <Skeleton width={52} height={25} />
-                    </S.PostPreviewWrapperButtons>
-                </S.PostPreviewHeader>
-                <Skeleton width={601} height={240} />
-                <Skeleton width={601} height={300} />
-            </S.PostPreviewWrapper>
-        )
-    }
+    if (loading) return <Loading show />;
+    if (!post) return null
 
     return (
         <S.PostPreviewWrapper>

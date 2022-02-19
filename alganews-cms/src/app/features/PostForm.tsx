@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { PostService } from 'mauricio.girardi-sdk';
 import { Tag } from 'react-tag-input';
 
@@ -19,7 +19,8 @@ interface PostFormProps {
     postId?: number
 }
 
-export const PostForm = ({ postId }: PostFormProps) => {
+export const PostForm = () => {
+    const params = useParams<{ id: string }>()
     const navigate = useNavigate()
     const [body, setBody] = useState("")
     const [title, setTitle] = useState("")
@@ -27,18 +28,8 @@ export const PostForm = ({ postId }: PostFormProps) => {
     const [imageUrl, setImageUrl] = useState("")
     const [isPublishing, setIsPublishing] = useState(false)
 
+    const postId = Number(params.id) || null
     const allFieldsAreFilled = !body || !title || !imageUrl || !tags.length
-
-    const fetchPost = (postId: number) => {
-        PostService
-            .getExistingPost(postId)
-            .then(post => {
-                setTitle(post.title)
-                setImageUrl(post.imageUrls.default)
-                setBody(post.body)
-                setTags(post.tags.map(tag => ({ id: tag, text: tag })))
-            })
-    }
 
     const insertNewPost = async () => {
         const newPost = {
@@ -88,6 +79,17 @@ export const PostForm = ({ postId }: PostFormProps) => {
         } finally {
             setIsPublishing(false)
         }
+    }
+
+    const fetchPost = (postId: number) => {
+        PostService
+            .getExistingPost(postId)
+            .then(post => {
+                setTitle(post.title)
+                setImageUrl(post.imageUrls.default)
+                setBody(post.body)
+                setTags(post.tags.map(tag => ({ id: tag, text: tag })))
+            })
     }
 
     useEffect(() => {

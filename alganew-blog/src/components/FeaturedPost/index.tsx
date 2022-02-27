@@ -1,3 +1,4 @@
+import { Avatar } from '../Avatar'
 import { Post } from 'mauricio.girardi-sdk'
 
 import * as S from './styles'
@@ -16,7 +17,7 @@ export const FeaturedPost = ({ postSummary }: FeaturedPostProps) => {
             </S.Tags>
 
             <S.Editor>
-                <S.Avatar
+                <Avatar
                     src={postSummary.editor.avatarUrls.small}
                     alt={postSummary.editor.name}
                 />

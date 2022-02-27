@@ -49,14 +49,6 @@ export const EditorName = styled.p`
     font-weight: 700;
 `
 
-export const Avatar = styled.img`
-    height: 40px;
-    width: 40px;
-    object-fit: cover;
-    border-radius: 50%;
-    box-shadow: 0 0 0 4px ${({ theme }) => theme.primaryForeground};
-`
-
 export const Title = styled.h2`
     font-size: 1.5rem;
     font-weight: 600;

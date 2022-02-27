@@ -3,8 +3,8 @@ import styled from "styled-components";
 import { FOOTER_HEIGHT } from "../../../_constants";
 
 export const Wrapper = styled.footer`
-    background-color: ${p => p.theme.activeElementBackground};
-    color: ${p => p.theme.activeElementForeground};
+    background-color: ${({ theme }) => theme.activeElementBackground};
+    color: ${({ theme }) => theme.activeElementForeground};
     width: 100%;
     height: ${FOOTER_HEIGHT}px;
 `
@@ -15,13 +15,13 @@ export const Container = styled.div`
     flex-direction: column;
     justify-content: center;
     gap: 1rem;
-    max-width: 840px;
+    max-width: 52.5rem;
     margin: auto;
     height: 100%;
     padding: 0 1rem;
 
     > span {
         font-size: 1.1rem;
-        color: ${p => transparentize(0.6, p.theme.activeElementForeground)};
+        color: ${({ theme }) => transparentize(0.6, theme.activeElementForeground)};
     }
 `

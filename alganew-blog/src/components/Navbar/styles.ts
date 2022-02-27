@@ -4,16 +4,16 @@ export const Container = styled.nav`
     ul {
         display: flex;
         list-style: none;
-        gap: 8px;
+        gap: 0.5rem;
 
         a {
-            color: ${p => p.theme.pageForeground};
+            color: ${({ theme }) => theme.pageForeground};
             text-decoration: none;
             text-transform: lowercase;
             transition: color .25s ease;
 
             :hover {
-                color: ${p => p.theme.primaryBackground}
+                color: ${({ theme }) => theme.primaryBackground}
             }
         }
     }

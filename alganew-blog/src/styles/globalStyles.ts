@@ -12,8 +12,8 @@ export const GlobalStyles = createGlobalStyle`
     }
 
     body {
-        background-color: ${p => p.theme.pageBackground};
-        color: ${p => p.theme.pageForeground};
+        background-color: ${({ theme }) => theme.pageBackground};
+        color: ${({ theme }) => theme.pageForeground};
         font-family: "Lato", sans-serif;
     }
 `

@@ -44,6 +44,10 @@ export const Tags = styled.ul`
     list-style: none;
     display: flex;
     gap: 0.5rem;
+
+    @media screen and (max-width: 767px){
+        display: none;
+    }
 `
 
 export const Tag = styled.li`

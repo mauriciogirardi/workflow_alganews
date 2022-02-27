@@ -4,7 +4,8 @@ const nextConfig = {
     images: {
         domains: [
             "avatars.githubusercontent.com",
-            "storage.googleapis.com"
+            "storage.googleapis.com",
+            "localhost"
         ]
     }
 }

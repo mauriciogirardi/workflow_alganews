@@ -1,16 +1,33 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
+    position: relative;
     background-color: ${({ theme }) => theme.primaryBackground};
     border-radius: ${({ theme }) => theme.borderRadius};
     color: ${({ theme }) => theme.primaryForeground};
-    display: flex;
-    flex-direction: column;
     min-height: 16rem;
-    justify-content: center;
     padding: 2rem;
     width: 100%;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+`
+
+export const BgImage = styled.div<{ bg: string }>`
+    background-image: url(${({ bg }) => bg});
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.05;
+`
+
+export const Content = styled.div`
+    position: relative;
     gap: 1.5rem;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 1;
 `
 
 export const Tags = styled.ul`
@@ -24,7 +41,8 @@ export const Tag = styled.li`
     color: ${({ theme }) => theme.activeElementForeground};
     border-radius: ${({ theme }) => theme.borderRadius};
     text-transform: lowercase;
-    padding: 0.25rem 0.75rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
     font-weight: 600;
     cursor: default;
 `

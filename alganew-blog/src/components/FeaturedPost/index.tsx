@@ -9,25 +9,29 @@ interface FeaturedPostProps {
 
 export const FeaturedPost = ({ postSummary }: FeaturedPostProps) => {
     return (
-        <S.Wrapper>
-            <S.Tags>
-                {postSummary.tags.map(tag => (
-                    <S.Tag key={tag}>{tag}</S.Tag>
-                ))}
-            </S.Tags>
+        <S.Wrapper >
+            <S.BgImage bg={postSummary.imageUrls.medium} />
 
-            <S.Editor>
-                <Avatar
-                    src={postSummary.editor.avatarUrls.small}
-                    alt={postSummary.editor.name}
-                />
-                <S.EditorDescription>
-                    <S.EditorName>por {postSummary.editor.name}</S.EditorName>
-                    <S.PostDate>{postSummary.editor.createdAt}</S.PostDate>
-                </S.EditorDescription>
-            </S.Editor>
+            <S.Content>
+                <S.Tags>
+                    {postSummary.tags.map(tag => (
+                        <S.Tag key={tag}>{tag}</S.Tag>
+                    ))}
+                </S.Tags>
 
-            <S.Title>{postSummary.title}</S.Title>
+                <S.Editor>
+                    <Avatar
+                        src={postSummary.editor.avatarUrls.small}
+                        alt={postSummary.editor.name}
+                    />
+                    <S.EditorDescription>
+                        <S.EditorName>por {postSummary.editor.name}</S.EditorName>
+                        <S.PostDate>{postSummary.editor.createdAt}</S.PostDate>
+                    </S.EditorDescription>
+                </S.Editor>
+
+                <S.Title>{postSummary.title}</S.Title>
+            </S.Content>
         </S.Wrapper>
     )
 }

@@ -1,6 +1,7 @@
+import { transparentize } from "polished";
 import styled from "styled-components";
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.a`
     position: relative;
     background-color: ${({ theme }) => theme.primaryBackground};
     border-radius: ${({ theme }) => theme.borderRadius};
@@ -11,10 +12,19 @@ export const Wrapper = styled.div`
     display: flex;
     align-items: center;
     overflow: hidden;
+    text-decoration: none;
+    transition: all .25s ease-in-out;
+
+    &:hover,
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 4px ${({ theme }) => transparentize(0.7, theme.primaryBackground)};
+    }
 `
 
 export const BgImage = styled.div<{ bg: string }>`
     background-image: url(${({ bg }) => bg});
+    background-size: cover;
     position: absolute;
     inset: 0;
     z-index: 0;
@@ -44,7 +54,6 @@ export const Tag = styled.li`
     padding: 0.25rem 0.5rem;
     font-size: 0.75rem;
     font-weight: 600;
-    cursor: default;
 `
 
 export const Editor = styled.div`

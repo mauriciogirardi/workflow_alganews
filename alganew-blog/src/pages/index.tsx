@@ -3,6 +3,9 @@ import { Post, PostService } from 'mauricio.girardi-sdk'
 
 import { FeaturedPost } from '../components/FeaturedPost'
 import { ServerResponse } from 'http'
+import { PostCard } from 'components/PostCard'
+
+import * as S from '../styles/HomeStyles'
 
 interface HomeProps {
     posts?: Post.Paginated
@@ -12,9 +15,15 @@ export default function Home(props: HomeProps) {
     const { posts } = props
 
     return (
-        <>
+        <S.PageGrid>
             {posts?.content && <FeaturedPost postSummary={posts.content[0]} />}
-        </>
+
+            <S.PostGrid>
+                {posts?.content?.slice(1).map(post => (
+                    <PostCard key={post.id} post={post} />
+                ))}
+            </S.PostGrid>
+        </S.PageGrid>
     )
 }
 

@@ -1,29 +1,47 @@
-import { Post, PostService } from "mauricio.girardi-sdk"
 import { ResourceNotFoundError } from "mauricio.girardi-sdk/dist/errors"
 import { GetServerSideProps } from "next"
+import { Post, PostService } from "mauricio.girardi-sdk"
 import { ParsedUrlQuery } from "querystring"
+import Head from "next/head"
+import { PostHeader } from "components/PostHeader"
 
 interface Params extends ParsedUrlQuery {
     id: string
+    slug: string
 }
 
 interface PostPageProps extends NextPageProps {
     post?: Post.Detailed
+    host?: string
 }
 
-export default function PostPage({ post }: PostPageProps) {
+export default function PostPage({ post, host }: PostPageProps) {
+    if (!post) return
+
     return (
         <>
-            <h1>{post?.title}</h1>
+            <Head>
+                <link
+                    rel="canonical"
+                    href={`http://${host}/${post.id}/${post.slug}`}
+                />
+            </Head>
+
+            <PostHeader
+                editor={post.editor}
+                createdAt={post.createdAt}
+                thumbnail={post.imageUrls.large}
+                title={post.title}
+            />
         </>
     )
 }
 
-export const getServerSideProps: GetServerSideProps<PostPageProps, Params> = async ({ params, res }) => {
+export const getServerSideProps: GetServerSideProps<PostPageProps, Params> = async ({ params, req }) => {
     try {
         if (!params) return { notFound: true }
 
-        const { id } = params
+        const { id, slug } = params
         const postId = Number(id)
 
         if (isNaN(postId)) return { notFound: true }
@@ -33,6 +51,7 @@ export const getServerSideProps: GetServerSideProps<PostPageProps, Params> = asy
         return {
             props: {
                 post,
+                host: req.headers.host
             }
         }
     } catch (err) {

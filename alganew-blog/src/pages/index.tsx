@@ -1,9 +1,10 @@
 import { GetServerSideProps } from 'next'
 import { Post, PostService } from 'mauricio.girardi-sdk'
 
-import { FeaturedPost } from '../components/FeaturedPost'
-import { ServerResponse } from 'http'
+import { sendToHomePage } from 'utils/sendToHomePage'
+import { FeaturedPost } from 'components/FeaturedPost'
 import { PostCard } from 'components/PostCard'
+import { Paginate } from 'components/Paginate'
 
 import * as S from '../styles/HomeStyles'
 
@@ -23,14 +24,10 @@ export default function Home(props: HomeProps) {
                     <PostCard key={post.id} post={post} />
                 ))}
             </S.PostGrid>
+
+            <Paginate totalPages={posts?.totalPages || 0} />
         </S.PageGrid>
     )
-}
-
-function sendToHomePage(res: ServerResponse) {
-    res.statusCode = 302
-    res.setHeader('Location', '/?page=1')
-    return { props: {} }
 }
 
 export const getServerSideProps: GetServerSideProps<HomeProps> = async ({ query, res }) => {

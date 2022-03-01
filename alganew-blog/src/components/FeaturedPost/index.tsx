@@ -3,6 +3,7 @@ import { Post } from 'mauricio.girardi-sdk'
 
 import * as S from './styles'
 import Link from 'next/link'
+import { formatPostDate } from 'utils/formatPostDate'
 
 interface FeaturedPostProps {
     postSummary: Post.Summary
@@ -30,7 +31,7 @@ export const FeaturedPost = ({ postSummary }: FeaturedPostProps) => {
                         />
                         <S.EditorDescription>
                             <S.EditorName>por {postSummary.editor.name}</S.EditorName>
-                            <S.PostDate>{postSummary.editor.createdAt}</S.PostDate>
+                            <S.PostDate>{formatPostDate(postSummary.editor.createdAt)}</S.PostDate>
                         </S.EditorDescription>
                     </S.Editor>
 

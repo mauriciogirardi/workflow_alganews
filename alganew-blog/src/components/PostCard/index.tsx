@@ -1,5 +1,6 @@
 import { Post } from "mauricio.girardi-sdk"
 import Link from "next/link"
+import { formatPostDate } from "utils/formatPostDate"
 
 import * as S from './styles'
 
@@ -22,7 +23,7 @@ export const PostCard = ({ post }: PostCardProps) => {
                         />
                     </S.Editor>
 
-                    <S.PublishDate>ha 3 dias</S.PublishDate>
+                    <S.PublishDate>{formatPostDate(post.createdAt)}</S.PublishDate>
                     <S.Title>{post.title}</S.Title>
                 </S.Info>
             </S.Wrapper>

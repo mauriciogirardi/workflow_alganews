@@ -1,5 +1,6 @@
 import { Post } from 'mauricio.girardi-sdk'
 import Image from 'next/image'
+import { formatPostDate } from 'utils/formatPostDate'
 import * as S from './styles'
 
 interface PostHeaderProps {
@@ -31,7 +32,7 @@ export const PostHeader = ({ editor, createdAt, thumbnail, title }: PostHeaderPr
                         alt={editor.name}
                     />
                 </S.Editor>
-                <S.PublishDate>{createdAt}</S.PublishDate>
+                <S.PublishDate>{formatPostDate(createdAt)}</S.PublishDate>
                 <S.Title>{title}</S.Title>
             </S.Content>
         </S.Wrapper>

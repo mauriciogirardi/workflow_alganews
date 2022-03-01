@@ -1,8 +1,11 @@
+import Head from "next/head"
+
 import { ResourceNotFoundError } from "mauricio.girardi-sdk/dist/errors"
+import { DiscussionEmbed } from 'disqus-react'
 import { GetServerSideProps } from "next"
 import { Post, PostService } from "mauricio.girardi-sdk"
 import { ParsedUrlQuery } from "querystring"
-import Head from "next/head"
+
 import { PostHeader } from "components/PostHeader"
 import { Markdown } from "components/Markdown"
 
@@ -43,6 +46,16 @@ export default function PostPage({ post, host }: PostPageProps) {
             />
 
             <Markdown>{post.body}</Markdown>
+
+            <DiscussionEmbed
+                shortname="alganews-10"
+                config={{
+                    url: `http://${host}/${post.id}/${post.slug}`,
+                    identifier: String(post.id),
+                    title: post.title,
+                    language: "pt_BR"
+                }}
+            />
         </>
     )
 }

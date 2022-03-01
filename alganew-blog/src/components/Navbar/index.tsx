@@ -6,7 +6,7 @@ export const Navbar = () => {
         <S.Container>
             <ul>
                 <li>
-                    <Link href="/">
+                    <Link href="/" passHref>
                         <a>Home</a>
                     </Link>
                 </li>

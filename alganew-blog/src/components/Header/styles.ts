@@ -8,6 +8,11 @@ export const Wrapper = styled.header`
     box-shadow: 0 3px 10px ${({ theme }) => transparentize(0.9, theme.pageForeground)};
     width: 100%;
     height: ${HEADER_HEIGHT}px;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
 `
 
 export const Container = styled.div`

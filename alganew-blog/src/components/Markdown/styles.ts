@@ -47,15 +47,25 @@ export const Container = styled.main`
             }
         }
 
+
         code:not([class^='language']) {
-            color: ${({ theme }) => theme.pageBackground};
-            background-color: ${({ theme }) => theme.pageForeground};
-            border-radius: ${({ theme }) => theme.borderRadius};
-            padding: 4px 8px;
             font-family: 'Roboto Mono', monospace;
             font-weight: 300;
             font-size: 14px;
+            padding: 4px 8px;
             white-space: nowrap;
+        }
+
+        pre > code {
+            white-space: inherit !important;
+            display: inline-block;
+        }
+
+        pre {
+            color: ${({ theme }) => theme.pageBackground};
+            background-color: ${({ theme }) => theme.pageForeground};
+            border-radius: ${({ theme }) => theme.borderRadius};
+            overflow-x: auto;
         }
 
         img {

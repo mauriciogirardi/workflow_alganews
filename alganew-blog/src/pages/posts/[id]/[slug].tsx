@@ -4,6 +4,7 @@ import { Post, PostService } from "mauricio.girardi-sdk"
 import { ParsedUrlQuery } from "querystring"
 import Head from "next/head"
 import { PostHeader } from "components/PostHeader"
+import { Markdown } from "components/Markdown"
 
 interface Params extends ParsedUrlQuery {
     id: string
@@ -33,6 +34,8 @@ export default function PostPage({ post, host }: PostPageProps) {
                 thumbnail={post.imageUrls.large}
                 title={post.title}
             />
+
+            <Markdown>{post.body}</Markdown>
         </>
     )
 }

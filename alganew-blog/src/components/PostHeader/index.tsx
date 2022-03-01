@@ -22,19 +22,17 @@ export const PostHeader = ({ editor, createdAt, thumbnail, title }: PostHeaderPr
                     alt={title}
                 />
             </S.Thumbnail>
-            <S.Content>
-                <S.Editor>
-                    <Image
-                        src={editor.avatarUrls.small}
-                        width={64}
-                        height={64}
-                        objectFit={"cover"}
-                        alt={editor.name}
-                    />
-                </S.Editor>
-                <S.PublishDate>{formatPostDate(createdAt)}</S.PublishDate>
-                <S.Title>{title}</S.Title>
-            </S.Content>
+            <S.Editor>
+                <Image
+                    src={editor.avatarUrls.small}
+                    width={64}
+                    height={64}
+                    objectFit={"cover"}
+                    alt={editor.name}
+                />
+            </S.Editor>
+            <S.PublishDate>{formatPostDate(createdAt)}</S.PublishDate>
+            <S.Title>{title}</S.Title>
         </S.Wrapper>
     )
 }

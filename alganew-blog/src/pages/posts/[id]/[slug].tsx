@@ -22,10 +22,17 @@ export default function PostPage({ post, host }: PostPageProps) {
     return (
         <>
             <Head>
+                <meta property="og:title" content={post.title} />
+                <meta property="og:site_name" content="Alganews" />
+                <meta property="og:url" content="github.com/mauriciogirardi" />
+                <meta property="og:description" content={post.body.slice(0, 54)} />
+                <meta property="og:type" content="article" />
+                <meta property="og:image" content={post.imageUrls.medium} />
                 <link
                     rel="canonical"
                     href={`http://${host}/${post.id}/${post.slug}`}
                 />
+                <title>{post.title}</title>
             </Head>
 
             <PostHeader

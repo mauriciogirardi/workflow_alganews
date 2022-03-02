@@ -2,7 +2,12 @@ import { Layout, Menu } from 'antd';
 import {
   UserOutlined,
   LaptopOutlined,
-  NotificationOutlined,
+  HomeOutlined,
+  TableOutlined,
+  PlusCircleOutlined,
+  DiffOutlined,
+  RiseOutlined,
+  FallOutlined,
 } from '@ant-design/icons';
 
 const { SubMenu, Item } = Menu;
@@ -10,47 +15,51 @@ const { Sider } = Layout;
 
 export const Sidebar = () => {
   return (
-    <Sider
-      width={200}
-      className='site-layout-background'
-      breakpoint='lg'
-      collapsedWidth='0'
-    >
+    <Sider width={200} breakpoint='lg' collapsedWidth='0'>
       <Menu
         mode='inline'
-        defaultSelectedKeys={['1']}
-        defaultOpenKeys={['sub1']}
+        defaultSelectedKeys={['0']}
         style={{ height: '100%', borderRight: 0 }}
       >
+        <Item key={'0'} icon={<HomeOutlined />}>
+          Home
+        </Item>
+
         <SubMenu
           key='sub1'
           icon={<UserOutlined />}
-          title='subnav 1'
+          title='Usuários'
         >
-          <Item key='1'>option1</Item>
-          <Item key='2'>option2</Item>
-          <Item key='3'>option3</Item>
-          <Item key='4'>option4</Item>
+          <Item key='1' icon={<TableOutlined />}>
+            Consulta
+          </Item>
+          <Item key='2' icon={<PlusCircleOutlined />}>
+            Cadastro
+          </Item>
         </SubMenu>
         <SubMenu
           key='sub2'
           icon={<LaptopOutlined />}
-          title='subnav 2'
+          title='Pagamentos'
         >
-          <Item key='5'>option5</Item>
-          <Item key='6'>option6</Item>
-          <Item key='7'>option7</Item>
-          <Item key='8'>option8</Item>
+          <Item key='3' icon={<TableOutlined />}>
+            Consulta
+          </Item>
+          <Item key='4' icon={<PlusCircleOutlined />}>
+            Cadastro
+          </Item>
         </SubMenu>
         <SubMenu
           key='sub3'
-          icon={<NotificationOutlined />}
-          title='subnav 3'
+          icon={<DiffOutlined />}
+          title='Fluxo de Caixa'
         >
-          <Item key='9'>option9</Item>
-          <Item key='10'>option10</Item>
-          <Item key='11'>option11</Item>
-          <Item key='12'>option12</Item>
+          <Item key='5' icon={<FallOutlined />}>
+            Despesa
+          </Item>
+          <Item key='6' icon={<RiseOutlined />}>
+            Receita
+          </Item>
         </SubMenu>
       </Menu>
     </Sider>

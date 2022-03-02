@@ -1,33 +1,21 @@
-import { useEffect, useState } from 'react';
-import { Col, Row, Typography } from 'antd';
-import { MetricService } from 'mauricio.girardi-sdk';
+import { useEffect } from 'react';
 import { Area, AreaConfig } from '@ant-design/charts';
 
 import {
-  transformDataIntoAntdChart,
   formatterCurrency,
   formatterDate,
 } from '../../core/utils';
-
-interface DataProps {
-  yearMonth: string;
-  value: number;
-  category: 'totalRevenues' | 'totalExpenses';
-}
-
-const { Title, Paragraph } = Typography;
+import { useCompanyMetrics } from '../../core/hooks/useCompanyMetrics';
 
 export const CompanyMetrics = () => {
-  const [data, setData] = useState<DataProps[]>([]);
+  const { data, fetchCompanyMetrics } = useCompanyMetrics();
 
   const formatterLegend = (legend: string) =>
     legend === 'totalRevenues' ? 'Receitas' : 'Despesas';
 
   useEffect(() => {
-    MetricService.getMonthlyRevenuesExpenses()
-      .then(transformDataIntoAntdChart)
-      .then(setData);
-  }, []);
+    fetchCompanyMetrics();
+  }, [fetchCompanyMetrics]);
 
   const config: AreaConfig = {
     data,
@@ -75,18 +63,5 @@ export const CompanyMetrics = () => {
     },
   };
 
-  return (
-    <Row>
-      <Col span={24}>
-        <Title level={2}>Olá, Mauricio Girardi</Title>
-        <Paragraph>
-          Este é o resumo da empresa nos últimos doze meses.
-        </Paragraph>
-      </Col>
-
-      <Col span={24}>
-        <Area {...config} />
-      </Col>
-    </Row>
-  );
+  return <Area {...config} />;
 };

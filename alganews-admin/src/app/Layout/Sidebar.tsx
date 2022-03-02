@@ -9,6 +9,16 @@ import {
   RiseOutlined,
   FallOutlined,
 } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
+import {
+  EXPENSES,
+  HOME,
+  PAYMENTS,
+  PAYMENTS_CREATE,
+  REVENUES,
+  USERS,
+  USERS_CREATE,
+} from '../../core/constants-paths';
 
 const { SubMenu, Item } = Menu;
 const { Sider } = Layout;
@@ -18,11 +28,11 @@ export const Sidebar = () => {
     <Sider width={200} breakpoint='lg' collapsedWidth='0'>
       <Menu
         mode='inline'
-        defaultSelectedKeys={['0']}
+        defaultSelectedKeys={[HOME]}
         style={{ height: '100%', borderRight: 0 }}
       >
-        <Item key={'0'} icon={<HomeOutlined />}>
-          Home
+        <Item key={HOME} icon={<HomeOutlined />}>
+          <Link to={HOME}>Home</Link>
         </Item>
 
         <SubMenu
@@ -30,11 +40,14 @@ export const Sidebar = () => {
           icon={<UserOutlined />}
           title='Usuários'
         >
-          <Item key='1' icon={<TableOutlined />}>
-            Consulta
+          <Item key={USERS} icon={<TableOutlined />}>
+            <Link to={USERS}>Consulta</Link>
           </Item>
-          <Item key='2' icon={<PlusCircleOutlined />}>
-            Cadastro
+          <Item
+            key={USERS_CREATE}
+            icon={<PlusCircleOutlined />}
+          >
+            <Link to={USERS_CREATE}>Cadastro</Link>
           </Item>
         </SubMenu>
         <SubMenu
@@ -42,11 +55,15 @@ export const Sidebar = () => {
           icon={<LaptopOutlined />}
           title='Pagamentos'
         >
-          <Item key='3' icon={<TableOutlined />}>
+          <Item key={PAYMENTS} icon={<TableOutlined />}>
+            <Link to={PAYMENTS}></Link>
             Consulta
           </Item>
-          <Item key='4' icon={<PlusCircleOutlined />}>
-            Cadastro
+          <Item
+            key={PAYMENTS_CREATE}
+            icon={<PlusCircleOutlined />}
+          >
+            <Link to={PAYMENTS_CREATE}>Cadastro</Link>
           </Item>
         </SubMenu>
         <SubMenu
@@ -54,11 +71,11 @@ export const Sidebar = () => {
           icon={<DiffOutlined />}
           title='Fluxo de Caixa'
         >
-          <Item key='5' icon={<FallOutlined />}>
-            Despesa
+          <Item key={EXPENSES} icon={<FallOutlined />}>
+            <Link to={EXPENSES}>Despesa</Link>
           </Item>
-          <Item key='6' icon={<RiseOutlined />}>
-            Receita
+          <Item key={REVENUES} icon={<RiseOutlined />}>
+            <Link to={REVENUES}>Receita</Link>
           </Item>
         </SubMenu>
       </Menu>

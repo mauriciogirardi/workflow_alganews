@@ -1,5 +1,5 @@
-import { Layout } from './Layout';
+import { DefaultLayout } from './app/Layout';
 
 export default function App() {
-  return <Layout>Ola Mauricio</Layout>;
+  return <DefaultLayout>Ola Mauricio</DefaultLayout>;
 }

@@ -10,7 +10,12 @@ const { Sider } = Layout;
 
 export const Sidebar = () => {
   return (
-    <Sider width={200} className='site-layout-background'>
+    <Sider
+      width={200}
+      className='site-layout-background'
+      breakpoint='lg'
+      collapsedWidth='0'
+    >
       <Menu
         mode='inline'
         defaultSelectedKeys={['1']}

@@ -17,10 +17,10 @@ export const DefaultLayout = ({
     <Layout>
       <Header />
 
-      <Layout>
+      <Layout id={'pageLayout'}>
         <Sidebar />
 
-        <Layout style={{ padding: '0 24px 24px' }}>
+        <Layout>
           <Breadcrumb />
           <Content>{children}</Content>
         </Layout>

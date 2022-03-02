@@ -32,7 +32,7 @@ export const LatestPosts = () => {
   return (
     <Row gutter={[20, 20]}>
       {posts?.map((post) => (
-        <Col key={post.id} span={8}>
+        <Col key={post.id} xs={24} md={8}>
           <Card
             cover={
               <img

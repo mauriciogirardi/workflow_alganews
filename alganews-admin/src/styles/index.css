@@ -1,3 +1,32 @@
 #root > section.ant-layout {
   min-height: 100vh;
 }
+
+@media screen and (max-width: 991px) {
+  .ant-layout-sider {
+    position: fixed !important;
+    overflow: inherit !important;
+    box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.15);
+    z-index: 2;
+    height: 100%;
+  }
+
+  .ant-layout-sider .ant-layout-sider-children {
+    overflow: hidden auto;
+  }
+
+  .ant-layout-sider-zero-width-trigger {
+    top: -52px;
+    left: 0;
+  }
+}
+
+.ant-layout-header {
+  position: fixed !important;
+  width: 100%;
+  z-index: 2;
+}
+
+#pageLayout {
+  margin-top: 64px;
+}

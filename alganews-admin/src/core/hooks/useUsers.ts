@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
 import { User } from 'mauricio.girardi-sdk';
-import { notification } from 'antd';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from 'core/store';
 import * as useActions from 'core/store/userReducer';
+import { notification } from 'core/utils/notification';
 
 export const useUsers = () => {
   const dispatch = useDispatch();
@@ -20,24 +20,28 @@ export const useUsers = () => {
       try {
         await dispatch(useActions.toggleUsersStatus(user));
 
-        user.active === false
-          ? notification.success({
-              message: `Ativo`,
-              description: `O ${user.name} foi Ativo.`,
-              placement: 'bottomLeft',
+        const isActive = user.active;
+        const description = `O ${user.name} foi ${
+          isActive ? 'Desativado' : 'Ativo'
+        }.`;
+
+        isActive
+          ? notification({
+              title: 'DESATIVADO',
+              description,
             })
-          : notification.success({
-              message: `Desativo`,
-              description: `O ${user.name} foi Desativado.`,
-              placement: 'bottomLeft',
+          : notification({
+              title: 'ATIVO',
+              description,
             });
 
         dispatch(useActions.getAllUsers());
       } catch (err) {
-        notification.error({
-          message: `Error`,
-          description: `Ocorreu um error ao ativar ou desativar um usuário tente novamente.`,
-          placement: 'bottomLeft',
+        notification({
+          title: 'Erro',
+          description:
+            'Ocorreu um erro ao ativar ou desativar um usuário tente novamente.',
+          type: 'error',
         });
       }
     },

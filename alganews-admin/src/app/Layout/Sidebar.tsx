@@ -1,4 +1,5 @@
 import { Layout, Menu } from 'antd';
+import { Link, useLocation } from 'react-router-dom';
 import {
   UserOutlined,
   LaptopOutlined,
@@ -9,7 +10,6 @@ import {
   RiseOutlined,
   FallOutlined,
 } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
 import {
   EXPENSES,
   HOME,
@@ -24,11 +24,14 @@ const { SubMenu, Item } = Menu;
 const { Sider } = Layout;
 
 export const Sidebar = () => {
+  const location = useLocation();
+
   return (
     <Sider width={200} breakpoint='lg' collapsedWidth='0'>
       <Menu
         mode='inline'
-        defaultSelectedKeys={[HOME]}
+        defaultSelectedKeys={[location.pathname]}
+        defaultOpenKeys={[location.pathname.split('/')[1]]}
         style={{ height: '100%', borderRight: 0 }}
       >
         <Item key={HOME} icon={<HomeOutlined />}>
@@ -36,7 +39,7 @@ export const Sidebar = () => {
         </Item>
 
         <SubMenu
-          key='sub1'
+          key='users'
           icon={<UserOutlined />}
           title='Usuários'
         >
@@ -51,7 +54,7 @@ export const Sidebar = () => {
           </Item>
         </SubMenu>
         <SubMenu
-          key='sub2'
+          key='payments'
           icon={<LaptopOutlined />}
           title='Pagamentos'
         >
@@ -67,7 +70,7 @@ export const Sidebar = () => {
           </Item>
         </SubMenu>
         <SubMenu
-          key='sub3'
+          key='cashflow'
           icon={<DiffOutlined />}
           title='Fluxo de Caixa'
         >

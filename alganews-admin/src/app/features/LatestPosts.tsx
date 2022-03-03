@@ -7,13 +7,13 @@ import { useLatestPosts } from '../../core/hooks/useLatestPosts';
 const { Meta } = Card;
 
 export const LatestPosts = () => {
-  const { fetchPosts, posts, loading } = useLatestPosts();
+  const { fetchPosts, posts } = useLatestPosts();
 
   useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);
 
-  if (loading) {
+  if (!posts) {
     return (
       <Row gutter={[20, 20]}>
         <Col span={8}>

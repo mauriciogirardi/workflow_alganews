@@ -1,12 +1,20 @@
-import { Layout } from 'antd';
+import { Avatar, Layout, Row } from 'antd';
+
+import logoSvg from '../assets/logo.svg';
 
 const { Header: HeaderAntd } = Layout;
 
 export const Header = () => {
   return (
     <HeaderAntd className='header'>
-      <div className='logo' />
-      <h1>Ola</h1>
+      <Row
+        justify='space-between'
+        align='middle'
+        style={{ height: '100%' }}
+      >
+        <img src={logoSvg} alt='AlgaNews Admin' />
+        <Avatar />
+      </Row>
     </HeaderAntd>
   );
 };

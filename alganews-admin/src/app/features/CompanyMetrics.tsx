@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Area, AreaConfig } from '@ant-design/charts';
+import Skeleton from 'react-loading-skeleton';
 
 import {
   formatterCurrency,

@@ -10,19 +10,18 @@ interface DataProps {
 
 export const useCompanyMetrics = () => {
   const [data, setData] = useState<DataProps[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error>();
 
   const fetchCompanyMetrics = useCallback(() => {
-    setLoading(true);
     MetricService.getMonthlyRevenuesExpenses()
       .then(transformDataIntoAntdChart)
       .then(setData)
-      .finally(() => setLoading(false));
+      .catch((err) => setError(new Error(err.message)));
   }, []);
 
   return {
-    loading,
     data,
     fetchCompanyMetrics,
+    error,
   };
 };

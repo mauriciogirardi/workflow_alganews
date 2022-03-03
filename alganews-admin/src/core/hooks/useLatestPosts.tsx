@@ -3,22 +3,21 @@ import { Post, PostService } from 'mauricio.girardi-sdk';
 
 export const useLatestPosts = () => {
   const [posts, setPosts] = useState<Post.Paginated>();
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Error>();
 
   const fetchPosts = useCallback(() => {
-    setLoading(true);
     PostService.getAllPosts({
       sort: ['createdAt', 'desc'],
       page: 0,
       size: 3,
     })
       .then(setPosts)
-      .finally(() => setLoading(false));
+      .catch((err) => setError(new Error(err.message)));
   }, []);
 
   return {
     posts: posts?.content,
-    loading,
     fetchPosts,
+    error,
   };
 };

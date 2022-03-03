@@ -21,8 +21,10 @@ export const DefaultLayout = ({
         <Sidebar />
 
         <Layout>
-          <Breadcrumb />
-          <Content>{children}</Content>
+          <Content>
+            <Breadcrumb />
+            {children}
+          </Content>
         </Layout>
       </Layout>
     </Layout>

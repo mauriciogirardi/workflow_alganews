@@ -9,14 +9,7 @@ interface ContentProps {
 
 export const Content = ({ children }: ContentProps) => {
   return (
-    <ContentAntd
-      className='site-layout-background'
-      style={{
-        padding: 24,
-        margin: 0,
-        minHeight: 280,
-      }}
-    >
+    <ContentAntd className='center-content'>
       {children}
     </ContentAntd>
   );

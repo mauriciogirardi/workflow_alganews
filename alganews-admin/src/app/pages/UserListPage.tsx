@@ -1,7 +1,13 @@
+import { Row, Col } from 'antd';
+
+import { UserList } from 'app/features/UserList';
+
 export default function UserListPage() {
   return (
-    <>
-      <h1>UserListPage</h1>
-    </>
+    <Row>
+      <Col xs={24}>
+        <UserList />
+      </Col>
+    </Row>
   );
 }

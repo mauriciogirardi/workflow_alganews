@@ -19,12 +19,13 @@ import {
   ClearOutlined,
   SearchOutlined,
   LoadingOutlined,
+  UserOutlined,
 } from '@ant-design/icons';
 
 import { formatterDate } from 'core/utils';
 import { useUsers } from 'core/hooks/useUsers';
 import { TagTable } from 'app/components/TagTable';
-import { CardUser } from './CardUser';
+import { CardUser } from 'app/components/CardUser';
 
 export const UserList = () => {
   const {
@@ -151,6 +152,7 @@ export const UserList = () => {
             render(avatarUrls: User.Summary['avatarUrls']) {
               return (
                 <Avatar
+                  icon={<UserOutlined />}
                   size='small'
                   src={avatarUrls.small}
                 />

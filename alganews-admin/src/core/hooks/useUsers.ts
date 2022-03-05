@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { User } from 'mauricio.girardi-sdk';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from 'core/store';
@@ -7,6 +7,7 @@ import { notification } from 'core/utils/notification';
 
 export const useUsers = () => {
   const dispatch = useDispatch();
+  const [userId, setUserId] = useState<number | null>(null);
   const { fetching, users } = useSelector(
     (state: RootState) => state.user,
   );
@@ -18,6 +19,7 @@ export const useUsers = () => {
   const toggleUserStatus = useCallback(
     async (user: User.Detailed | User.Summary) => {
       try {
+        setUserId(user.id);
         await dispatch(useActions.toggleUsersStatus(user));
 
         const isActive = user.active;
@@ -38,7 +40,9 @@ export const useUsers = () => {
             });
 
         dispatch(useActions.getAllUsers());
+        setUserId(null);
       } catch (err) {
+        setUserId(null);
         notification({
           title: 'Erro',
           description:
@@ -55,5 +59,6 @@ export const useUsers = () => {
     fetchUsers,
     fetching,
     users,
+    userId,
   };
 };

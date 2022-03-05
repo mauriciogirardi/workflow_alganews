@@ -12,12 +12,14 @@ import {
   Space,
   Card,
   Input,
+  Spin,
 } from 'antd';
 import {
   EyeOutlined,
   EditOutlined,
   ClearOutlined,
   SearchOutlined,
+  LoadingOutlined,
 } from '@ant-design/icons';
 
 import { useUsers } from 'core/hooks/useUsers';
@@ -27,8 +29,13 @@ import { formatterDate } from 'core/utils';
 const { Text } = Typography;
 
 export const UserList = () => {
-  const { fetchUsers, users, toggleUserStatus } =
-    useUsers();
+  const {
+    fetchUsers,
+    users,
+    toggleUserStatus,
+    fetching,
+    userId,
+  } = useUsers();
 
   useEffect(() => {
     fetchUsers();
@@ -119,6 +126,7 @@ export const UserList = () => {
   return (
     <>
       <Table<User.Summary>
+        loading={fetching}
         scroll={{ y: 550 }}
         dataSource={users}
         columns={[
@@ -133,7 +141,13 @@ export const UserList = () => {
                     size='small'
                     src={row.avatarUrls.small}
                   />
-                  <Text>{name}</Text>
+                  <Text
+                    title={name}
+                    ellipsis
+                    style={{ maxWidth: 130 }}
+                  >
+                    {name}
+                  </Text>
                 </Space>
               );
             },
@@ -171,7 +185,14 @@ export const UserList = () => {
             dataIndex: 'active',
             title: 'Ativo',
             align: 'center',
+            width: 100,
             render(active: boolean, user) {
+              if (user.id === userId && fetching) {
+                return (
+                  <Spin indicator={<LoadingOutlined />} />
+                );
+              }
+
               return (
                 <Switch
                   defaultChecked={active}
@@ -184,6 +205,7 @@ export const UserList = () => {
             dataIndex: 'id',
             title: 'Ações',
             align: 'right',
+            width: 150,
             render() {
               return <TableActions />;
             },

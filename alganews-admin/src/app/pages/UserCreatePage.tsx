@@ -1,7 +1,9 @@
+import { UserForm } from 'app/features/UseForm';
+
 export default function UserCreatePage() {
   return (
     <>
-      <h1>UserCreatePage</h1>
+      <UserForm />
     </>
   );
 }

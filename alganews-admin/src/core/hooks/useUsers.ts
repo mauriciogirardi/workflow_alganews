@@ -25,6 +25,8 @@ export const useUsers = () => {
           isActive ? 'Desativado' : 'Ativo'
         }.`;
 
+        //TODO get error 400 here.
+
         isActive
           ? notification({
               title: 'DESATIVADO',

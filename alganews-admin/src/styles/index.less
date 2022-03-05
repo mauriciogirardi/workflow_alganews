@@ -29,13 +29,13 @@
   min-height: 100vh;
 }
 
-// Layout
+// Trigger Header Mobile
 
 .ant-layout-sider-zero-width-trigger::after {
   background: @text-color !important;
-  height: 4px;
+  height: 3px;
   width: 15px;
-  top: 15px;
+  top: 18px;
   left: 10px;
   border-radius: 5px;
 }
@@ -44,19 +44,21 @@
   content: '';
   position: absolute;
   background: @text-color !important;
-  height: 4px;
+  height: 3px;
   width: 25px;
   left: 10px;
   bottom: 14px;
   border-radius: 5px;
 }
 
+// Layout
+
 @media screen and (max-width: 991px) {
   .ant-layout-sider {
     position: fixed !important;
     overflow: inherit !important;
     box-shadow: 5px 10px 10px rgba(0, 0, 0, 0.15);
-    z-index: 2;
+    z-index: 10;
     height: 100%;
   }
 
@@ -101,10 +103,17 @@
 
 // Table
 
+@media screen and (max-width: 1190px) {
+  .ant-table-content {
+    overflow: auto;
+  }
+}
+
 .ant-table {
   background: @table-bd;
 }
 
 .ant-table-cell-fix-left {
   background: @table-bd;
+  z-index: 2;
 }

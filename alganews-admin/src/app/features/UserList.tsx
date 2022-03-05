@@ -21,9 +21,10 @@ import {
   LoadingOutlined,
 } from '@ant-design/icons';
 
+import { formatterDate } from 'core/utils';
 import { useUsers } from 'core/hooks/useUsers';
 import { TagTable } from 'app/components/TagTable';
-import { formatterDate } from 'core/utils';
+import { CardUser } from './CardUser';
 
 export const UserList = () => {
   const {
@@ -123,17 +124,30 @@ export const UserList = () => {
   return (
     <>
       <Table<User.Summary>
+        rowKey={'id'}
         pagination={false}
         loading={fetching}
-        scroll={{ y: 600, x: 1000 }}
+        // scroll={{ x: 1000 }} add responsive
         dataSource={users}
         columns={[
+          {
+            title: 'Usuários',
+            responsive: ['xs'],
+            render(user: User.Summary) {
+              return (
+                <CardUser user={user}>
+                  <TableActions />
+                </CardUser>
+              );
+            },
+          },
           {
             dataIndex: 'avatarUrls',
             title: '',
             align: 'left',
             width: 60,
             fixed: 'left',
+            responsive: ['sm'],
             render(avatarUrls: User.Summary['avatarUrls']) {
               return (
                 <Avatar
@@ -149,11 +163,13 @@ export const UserList = () => {
             align: 'left',
             ellipsis: true,
             width: 200,
+            responsive: ['sm'],
             ...getColumnSearchProps('name', 'Nome'),
           },
           {
             dataIndex: 'email',
             title: 'E-mail',
+            responsive: ['sm'],
             ellipsis: true,
             width: 250,
             ...getColumnSearchProps('email', 'E-mail'),
@@ -162,6 +178,8 @@ export const UserList = () => {
             dataIndex: 'role',
             title: 'Perfil',
             align: 'center',
+            width: 130,
+            responsive: ['sm'],
             render(role: string) {
               return <TagTable role={role} />;
             },
@@ -171,6 +189,8 @@ export const UserList = () => {
             dataIndex: 'createdAt',
             title: 'Criação',
             align: 'center',
+            responsive: ['sm'],
+            width: 130,
             render(createdAt: string) {
               return formatterDate({
                 date: createdAt,
@@ -183,6 +203,7 @@ export const UserList = () => {
             dataIndex: 'active',
             title: 'Ativo',
             align: 'center',
+            responsive: ['sm'],
             width: 100,
             render(active: boolean, user) {
               if (user.id === userId && fetching) {
@@ -203,6 +224,7 @@ export const UserList = () => {
             dataIndex: 'id',
             title: 'Ações',
             align: 'right',
+            responsive: ['sm'],
             width: 150,
             render() {
               return <TableActions />;

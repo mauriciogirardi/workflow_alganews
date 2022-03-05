@@ -23,10 +23,13 @@
 @picker-bg: @input-bg;
 @picker-bg: @input-bg;
 @calendar-bg: @input-bg;
+@table-bd: #f3f8fa;
 
 #root > section.ant-layout {
   min-height: 100vh;
 }
+
+// Layout
 
 .ant-layout-sider-zero-width-trigger::after {
   background: @text-color !important;
@@ -35,10 +38,6 @@
   top: 15px;
   left: 10px;
   border-radius: 5px;
-}
-
-.ant-table {
-  background: #f3f8fa;
 }
 
 .ant-layout-sider-zero-width-trigger::before {
@@ -85,6 +84,8 @@
   margin-top: 64px;
 }
 
+// Content
+
 .center-content {
   padding: 24px;
   margin: 0 auto;
@@ -96,4 +97,14 @@
     max-width: 100%;
     margin: 0;
   }
+}
+
+// Table
+
+.ant-table {
+  background: @table-bd;
+}
+
+.ant-table-cell-fix-left {
+  background: @table-bd;
 }

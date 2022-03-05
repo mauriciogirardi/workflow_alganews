@@ -7,7 +7,6 @@ import {
   Button,
   Row,
   Col,
-  Typography,
   Avatar,
   Space,
   Card,
@@ -25,8 +24,6 @@ import {
 import { useUsers } from 'core/hooks/useUsers';
 import { TagTable } from 'app/components/TagTable';
 import { formatterDate } from 'core/utils';
-
-const { Text } = Typography;
 
 export const UserList = () => {
   const {
@@ -126,31 +123,32 @@ export const UserList = () => {
   return (
     <>
       <Table<User.Summary>
+        pagination={false}
         loading={fetching}
-        scroll={{ y: 550 }}
+        scroll={{ y: 600, x: 1000 }}
         dataSource={users}
         columns={[
+          {
+            dataIndex: 'avatarUrls',
+            title: '',
+            align: 'left',
+            width: 60,
+            fixed: 'left',
+            render(avatarUrls: User.Summary['avatarUrls']) {
+              return (
+                <Avatar
+                  size='small'
+                  src={avatarUrls.small}
+                />
+              );
+            },
+          },
           {
             dataIndex: 'name',
             title: 'Nome',
             align: 'left',
-            render(name: string, row) {
-              return (
-                <Space>
-                  <Avatar
-                    size='small'
-                    src={row.avatarUrls.small}
-                  />
-                  <Text
-                    title={name}
-                    ellipsis
-                    style={{ maxWidth: 130 }}
-                  >
-                    {name}
-                  </Text>
-                </Space>
-              );
-            },
+            ellipsis: true,
+            width: 200,
             ...getColumnSearchProps('name', 'Nome'),
           },
           {

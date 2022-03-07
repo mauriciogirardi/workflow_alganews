@@ -27,8 +27,6 @@ export const useUsers = () => {
           isActive ? 'Desativado' : 'Ativo'
         }.`;
 
-        //TODO get error 400 here.
-
         isActive
           ? notification({
               title: 'DESATIVADO',
@@ -40,15 +38,14 @@ export const useUsers = () => {
             });
 
         dispatch(useActions.getAllUsers());
-        setUserId(null);
       } catch (err) {
-        setUserId(null);
         notification({
-          title: 'Erro',
-          description:
-            'Ocorreu um erro ao ativar ou desativar um usuário tente novamente.',
           type: 'error',
+          title: 'Houve um error',
+          description: 'Houve um erro tente novamente.',
         });
+      } finally {
+        setUserId(null);
       }
     },
     [dispatch],

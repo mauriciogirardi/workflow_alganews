@@ -13,7 +13,7 @@ interface NotificationProps {
 
 export const notification = ({
   type = 'success',
-  placement = 'bottomLeft',
+  placement = 'topRight',
   description,
   title,
 }: NotificationProps) => {
@@ -21,6 +21,6 @@ export const notification = ({
     message: title,
     description,
     placement,
-    duration: 0.9,
+    duration: 5,
   });
 };

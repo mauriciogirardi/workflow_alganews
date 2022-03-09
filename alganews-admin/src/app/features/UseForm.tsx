@@ -14,6 +14,7 @@ import {
   Input,
   Row,
   Select,
+  Skeleton,
   Tabs,
   Upload,
 } from 'antd';
@@ -22,13 +23,15 @@ import {
   BankOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import ImageCrop from 'antd-img-crop';
-import { InternalNamePath } from 'antd/lib/form/interface';
 import {
   FileService,
   User,
   UserService,
 } from 'mauricio.girardi-sdk';
+import ImageCrop from 'antd-img-crop';
+import { InternalNamePath } from 'antd/lib/form/interface';
+import MaskedInput from 'antd-mask-input';
+
 import { notification } from 'core/utils/notification';
 import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
 
@@ -51,39 +54,52 @@ type ActiveTabProps = 'personal' | 'bankAccount';
 export const UserForm = () => {
   const [form] = Form.useForm<User.Input>();
   const [avatar, setAvatar] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [loadingAvatar, setLoadingAvatar] = useState(false);
   const [activeTab, setActiveTab] =
     useState<ActiveTabProps>('personal');
 
-  const messageError = (err: unknown) => {
-    if (err instanceof CustomError) {
-      if (err.data?.objects) {
-        form.setFields(
-          err.data.objects.map((error) => ({
-            name: error.name
-              ?.split(/(\.|\]|\[)/gi)
-              .filter(
-                (str) =>
-                  str !== '.' &&
-                  str !== ']' &&
-                  str !== '[' &&
-                  str !== '',
-              )
-              .map((str) =>
-                isNaN(+str) ? str : +str,
-              ) as string[],
-            errors: [error.userMessage],
-          })),
-        );
+  const messageError = useCallback(
+    (err: unknown) => {
+      if (err instanceof CustomError) {
+        if (err.data?.objects) {
+          form.setFields(
+            err.data.objects.map((error) => ({
+              name: error.name
+                ?.split(/(\.|\]|\[)/gi)
+                .filter(
+                  (str) =>
+                    str !== '.' &&
+                    str !== ']' &&
+                    str !== '[' &&
+                    str !== '',
+                )
+                .map((str) =>
+                  isNaN(+str) ? str : +str,
+                ) as string[],
+              errors: [error.userMessage],
+            })),
+          );
+        } else {
+          notification({
+            type: 'error',
+            title: err.message || 'Erro',
+            description:
+              err.data?.detail ||
+              'Erro desconhecido tente mais tarde.',
+          });
+        }
+      } else {
+        notification({
+          type: 'error',
+          title: 'Houve um error',
+          description:
+            'Erro ao criar um usuário tente novamente.',
+        });
       }
-    } else {
-      notification({
-        type: 'error',
-        title: 'Houve um error',
-        description:
-          'Erro ao criar um usuário tente novamente.',
-      });
-    }
-  };
+    },
+    [form],
+  );
 
   const TabPersonalForm = () => {
     return (
@@ -150,7 +166,10 @@ export const UserForm = () => {
               },
             ]}
           >
-            <Input placeholder='E.g.: (47) 99999-0000' />
+            <MaskedInput
+              mask='(11) 11111-1111'
+              placeholder='E.g.: (47) 99999-0000'
+            />
           </Item>
         </Col>
         <Col lg={8}>
@@ -168,7 +187,10 @@ export const UserForm = () => {
               },
             ]}
           >
-            <Input placeholder='E.g.: 111.222.333-44' />
+            <MaskedInput
+              mask='111.111.111-11'
+              placeholder='E.g.: 111.222.333-44'
+            />
           </Item>
         </Col>
         <Col lg={8}>
@@ -218,12 +240,18 @@ export const UserForm = () => {
                       message: '',
                     },
                     {
-                      max: 3,
-                      message: `De 0 a 100`,
+                      async validator(field, value) {
+                        if (isNaN(value))
+                          throw new Error('Apenas números');
+                        if (Number(value) > 100)
+                          throw new Error('Maxímo 100');
+                        if (Number(value) < 0)
+                          throw new Error('Mínimo 0');
+                      },
                     },
                   ]}
                 >
-                  <Input max={100} min={0} type='number' />
+                  <Input />
                 </Item>
               </Col>
             </Fragment>
@@ -337,10 +365,17 @@ export const UserForm = () => {
 
   const handleAvatarUpload = useCallback(
     async (file: File) => {
-      const avatarSource = await FileService.upload(file);
-      setAvatar(avatarSource);
+      try {
+        setLoadingAvatar(true);
+        const avatarSource = await FileService.upload(file);
+        setAvatar(avatarSource);
+      } catch (err) {
+        messageError(err);
+      } finally {
+        setLoadingAvatar(false);
+      }
     },
-    [],
+    [messageError],
   );
 
   useEffect(() => {
@@ -379,20 +414,30 @@ export const UserForm = () => {
   };
 
   const onFinish = async (user: User.Input) => {
+    const userDTO: User.Input = {
+      ...user,
+      taxpayerId: user.taxpayerId.replace(/\D/g, ''),
+      phone: user.phone.replace(/\D/g, ''),
+    };
+
     try {
-      await UserService.insertNewUser(user);
+      setLoading(true);
+      await UserService.insertNewUser(userDTO);
       notification({
         title: 'Sucesso',
         description: 'Usuário criado com sucesso.',
       });
     } catch (err) {
       messageError(err);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <Form
       form={form}
+      autoComplete={'off'}
       onFinishFailed={onFinishFailed}
       onFinish={onFinish}
       layout='vertical'
@@ -410,12 +455,23 @@ export const UserForm = () => {
                 return false;
               }}
             >
-              <Avatar
-                style={{ cursor: 'pointer' }}
-                icon={<UserOutlined />}
-                src={avatar}
-                size={128}
-              />
+              {loadingAvatar ? (
+                <Skeleton.Avatar
+                  active
+                  shape='circle'
+                  style={{
+                    width: '128px',
+                    height: '128px',
+                  }}
+                />
+              ) : (
+                <Avatar
+                  style={{ cursor: 'pointer' }}
+                  icon={<UserOutlined />}
+                  src={avatar}
+                  size={128}
+                />
+              )}
             </Upload>
           </ImageCrop>
           <Item name='avatarUrl' hidden>
@@ -561,7 +617,11 @@ export const UserForm = () => {
 
         <Col lg={24}>
           <Row justify='end'>
-            <Button type='primary' htmlType='submit'>
+            <Button
+              type='primary'
+              htmlType='submit'
+              loading={loading}
+            >
               Cadastrar usuário
             </Button>
           </Row>

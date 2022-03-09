@@ -8,17 +8,20 @@ import {
   PAYMENTS_CREATE,
   REVENUES,
   USERS,
-  USERS_CREATE,
+  USER_CREATE,
+  USER_EDIT,
 } from '../../core/constants-paths';
+import { notification } from 'core/utils/notification';
+
 import CashFlowExpensesPage from '../pages/CashFlowExpensesPage';
 import CashFlowRevenuesPage from '../pages/CashFlowRevenuesPage';
 import PaymentCreatePage from '../pages/PaymentCreatePage';
 import PaymentListPage from '../pages/PaymentListPage';
-import UserCreatePage from '../pages/UserCreatePage';
-import UserListPage from '../pages/UserListPage';
+import UserCreatePage from '../pages/user/UserCreatePage';
+import UserListPage from '../pages/user/UserListPage';
+import UserEditPage from 'app/pages/user/UserEditPage';
 import HomePage from '../pages/HomePage';
 import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
-import { notification } from 'core/utils/notification';
 
 export const MainRoutes = () => {
   useEffect(() => {
@@ -75,11 +78,13 @@ export const MainRoutes = () => {
         path={PAYMENTS}
         element={<PaymentListPage />}
       />
+      <Route path={USERS} element={<UserListPage />} />
       <Route
-        path={USERS_CREATE}
+        path={USER_CREATE}
         element={<UserCreatePage />}
       />
-      <Route path={USERS} element={<UserListPage />} />
+
+      <Route path={USER_EDIT} element={<UserEditPage />} />
     </Routes>
   );
 };

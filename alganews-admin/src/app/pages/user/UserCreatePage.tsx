@@ -1,4 +1,4 @@
-import { UserForm } from 'app/features/UseForm';
+import { UserForm } from 'app/features/user/UseForm';
 
 export default function UserCreatePage() {
   return (

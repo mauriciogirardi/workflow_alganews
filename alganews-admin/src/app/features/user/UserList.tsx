@@ -23,7 +23,7 @@ import {
 } from '@ant-design/icons';
 
 import { formatterDate } from 'core/utils';
-import { useUsers } from 'core/hooks/useUsers';
+import { useUsers } from 'core/hooks/user/useUsers';
 import { TagTable } from 'app/components/TagTable';
 import { CardUser } from 'app/components/CardUser';
 
@@ -182,6 +182,9 @@ export const UserList = () => {
             align: 'center',
             width: 130,
             responsive: ['sm'],
+            sorter(a, b) {
+              return a.role.localeCompare(b.role);
+            },
             render(role: string) {
               return <TagTable role={role} />;
             },
@@ -193,6 +196,12 @@ export const UserList = () => {
             align: 'center',
             responsive: ['sm'],
             width: 130,
+            sorter(a, b) {
+              return new Date(a.createdAt) >
+                new Date(b.createdAt)
+                ? 1
+                : -1;
+            },
             render(createdAt: string) {
               return formatterDate({
                 date: createdAt,
@@ -216,7 +225,7 @@ export const UserList = () => {
 
               return (
                 <Switch
-                  defaultChecked={active}
+                  checked={active}
                   onChange={() => toggleUserStatus(user)}
                 />
               );

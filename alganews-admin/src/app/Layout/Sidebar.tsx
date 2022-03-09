@@ -17,7 +17,7 @@ import {
   PAYMENTS_CREATE,
   REVENUES,
   USERS,
-  USERS_CREATE,
+  USER_CREATE,
 } from '../../core/constants-paths';
 
 const { SubMenu, Item } = Menu;
@@ -47,10 +47,10 @@ export const Sidebar = () => {
             <Link to={USERS}>Consulta</Link>
           </Item>
           <Item
-            key={USERS_CREATE}
+            key={USER_CREATE}
             icon={<PlusCircleOutlined />}
           >
-            <Link to={USERS_CREATE}>Cadastro</Link>
+            <Link to={USER_CREATE}>Cadastro</Link>
           </Item>
         </SubMenu>
         <SubMenu

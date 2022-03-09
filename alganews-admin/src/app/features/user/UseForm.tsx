@@ -29,8 +29,9 @@ import {
   UserService,
 } from 'mauricio.girardi-sdk';
 import ImageCrop from 'antd-img-crop';
-import { InternalNamePath } from 'antd/lib/form/interface';
 import MaskedInput from 'antd-mask-input';
+import { InternalNamePath } from 'antd/lib/form/interface';
+import { Moment } from 'moment';
 
 import { notification } from 'core/utils/notification';
 import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
@@ -50,8 +51,20 @@ interface FieldsProps<Values = any> {
 }
 
 type ActiveTabProps = 'personal' | 'bankAccount';
+type UserFormType = {
+  createdAt: Moment;
+  updatedAt: Moment;
+  birthdate: Moment;
+} & Omit<
+  User.Detailed,
+  'createdAt' | 'updatedAt' | 'birthdate'
+>;
 
-export const UserForm = () => {
+interface UserFormProps {
+  user?: UserFormType;
+}
+
+export const UserForm = ({ user }: UserFormProps) => {
   const [form] = Form.useForm<User.Input>();
   const [avatar, setAvatar] = useState('');
   const [loading, setLoading] = useState(false);
@@ -441,6 +454,7 @@ export const UserForm = () => {
       onFinishFailed={onFinishFailed}
       onFinish={onFinish}
       layout='vertical'
+      initialValues={user}
     >
       <Row gutter={24} align='middle'>
         <Col lg={4}>
@@ -622,7 +636,7 @@ export const UserForm = () => {
               htmlType='submit'
               loading={loading}
             >
-              Cadastrar usuário
+              {`${user ? 'Editar' : 'Cadastrar'} usuário`}
             </Button>
           </Row>
         </Col>

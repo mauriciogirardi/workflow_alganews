@@ -1,6 +1,6 @@
 import { Row, Col } from 'antd';
 
-import { UserList } from 'app/features/UserList';
+import { UserList } from 'app/features/user/UserList';
 
 export default function UserListPage() {
   return (

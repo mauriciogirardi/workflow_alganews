@@ -7,6 +7,7 @@ import {
   isPending,
 } from '@reduxjs/toolkit';
 import { notification } from 'core/utils/notification';
+import { messageSuccessTogglesUserStatus } from './utils/messageSuccessToggleUserStatus';
 
 interface UserState {
   users: User.Summary[];
@@ -53,6 +54,10 @@ export default createReducer(initialState, (builder) => {
 
         state.users = state.users.map((user) => {
           if (user.id === id) {
+            messageSuccessTogglesUserStatus({
+              active: user.active,
+              name: user.name,
+            });
             return { ...user, active: !user.active };
           }
           return user;

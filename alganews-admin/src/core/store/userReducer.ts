@@ -6,7 +6,6 @@ import {
   isRejected,
   isPending,
 } from '@reduxjs/toolkit';
-import { notification } from 'core/utils/notification';
 import { messageSuccessTogglesUserStatus } from './utils/messageSuccessToggleUserStatus';
 
 interface UserState {
@@ -69,12 +68,6 @@ export default createReducer(initialState, (builder) => {
     })
     .addMatcher(error, (state, action) => {
       state.fetching = false;
-      notification({
-        type: 'error',
-        title: 'Error',
-        description:
-          action.error.message || 'Erro no servidor',
-      });
     })
     .addMatcher(loading, (state) => {
       state.fetching = true;

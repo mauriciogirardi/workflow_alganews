@@ -35,6 +35,8 @@ import { Moment } from 'moment';
 
 import { notification } from 'core/utils/notification';
 import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
+import { Link } from 'react-router-dom';
+import { USERS } from 'core/constants-paths';
 
 const { Item } = Form;
 const { TextArea } = Input;
@@ -62,15 +64,26 @@ type UserFormType = {
 
 interface UserFormProps {
   user?: UserFormType;
+  onUpdate?: (user: User.Input) => any;
 }
 
-export const UserForm = ({ user }: UserFormProps) => {
+export const UserForm = ({
+  user,
+  onUpdate,
+}: UserFormProps) => {
   const [form] = Form.useForm<User.Input>();
-  const [avatar, setAvatar] = useState('');
-  const [loading, setLoading] = useState(false);
+
   const [loadingAvatar, setLoadingAvatar] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [avatar, setAvatar] = useState(
+    user?.avatarUrls.default || '',
+  );
   const [activeTab, setActiveTab] =
     useState<ActiveTabProps>('personal');
+
+  const hasAvatar = [
+    ...(avatar ? [{ name: 'avatar', uid: '' }] : []),
+  ];
 
   const messageError = useCallback(
     (err: unknown) => {
@@ -435,6 +448,11 @@ export const UserForm = ({ user }: UserFormProps) => {
 
     try {
       setLoading(true);
+
+      if (user) {
+        return onUpdate && onUpdate(userDTO);
+      }
+
       await UserService.insertNewUser(userDTO);
       notification({
         title: 'Sucesso',
@@ -464,6 +482,7 @@ export const UserForm = ({ user }: UserFormProps) => {
               onRemove={() => {
                 setAvatar('');
               }}
+              fileList={hasAvatar}
               beforeUpload={(file) => {
                 handleAvatarUpload(file);
                 return false;
@@ -630,7 +649,14 @@ export const UserForm = ({ user }: UserFormProps) => {
         </Col>
 
         <Col lg={24}>
-          <Row justify='end'>
+          <Row justify='end' gutter={24}>
+            <Col>
+              {user && (
+                <Link to={USERS}>
+                  <Button>Cancelar</Button>
+                </Link>
+              )}
+            </Col>
             <Button
               type='primary'
               htmlType='submit'

@@ -9,7 +9,7 @@ import {
   REVENUES,
   USERS,
   USER_CREATE,
-  USER_EDIT,
+  USER_EDIT_ID,
 } from '../../core/constants-paths';
 import { notification } from 'core/utils/notification';
 
@@ -84,7 +84,10 @@ export const MainRoutes = () => {
         element={<UserCreatePage />}
       />
 
-      <Route path={USER_EDIT} element={<UserEditPage />} />
+      <Route
+        path={USER_EDIT_ID}
+        element={<UserEditPage />}
+      />
     </Routes>
   );
 };

@@ -12,6 +12,7 @@ import {
   Card,
   Input,
   Spin,
+  Tooltip,
 } from 'antd';
 import {
   EyeOutlined,
@@ -26,6 +27,12 @@ import { formatterDate } from 'core/utils';
 import { useUsers } from 'core/hooks/user/useUsers';
 import { TagTable } from 'app/components/TagTable';
 import { CardUser } from 'app/components/CardUser';
+import { Link } from 'react-router-dom';
+import { USER_EDIT } from 'core/constants-paths';
+
+interface TableActionsProps {
+  userId: number;
+}
 
 export const UserList = () => {
   const {
@@ -40,22 +47,31 @@ export const UserList = () => {
     fetchUsers();
   }, [fetchUsers]);
 
-  const TableActions = () => {
+  const TableActions = ({ userId }: TableActionsProps) => {
     return (
       <Row gutter={10} justify='end'>
         <Col>
-          <Button
-            size='middle'
-            type='text'
-            icon={<EditOutlined />}
-          />
+          <Tooltip title='Editar usuário!' placement='left'>
+            <Link to={`${USER_EDIT}/${userId}`}>
+              <Button
+                size='middle'
+                type='text'
+                icon={<EditOutlined />}
+              />
+            </Link>
+          </Tooltip>
         </Col>
         <Col>
-          <Button
-            size='middle'
-            type='text'
-            icon={<EyeOutlined />}
-          />
+          <Tooltip
+            title='Visualizar usuário'
+            placement='right'
+          >
+            <Button
+              size='middle'
+              type='text'
+              icon={<EyeOutlined />}
+            />
+          </Tooltip>
         </Col>
       </Row>
     );
@@ -137,7 +153,7 @@ export const UserList = () => {
             render(user: User.Summary) {
               return (
                 <CardUser user={user}>
-                  <TableActions />
+                  <TableActions userId={user.id} />
                 </CardUser>
               );
             },
@@ -237,8 +253,8 @@ export const UserList = () => {
             align: 'right',
             responsive: ['sm'],
             width: 150,
-            render() {
-              return <TableActions />;
+            render(id: number) {
+              return <TableActions userId={id} />;
             },
           },
         ]}

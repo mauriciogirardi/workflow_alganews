@@ -8,9 +8,10 @@ import { useUpdate } from 'core/hooks/user/useUpdate';
 import { useUser } from 'core/hooks/user/useUser';
 import { USERS } from 'core/constants-paths';
 import { UseFormSkeleton } from 'app/features/user/UserFormSkeleton';
+import { Card } from 'antd';
 
 export default function UserEditPage() {
-  const { fetchUser, user } = useUser();
+  const { fetchUser, user, notFound } = useUser();
   const { fetchUpdateUser } = useUpdate();
   const params = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -39,6 +40,10 @@ export default function UserEditPage() {
   const handleUserUpdate = (user: User.Input) => {
     fetchUpdateUser(userId, user);
   };
+
+  if (notFound) {
+    return <Card>Usuário não encontrado!</Card>;
+  }
 
   if (!user) return <UseFormSkeleton />;
 

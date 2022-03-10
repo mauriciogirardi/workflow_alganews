@@ -130,7 +130,7 @@ export const UserForm = ({
   const TabPersonalForm = () => {
     return (
       <Row gutter={20}>
-        <Col lg={8}>
+        <Col lg={8} xs={24}>
           <Item
             label='País'
             name={['location', 'country']}
@@ -148,7 +148,7 @@ export const UserForm = ({
             <Input placeholder='E.g.: Brasil' />
           </Item>
         </Col>
-        <Col lg={8}>
+        <Col lg={8} xs={24}>
           <Item
             label='Estado'
             name={['location', 'state']}
@@ -162,7 +162,7 @@ export const UserForm = ({
             <Input placeholder='E.g.: Santa Catarina' />
           </Item>
         </Col>
-        <Col lg={8}>
+        <Col lg={8} xs={24}>
           <Item
             label='Cidade'
             name={['location', 'city']}
@@ -177,7 +177,7 @@ export const UserForm = ({
           </Item>
         </Col>
 
-        <Col lg={8}>
+        <Col lg={8} xs={24}>
           <Item
             label='Telefone'
             name='phone'
@@ -198,7 +198,7 @@ export const UserForm = ({
             />
           </Item>
         </Col>
-        <Col lg={8}>
+        <Col lg={8} xs={24}>
           <Item
             label='CPF'
             name='taxpayerId'
@@ -219,7 +219,7 @@ export const UserForm = ({
             />
           </Item>
         </Col>
-        <Col lg={8}>
+        <Col lg={8} xs={24}>
           <Item
             label='Preço por palavra'
             name='pricePerWord'
@@ -238,7 +238,7 @@ export const UserForm = ({
           .fill(null)
           .map((_, i) => (
             <Fragment key={i}>
-              <Col lg={6}>
+              <Col lg={6} xs={18}>
                 <Item
                   label='Habilidade'
                   name={['skills', i, 'name']}
@@ -256,7 +256,7 @@ export const UserForm = ({
                   <Input placeholder='E.g.: JavaScript' />
                 </Item>
               </Col>
-              <Col lg={2}>
+              <Col lg={2} xs={6}>
                 <Item
                   label='%'
                   name={['skills', i, 'percentage']}
@@ -289,7 +289,7 @@ export const UserForm = ({
   const TabBankAccountForm = () => {
     return (
       <Row gutter={20}>
-        <Col lg={8}>
+        <Col lg={8} xs={24}>
           <Item
             label='Instituição'
             name={['bankAccount', 'bankCode']}
@@ -311,7 +311,7 @@ export const UserForm = ({
             <Input placeholder='E.g.: 260' />
           </Item>
         </Col>
-        <Col lg={8}>
+        <Col lg={8} xs={24}>
           <Item
             label='Agência'
             name={['bankAccount', 'agency']}
@@ -333,7 +333,7 @@ export const UserForm = ({
             <Input placeholder='E.g.: 0001' />
           </Item>
         </Col>
-        <Col lg={8}>
+        <Col lg={8} xs={24}>
           <Item
             label='Conta sem dígito'
             name={['bankAccount', 'number']}
@@ -348,7 +348,7 @@ export const UserForm = ({
           </Item>
         </Col>
 
-        <Col lg={8}>
+        <Col lg={8} xs={24}>
           <Item
             label='Dígito'
             name={['bankAccount', 'digit']}
@@ -366,7 +366,7 @@ export const UserForm = ({
             <Input placeholder='E.g.: 1' />
           </Item>
         </Col>
-        <Col lg={8}>
+        <Col lg={8} xs={24}>
           <Item
             label='Tipo de conta'
             name={['bankAccount', 'type']}
@@ -475,44 +475,51 @@ export const UserForm = ({
       initialValues={user}
     >
       <Row gutter={24} align='middle'>
-        <Col lg={4}>
-          <ImageCrop rotate shape={'round'} grid aspect={1}>
-            <Upload
-              maxCount={1}
-              onRemove={() => {
-                setAvatar('');
-              }}
-              fileList={hasAvatar}
-              beforeUpload={(file) => {
-                handleAvatarUpload(file);
-                return false;
-              }}
+        <Col lg={4} xs={24}>
+          <Row justify='center'>
+            <ImageCrop
+              rotate
+              shape={'round'}
+              grid
+              aspect={1}
             >
-              {loadingAvatar ? (
-                <Skeleton.Avatar
-                  active
-                  shape='circle'
-                  style={{
-                    width: '128px',
-                    height: '128px',
-                  }}
-                />
-              ) : (
-                <Avatar
-                  style={{ cursor: 'pointer' }}
-                  icon={<UserOutlined />}
-                  src={avatar}
-                  size={128}
-                />
-              )}
-            </Upload>
-          </ImageCrop>
-          <Item name='avatarUrl' hidden>
-            <Input hidden />
-          </Item>
+              <Upload
+                maxCount={1}
+                onRemove={() => {
+                  setAvatar('');
+                }}
+                fileList={hasAvatar}
+                beforeUpload={(file) => {
+                  handleAvatarUpload(file);
+                  return false;
+                }}
+              >
+                {loadingAvatar ? (
+                  <Skeleton.Avatar
+                    active
+                    shape='circle'
+                    style={{
+                      width: '128px',
+                      height: '128px',
+                    }}
+                  />
+                ) : (
+                  <Avatar
+                    style={{ cursor: 'pointer' }}
+                    icon={<UserOutlined />}
+                    src={avatar}
+                    size={128}
+                  />
+                )}
+              </Upload>
+            </ImageCrop>
+            <Item name='avatarUrl' hidden>
+              <Input hidden />
+            </Item>
+          </Row>
         </Col>
 
-        <Col lg={10}>
+        <Col lg={10} xs={24}>
           <Item
             label='Nome'
             name='name'
@@ -544,7 +551,7 @@ export const UserForm = ({
           </Item>
         </Col>
 
-        <Col lg={10}>
+        <Col lg={10} xs={24}>
           <Item
             label='Bio'
             name='bio'
@@ -568,11 +575,11 @@ export const UserForm = ({
           </Item>
         </Col>
 
-        <Col lg={24}>
+        <Col lg={24} xs={24}>
           <Divider />
         </Col>
 
-        <Col lg={12}>
+        <Col lg={12} xs={24}>
           <Item
             label='Perfil'
             name='role'
@@ -596,7 +603,7 @@ export const UserForm = ({
           </Item>
         </Col>
 
-        <Col lg={12}>
+        <Col lg={12} xs={24}>
           <Item
             label='E-mail'
             name='email'
@@ -648,8 +655,12 @@ export const UserForm = ({
           </Tabs>
         </Col>
 
-        <Col lg={24}>
-          <Row justify='end' gutter={24}>
+        <Col lg={24} xs={24}>
+          <Divider />
+        </Col>
+
+        <Col lg={24} xs={24} style={{ padding: '0 25px' }}>
+          <Row justify={'end'} gutter={24}>
             <Col>
               {user && (
                 <Link to={USERS}>

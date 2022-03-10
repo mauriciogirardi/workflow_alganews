@@ -1,14 +1,15 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-import { BrowserRouter } from 'react-router-dom'
-import { Provider } from 'react-redux'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
 
-import { ErrorBoundary } from 'app/components/ErrorBoundary'
-import { GlobalStyles } from 'core/styles/globalStyles'
-import { MainRoutes } from 'app/routes'
-import { store } from 'core/store'
+import { ErrorBoundary } from 'app/components/ErrorBoundary';
+import { GlobalStyles } from 'core/styles/globalStyles';
+import { MainRoutes } from 'app/routes';
+import { store } from 'core/store';
 
-import 'core/styles/imports.css'
+import 'core/styles/imports.css';
+import 'app/views/Calendar/calendar.css';
 
 ReactDOM.render(
     <React.StrictMode>
@@ -21,5 +22,5 @@ ReactDOM.render(
             </BrowserRouter>
         </ErrorBoundary>
     </React.StrictMode>,
-    document.getElementById('root')
-)
+    document.getElementById('root'),
+);

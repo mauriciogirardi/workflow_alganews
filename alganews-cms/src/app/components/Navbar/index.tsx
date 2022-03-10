@@ -1,5 +1,5 @@
-import { NavLink } from 'react-router-dom'
-import * as S from './styles'
+import { NavLink } from 'react-router-dom';
+import * as S from './styles';
 
 export const Navbar = () => {
     return (
@@ -14,7 +14,10 @@ export const Navbar = () => {
                 <li>
                     <NavLink to="/posts/criar">novo post</NavLink>
                 </li>
+                <li>
+                    <NavLink to="/calendar">calendario</NavLink>
+                </li>
             </ul>
         </S.Nav>
-    )
-}
+    );
+};

@@ -10,17 +10,17 @@ export const messageSuccessTogglesUserStatus = ({
   name,
 }: MesssgeProps) => {
   const isActive = active;
-  const description = `O ${name} foi ${
-    isActive ? 'Desativado' : 'Ativo'
+  const description = `${name} foi ${
+    isActive ? 'Desativado(a)' : 'Habilitado(a)'
   }.`;
 
   return isActive
     ? notification({
-        title: 'DESATIVADO',
+        title: 'DESATIVADO(A)',
         description,
       })
     : notification({
-        title: 'ATIVO',
+        title: 'HABILITADO(A)',
         description,
       });
 };

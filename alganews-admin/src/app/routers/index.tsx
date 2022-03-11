@@ -9,6 +9,7 @@ import {
   REVENUES,
   USERS,
   USER_CREATE,
+  USER_DETAILS,
   USER_EDIT_ID,
 } from '../../core/constants-paths';
 import { notification } from 'core/utils/notification';
@@ -22,6 +23,7 @@ import UserListPage from '../pages/user/UserListPage';
 import UserEditPage from 'app/pages/user/UserEditPage';
 import HomePage from '../pages/HomePage';
 import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
+import UserDetailsPage from 'app/pages/user/UserDetailsPage';
 
 export const MainRoutes = () => {
   useEffect(() => {
@@ -82,6 +84,11 @@ export const MainRoutes = () => {
       <Route
         path={USER_CREATE}
         element={<UserCreatePage />}
+      />
+
+      <Route
+        path={USER_DETAILS}
+        element={<UserDetailsPage />}
       />
 
       <Route

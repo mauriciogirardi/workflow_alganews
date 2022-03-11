@@ -28,7 +28,7 @@ import { useUsers } from 'core/hooks/user/useUsers';
 import { TagTable } from 'app/components/TagTable';
 import { CardUser } from 'app/components/CardUser';
 import { Link } from 'react-router-dom';
-import { USER_EDIT } from 'core/constants-paths';
+import { USERS, USER_EDIT } from 'core/constants-paths';
 
 interface TableActionsProps {
   userId: number;
@@ -66,11 +66,13 @@ export const UserList = () => {
             title='Visualizar usuário'
             placement='right'
           >
-            <Button
-              size='middle'
-              type='text'
-              icon={<EyeOutlined />}
-            />
+            <Link to={`${USERS}/${userId}`}>
+              <Button
+                size='middle'
+                type='text'
+                icon={<EyeOutlined />}
+              />
+            </Link>
           </Tooltip>
         </Col>
       </Row>

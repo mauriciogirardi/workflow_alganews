@@ -37,8 +37,8 @@ export default function UserEditPage() {
     [],
   );
 
-  const handleUserUpdate = (user: User.Input) => {
-    fetchUpdateUser(userId, user);
+  const handleUserUpdate = async (user: User.Input) => {
+    await fetchUpdateUser(userId, user);
   };
 
   if (notFound) {

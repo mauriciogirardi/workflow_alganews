@@ -35,7 +35,7 @@ import { Moment } from 'moment';
 
 import { notification } from 'core/utils/notification';
 import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { USERS } from 'core/constants-paths';
 
 const { Item } = Form;
@@ -64,19 +64,19 @@ type UserFormType = {
 
 interface UserFormProps {
   user?: UserFormType;
-  onUpdate?: (user: User.Input) => any;
+  onUpdate?: (user: User.Input) => Promise<any>;
 }
 
 export const UserForm = ({
-  user,
+  user: userEdit,
   onUpdate,
 }: UserFormProps) => {
+  const navigate = useNavigate();
   const [form] = Form.useForm<User.Input>();
-
   const [loadingAvatar, setLoadingAvatar] = useState(false);
   const [loading, setLoading] = useState(false);
   const [avatar, setAvatar] = useState(
-    user?.avatarUrls.default || '',
+    userEdit?.avatarUrls.default || '',
   );
   const [activeTab, setActiveTab] =
     useState<ActiveTabProps>('personal');
@@ -440,20 +440,23 @@ export const UserForm = ({
   };
 
   const onFinish = async (user: User.Input) => {
+    setLoading(true);
     const userDTO: User.Input = {
       ...user,
       taxpayerId: user.taxpayerId.replace(/\D/g, ''),
       phone: user.phone.replace(/\D/g, ''),
     };
 
+    if (userEdit) {
+      return (
+        onUpdate &&
+        onUpdate(userDTO).finally(() => setLoading(false))
+      );
+    }
+
     try {
-      setLoading(true);
-
-      if (user) {
-        return onUpdate && onUpdate(userDTO);
-      }
-
       await UserService.insertNewUser(userDTO);
+      navigate(USERS);
       notification({
         title: 'Sucesso',
         description: 'Usuário criado com sucesso.',
@@ -472,7 +475,7 @@ export const UserForm = ({
       onFinishFailed={onFinishFailed}
       onFinish={onFinish}
       layout='vertical'
-      initialValues={user}
+      initialValues={userEdit}
     >
       <Row gutter={24} align='middle'>
         <Col lg={4} xs={24}>
@@ -662,10 +665,10 @@ export const UserForm = ({
         <Col lg={24} xs={24} style={{ padding: '0 25px' }}>
           <Row justify={'end'} gutter={24}>
             <Col>
-              {user && (
-                <Link to={USERS}>
-                  <Button>Cancelar</Button>
-                </Link>
+              {userEdit && (
+                <Button onClick={() => navigate(-1)}>
+                  Cancelar
+                </Button>
               )}
             </Col>
             <Button
@@ -673,7 +676,9 @@ export const UserForm = ({
               htmlType='submit'
               loading={loading}
             >
-              {`${user ? 'Editar' : 'Cadastrar'} usuário`}
+              {`${
+                userEdit ? 'Editar' : 'Cadastrar'
+              } usuário`}
             </Button>
           </Row>
         </Col>

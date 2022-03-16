@@ -38,6 +38,7 @@ import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
 import { useNavigate } from 'react-router-dom';
 import { USERS } from 'core/constants-paths';
 import { CurrencyInput } from 'app/components/CurrencyInput';
+import { usePageTitle } from 'core/utils/hooks/usePageTitle';
 
 const { Item } = Form;
 const { TextArea } = Input;
@@ -480,6 +481,9 @@ export const UserForm = ({
     }
   };
 
+  usePageTitle(
+    userEdit ? 'Editar usuário' : 'Criar usuário',
+  );
   return (
     <Form
       form={form}

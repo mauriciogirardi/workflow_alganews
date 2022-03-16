@@ -15,22 +15,25 @@ import {
   Typography,
 } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useEffect } from 'react';
 import { WarningFilled } from '@ant-design/icons';
+import { useEffect } from 'react';
+
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
 import confirm from 'antd/lib/modal/confirm';
 
-import { useUser } from 'core/hooks/user/useUser';
-import { USERS, USER_EDIT } from 'core/constants-paths';
-import { Link } from 'react-router-dom';
 import { messageSuccessTogglesUserStatus } from 'core/store/utils/messageSuccessToggleUserStatus';
-import { usePosts } from 'core/hooks/post/usePosts';
+import { USERS, USER_EDIT } from 'core/constants-paths';
 import { formatterDate } from 'core/utils';
+import { usePageTitle } from 'core/utils/hooks/usePageTitle';
+import { usePosts } from 'core/hooks/post/usePosts';
+import { useUser } from 'core/hooks/user/useUser';
+import { Link } from 'react-router-dom';
 import { Post } from 'mauricio.girardi-sdk';
 
 const { Title, Paragraph, Text } = Typography;
 
 export default function UserDetailsPage() {
+  usePageTitle('Detalhes do usuário');
   const { fetchUser, user, notFound, toggleUserStatus } =
     useUser();
   const {

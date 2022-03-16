@@ -77,8 +77,10 @@ export const UserForm = ({
   const [form] = Form.useForm<User.Input>();
 
   const [loadingAvatar, setLoadingAvatar] = useState(false);
-  const [isEditorRole, setIsEditorRole] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isEditorRole, setIsEditorRole] = useState(
+    userEdit?.role === 'EDITOR',
+  );
   const [avatar, setAvatar] = useState(
     userEdit?.avatarUrls.default || '',
   );

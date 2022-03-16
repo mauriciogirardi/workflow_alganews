@@ -2,14 +2,14 @@ import { Post, PostService } from 'mauricio.girardi-sdk';
 import { useCallback, useState } from 'react';
 
 export const usePosts = () => {
-  const [isFetching, setIsFetching] = useState(false);
+  const [loadingFetch, setLoadingFetch] = useState(false);
   const [loadingToggle, setLoadingToggle] = useState(false);
   const [posts, setPosts] = useState<Post.Paginated>();
 
   const fetchUserPosts = useCallback(
     async (userId: number, page = 0) => {
+      setLoadingFetch(true);
       try {
-        setIsFetching(true);
         const posts = await PostService.getAllPosts({
           editorId: userId,
           showAll: true,
@@ -18,7 +18,7 @@ export const usePosts = () => {
         });
         setPosts(posts);
       } finally {
-        setIsFetching(false);
+        setLoadingFetch(false);
       }
     },
     [],
@@ -41,10 +41,10 @@ export const usePosts = () => {
   );
 
   return {
-    togglePostStatus,
     fetchUserPosts,
-    loadingToggle,
-    isFetching,
     posts,
+    togglePostStatus,
+    loadingFetch,
+    loadingToggle,
   };
 };

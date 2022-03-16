@@ -19,7 +19,11 @@ type CurrencyInputProps = Omit<
 export const CurrencyInput = ({
   ...rest
 }: CurrencyInputProps) => {
-  const [inputValue, setInputValue] = useState('R$ 0,00');
+  const [inputValue, setInputValue] = useState(
+    typeof rest.value === 'number'
+      ? formatterCurrency(rest.value)
+      : 'R$ 0,00',
+  );
 
   const onChangeInput = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {

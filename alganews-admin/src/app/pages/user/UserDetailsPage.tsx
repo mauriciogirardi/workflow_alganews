@@ -41,10 +41,10 @@ export default function UserDetailsPage() {
     useUser();
   const {
     fetchUserPosts,
-    isFetching,
     loadingToggle,
     posts,
     togglePostStatus,
+    loadingFetch,
   } = usePosts();
 
   const { lg } = useBreakpoint();
@@ -81,7 +81,6 @@ export default function UserDetailsPage() {
     published: boolean,
     post: Post.Summary,
   ) => {
-    console.log(post);
     return (
       <Switch
         checked={published}
@@ -169,24 +168,26 @@ export default function UserDetailsPage() {
 
       <Divider />
 
-      <Col xs={24} lg={12}>
-        <Space
-          direction='vertical'
-          style={{ width: '100%' }}
-        >
-          {user.skills?.map((skill, index) => (
-            <div key={index}>
-              <Text>{skill.name}</Text>
-              <Progress
-                percent={skill.percentage}
-                success={{ percent: 0 }}
-              />
-            </div>
-          ))}
-        </Space>
-      </Col>
+      {isEditor && (
+        <Col xs={24} lg={12}>
+          <Space
+            direction='vertical'
+            style={{ width: '100%' }}
+          >
+            {user.skills?.map((skill, index) => (
+              <div key={index}>
+                <Text>{skill.name}</Text>
+                <Progress
+                  percent={skill.percentage}
+                  success={{ percent: 0 }}
+                />
+              </div>
+            ))}
+          </Space>
+        </Col>
+      )}
 
-      <Col xs={24} lg={12}>
+      <Col xs={24} lg={isEditor ? 12 : 24}>
         <Descriptions column={1} bordered size='small'>
           <Descriptions.Item label='País'>
             {user.location.country}
@@ -203,59 +204,61 @@ export default function UserDetailsPage() {
         </Descriptions>
       </Col>
 
-      <Divider />
+      {isEditor && (
+        <>
+          <Divider />
 
-      <Col span={24}>
-        {isEditor && (
-          <Table
-            rowKey={'id'}
-            loading={isFetching}
-            scroll={{ x: 850 }}
-            dataSource={posts?.content}
-            pagination={{
-              pageSize: 8,
-              onChange: (page) => setPage(page - 1),
-              total: posts?.totalElements,
-            }}
-            columns={[
-              {
-                dataIndex: 'title',
-                title: 'Título',
-                align: 'left',
-                ellipsis: true,
-                width: 380,
-              },
-              {
-                dataIndex: 'createdAt',
-                title: 'Criação',
-                align: 'center',
-                render: (item) =>
-                  formatterDate({
-                    date: item,
-                    typeFormat: 'dd/MM/yyyy',
-                  }),
-              },
-              {
-                dataIndex: 'updatedAt',
-                title: 'Última atualização',
-                align: 'center',
-                width: 200,
-                render: (item) =>
-                  formatterDate({
-                    date: item,
-                    typeFormat: "dd/MM/yyyy 'às' hh:mm",
-                  }),
-              },
-              {
-                dataIndex: 'published',
-                title: 'Publicado',
-                align: 'right',
-                render: handleToggle,
-              },
-            ]}
-          />
-        )}
-      </Col>
+          <Col span={24}>
+            <Table
+              rowKey={'id'}
+              loading={loadingFetch}
+              scroll={{ x: 850 }}
+              dataSource={posts?.content}
+              pagination={{
+                pageSize: 8,
+                onChange: (page) => setPage(page - 1),
+                total: posts?.totalElements,
+              }}
+              columns={[
+                {
+                  dataIndex: 'title',
+                  title: 'Título',
+                  align: 'left',
+                  ellipsis: true,
+                  width: 380,
+                },
+                {
+                  dataIndex: 'createdAt',
+                  title: 'Criação',
+                  align: 'center',
+                  render: (item) =>
+                    formatterDate({
+                      date: item,
+                      typeFormat: 'dd/MM/yyyy',
+                    }),
+                },
+                {
+                  dataIndex: 'updatedAt',
+                  title: 'Última atualização',
+                  align: 'center',
+                  width: 200,
+                  render: (item) =>
+                    formatterDate({
+                      date: item,
+                      typeFormat: "dd/MM/yyyy 'às' hh:mm",
+                    }),
+                },
+                {
+                  dataIndex: 'published',
+                  title: 'Publicado',
+                  align: 'right',
+                  render: handleToggle,
+                },
+              ]}
+            />
+          </Col>
+        </>
+      )}
     </Row>
   );
 }

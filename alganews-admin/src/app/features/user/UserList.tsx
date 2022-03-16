@@ -21,6 +21,7 @@ import {
   SearchOutlined,
   LoadingOutlined,
   UserOutlined,
+  ReloadOutlined,
 } from '@ant-design/icons';
 
 import { formatterDate } from 'core/utils';
@@ -142,8 +143,22 @@ export const UserList = () => {
         : '',
   });
 
+  const handleReloadListUser = () => {
+    fetchUsers();
+  };
+
   return (
     <>
+      <Row justify='end'>
+        <Button
+          icon={<ReloadOutlined />}
+          onClick={handleReloadListUser}
+          loading={fetching}
+        >
+          Atualizar
+        </Button>
+      </Row>
+
       <Table<User.Summary>
         rowKey={'id'}
         pagination={{

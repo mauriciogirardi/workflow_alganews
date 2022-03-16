@@ -10,6 +10,8 @@ import {
   Row,
   Skeleton,
   Space,
+  Switch,
+  Table,
   Typography,
 } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -22,16 +24,28 @@ import { useUser } from 'core/hooks/user/useUser';
 import { USERS, USER_EDIT } from 'core/constants-paths';
 import { Link } from 'react-router-dom';
 import { messageSuccessTogglesUserStatus } from 'core/store/utils/messageSuccessToggleUserStatus';
+import { usePosts } from 'core/hooks/post/usePosts';
+import { formatterDate } from 'core/utils';
+import { Post } from 'mauricio.girardi-sdk';
 
 const { Title, Paragraph, Text } = Typography;
 
 export default function UserDetailsPage() {
   const { fetchUser, user, notFound, toggleUserStatus } =
     useUser();
+  const {
+    fetchUserPosts,
+    isFetching,
+    loadingToggle,
+    posts,
+    togglePostStatus,
+  } = usePosts();
+
   const { lg } = useBreakpoint();
   const params = useParams<{ id: string }>();
   const navigate = useNavigate();
   const userId = Number(params.id);
+  const isEditor = user?.role === 'EDITOR';
 
   useEffect(() => {
     if (!isNaN(userId)) {
@@ -41,11 +55,33 @@ export default function UserDetailsPage() {
     }
   }, [fetchUser, userId, navigate]);
 
+  useEffect(() => {
+    if (isEditor) fetchUserPosts(user.id);
+  }, [fetchUserPosts, user, isEditor]);
+
   if (notFound) {
     return <Card>Usuário não encontrado!</Card>;
   }
 
   if (!user) return <Skeleton />;
+
+  const handleToggle = (
+    published: boolean,
+    post: Post.Summary,
+  ) => {
+    console.log(post);
+    return (
+      <Switch
+        checked={published}
+        loading={loadingToggle}
+        onChange={() => {
+          togglePostStatus(post).then(() => {
+            fetchUserPosts(user.id);
+          });
+        }}
+      />
+    );
+  };
 
   const handleOnConfirm = () => {
     confirm({
@@ -153,6 +189,56 @@ export default function UserDetailsPage() {
             {user.phone}
           </Descriptions.Item>
         </Descriptions>
+      </Col>
+
+      <Divider />
+
+      <Col span={24}>
+        {isEditor && (
+          <Table
+            rowKey={'id'}
+            pagination={false}
+            loading={isFetching}
+            scroll={{ x: 850 }}
+            dataSource={posts?.content}
+            columns={[
+              {
+                dataIndex: 'title',
+                title: 'Título',
+                align: 'left',
+                ellipsis: true,
+                width: 380,
+              },
+              {
+                dataIndex: 'createdAt',
+                title: 'Criação',
+                align: 'center',
+                render: (item) =>
+                  formatterDate({
+                    date: item,
+                    typeFormat: 'dd/MM/yyyy',
+                  }),
+              },
+              {
+                dataIndex: 'updatedAt',
+                title: 'Última atualização',
+                align: 'center',
+                width: 200,
+                render: (item) =>
+                  formatterDate({
+                    date: item,
+                    typeFormat: "dd/MM/yyyy 'às' hh:mm",
+                  }),
+              },
+              {
+                dataIndex: 'published',
+                title: 'Publicado',
+                align: 'right',
+                render: handleToggle,
+              },
+            ]}
+          />
+        )}
       </Col>
     </Row>
   );

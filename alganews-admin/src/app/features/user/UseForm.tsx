@@ -37,6 +37,7 @@ import { notification } from 'core/utils/notification';
 import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
 import { useNavigate } from 'react-router-dom';
 import { USERS } from 'core/constants-paths';
+import { CurrencyInput } from 'app/components/CurrencyInput';
 
 const { Item } = Form;
 const { TextArea } = Input;
@@ -228,9 +229,20 @@ export const UserForm = ({
                 required: true,
                 message: 'O campo é obrigatório',
               },
+              {
+                type: 'number',
+                min: 0.01,
+                message: 'O valor mínimo é 1 centavo',
+              },
             ]}
           >
-            <Input placeholder='E.g.: 0' />
+            <CurrencyInput
+              onChange={(_, value) => {
+                form.setFieldsValue({
+                  pricePerWord: value,
+                });
+              }}
+            />
           </Item>
         </Col>
 

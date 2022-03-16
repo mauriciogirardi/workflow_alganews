@@ -5,5 +5,6 @@ export const formatterCurrency = (
     currency: 'BRL',
     style: 'currency',
     maximumFractionDigits: 2,
+    minimumFractionDigits: 2,
   });
 };

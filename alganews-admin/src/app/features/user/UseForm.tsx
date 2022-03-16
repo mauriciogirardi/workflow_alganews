@@ -75,7 +75,9 @@ export const UserForm = ({
 }: UserFormProps) => {
   const navigate = useNavigate();
   const [form] = Form.useForm<User.Input>();
+
   const [loadingAvatar, setLoadingAvatar] = useState(false);
+  const [isEditorRole, setIsEditorRole] = useState(false);
   const [loading, setLoading] = useState(false);
   const [avatar, setAvatar] = useState(
     userEdit?.avatarUrls.default || '',
@@ -221,80 +223,86 @@ export const UserForm = ({
             />
           </Item>
         </Col>
-        <Col lg={8} xs={24}>
-          <Item
-            label='Preço por palavra'
-            name='pricePerWord'
-            rules={[
-              {
-                required: true,
-                message: 'O campo é obrigatório',
-              },
-              {
-                type: 'number',
-                min: 0.01,
-                message: 'O valor mínimo é 1 centavo',
-              },
-            ]}
-          >
-            <CurrencyInput
-              onChange={(_, value) => {
-                form.setFieldsValue({
-                  pricePerWord: value,
-                });
-              }}
-            />
-          </Item>
-        </Col>
+        {isEditorRole && (
+          <>
+            <Col lg={8} xs={24}>
+              <Item
+                label='Preço por palavra'
+                name='pricePerWord'
+                rules={[
+                  {
+                    required: true,
+                    message: 'O campo é obrigatório',
+                  },
+                  {
+                    type: 'number',
+                    min: 0.01,
+                    message: 'O valor mínimo é 1 centavo',
+                  },
+                ]}
+              >
+                <CurrencyInput
+                  onChange={(_, value) => {
+                    form.setFieldsValue({
+                      pricePerWord: value,
+                    });
+                  }}
+                />
+              </Item>
+            </Col>
 
-        {Array(3)
-          .fill(null)
-          .map((_, i) => (
-            <Fragment key={i}>
-              <Col lg={6} xs={18}>
-                <Item
-                  label='Habilidade'
-                  name={['skills', i, 'name']}
-                  rules={[
-                    {
-                      required: true,
-                      message: 'O campo é obrigatório',
-                    },
-                    {
-                      max: 50,
-                      message: `A habilidade não pode ter mais de 50 caracteres`,
-                    },
-                  ]}
-                >
-                  <Input placeholder='E.g.: JavaScript' />
-                </Item>
-              </Col>
-              <Col lg={2} xs={6}>
-                <Item
-                  label='%'
-                  name={['skills', i, 'percentage']}
-                  rules={[
-                    {
-                      required: true,
-                      message: '',
-                    },
-                    {
-                      async validator(field, value) {
-                        if (isNaN(value))
-                          throw new Error('Apenas números');
-                        if (Number(value) > 100)
-                          throw new Error('Maxímo 100');
-                        if (Number(value) < 0)
-                          throw new Error('Mínimo 0');
-                      },
-                    },
-                  ]}
-                >
-                  <Input />
-                </Item>
-              </Col>
-            </Fragment>
-          ))}
+            {Array(3)
+              .fill(null)
+              .map((_, i) => (
+                <Fragment key={i}>
+                  <Col lg={6} xs={18}>
+                    <Item
+                      label='Habilidade'
+                      name={['skills', i, 'name']}
+                      rules={[
+                        {
+                          required: true,
+                          message: 'O campo é obrigatório',
+                        },
+                        {
+                          max: 50,
+                          message: `A habilidade não pode ter mais de 50 caracteres`,
+                        },
+                      ]}
+                    >
+                      <Input placeholder='E.g.: JavaScript' />
+                    </Item>
+                  </Col>
+                  <Col lg={2} xs={6}>
+                    <Item
+                      label='%'
+                      name={['skills', i, 'percentage']}
+                      rules={[
+                        {
+                          required: true,
+                          message: '',
+                        },
+                        {
+                          async validator(field, value) {
+                            if (isNaN(value))
+                              throw new Error(
+                                'Apenas números',
+                              );
+                            if (Number(value) > 100)
+                              throw new Error('Maxímo 100');
+                            if (Number(value) < 0)
+                              throw new Error('Mínimo 0');
+                          },
+                        },
+                      ]}
+                    >
+                      <Input />
+                    </Item>
+                  </Col>
+                </Fragment>
+              ))}
+          </>
+        )}
       </Row>
     );
   };
@@ -614,7 +622,12 @@ export const UserForm = ({
               },
             ]}
           >
-            <Select placeholder='Selecione um perfil'>
+            <Select
+              placeholder='Selecione um perfil'
+              onChange={(value) =>
+                setIsEditorRole(value === 'EDITOR')
+              }
+            >
               <Option value='EDITOR'>Editor</Option>
               <Option value='ASSISTANT'>Assistente</Option>
               <Option value='MANAGER'>Gerente</Option>

@@ -1,7 +1,6 @@
 import {
   Avatar,
   Button,
-  Card,
   Col,
   Descriptions,
   Divider,
@@ -16,7 +15,7 @@ import {
 } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { WarningFilled } from '@ant-design/icons';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
 import confirm from 'antd/lib/modal/confirm';
@@ -29,11 +28,15 @@ import { usePosts } from 'core/hooks/post/usePosts';
 import { useUser } from 'core/hooks/user/useUser';
 import { Link } from 'react-router-dom';
 import { Post } from 'mauricio.girardi-sdk';
+import { NotFoundError } from 'app/components/NotFoundError';
+import { formatPhone } from 'core/utils/formatPhone';
 
 const { Title, Paragraph, Text } = Typography;
 
 export default function UserDetailsPage() {
   usePageTitle('Detalhes do usuário');
+
+  const [page, setPage] = useState(0);
   const { fetchUser, user, notFound, toggleUserStatus } =
     useUser();
   const {
@@ -59,11 +62,17 @@ export default function UserDetailsPage() {
   }, [fetchUser, userId, navigate]);
 
   useEffect(() => {
-    if (isEditor) fetchUserPosts(user.id);
-  }, [fetchUserPosts, user, isEditor]);
+    if (isEditor) fetchUserPosts(user.id, page);
+  }, [fetchUserPosts, user, isEditor, page]);
 
   if (notFound) {
-    return <Card>Usuário não encontrado!</Card>;
+    return (
+      <NotFoundError
+        title='Usuário não encontrado'
+        actionDestination={USERS}
+        actionTitle='Voltar para a lista de usuário'
+      />
+    );
   }
 
   if (!user) return <Skeleton />;
@@ -189,7 +198,7 @@ export default function UserDetailsPage() {
             {user.location.city}
           </Descriptions.Item>
           <Descriptions.Item label='Telefone'>
-            {user.phone}
+            {formatPhone(user.phone)}
           </Descriptions.Item>
         </Descriptions>
       </Col>
@@ -200,10 +209,14 @@ export default function UserDetailsPage() {
         {isEditor && (
           <Table
             rowKey={'id'}
-            pagination={false}
             loading={isFetching}
             scroll={{ x: 850 }}
             dataSource={posts?.content}
+            pagination={{
+              pageSize: 8,
+              onChange: (page) => setPage(page - 1),
+              total: posts?.totalElements,
+            }}
             columns={[
               {
                 dataIndex: 'title',

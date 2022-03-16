@@ -7,12 +7,14 @@ export const usePosts = () => {
   const [posts, setPosts] = useState<Post.Paginated>();
 
   const fetchUserPosts = useCallback(
-    async (userId: number) => {
+    async (userId: number, page = 0) => {
       try {
         setIsFetching(true);
         const posts = await PostService.getAllPosts({
           editorId: userId,
           showAll: true,
+          page,
+          size: 8,
         });
         setPosts(posts);
       } finally {

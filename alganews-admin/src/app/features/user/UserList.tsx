@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { User } from 'mauricio.girardi-sdk';
 import { ColumnProps } from 'antd/lib/table';
 import {
@@ -35,6 +35,8 @@ interface TableActionsProps {
 }
 
 export const UserList = () => {
+  const [page, setPage] = useState(0);
+
   const {
     fetchUsers,
     users,
@@ -144,7 +146,10 @@ export const UserList = () => {
     <>
       <Table<User.Summary>
         rowKey={'id'}
-        pagination={false}
+        pagination={{
+          pageSize: 12,
+          onChange: (page) => setPage(page - 1),
+        }}
         loading={fetching}
         // scroll={{ x: 1000 }} add responsive
         dataSource={users}

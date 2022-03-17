@@ -7574,10 +7574,10 @@ material-colors@^1.2.1:
   resolved "https://registry.yarnpkg.com/material-colors/-/material-colors-1.2.6.tgz#6d1958871126992ceecc72f4bcc4d8f010865f46"
   integrity sha512-6qE4B9deFBIa9YSpOc9O0Sgc43zTeVYbgDT5veRKSlB2+ZuHNoVVxA1L/ckMUayV9Ay9y7Z/SZCLcGteW9i7bg==
 
-mauricio.girardi-sdk@^4.4.1:
-  version "4.4.1"
-  resolved "https://registry.yarnpkg.com/mauricio.girardi-sdk/-/mauricio.girardi-sdk-4.4.1.tgz#7085b67ee8cffb9b6cbe1cd5a14630e465e2c66b"
-  integrity sha512-BZRUEImUTQadDBA84hHdY4ZBtambK84dY7VEeKsPZbssOB3hVSMbTMIPgGXVblP2EESS4q3D+XrUXNkyiGPFzw==
+mauricio.girardi-sdk@^4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/mauricio.girardi-sdk/-/mauricio.girardi-sdk-4.4.2.tgz#c08ae92920e68496d95e5abc5f3378b6f1b3b817"
+  integrity sha512-hhMMUzYzFGp8ymDM1VBV0M0XhtbD5eZrf6Swk1Y3DCtbN1nMnvazNy+RVNg+bML0c7MndQbVXHgngAiLn528MA==
   dependencies:
     axios "^0.26.0"
     date-fns "^2.28.0"

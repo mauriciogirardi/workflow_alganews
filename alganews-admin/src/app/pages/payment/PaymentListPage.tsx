@@ -1,6 +1,7 @@
 import {
   Button,
   Col,
+  DatePicker,
   Popconfirm,
   Row,
   Table,
@@ -20,6 +21,9 @@ import { usePayments } from 'core/hooks/payment/usePayments';
 import confirm from 'antd/lib/modal/confirm';
 
 export default function PaymentListPage() {
+  const [yearMonth, setYearMonth] = useState<
+    string | undefined
+  >();
   const [selectedRowKeys, setSelectedRowKeys] = useState<
     Key[]
   >([]);
@@ -27,11 +31,12 @@ export default function PaymentListPage() {
 
   useEffect(() => {
     fetchPayments({
+      scheduledToYearMonth: yearMonth,
       sort: ['scheduledTo', 'desc'],
       page: 0,
       size: 10,
     });
-  }, [fetchPayments]);
+  }, [fetchPayments, yearMonth]);
 
   const renderAccountingPeriod = (
     period: Payment.Summary['accountingPeriod'],
@@ -116,34 +121,48 @@ export default function PaymentListPage() {
 
   return (
     <>
-      <Row>
-        <Popconfirm
-          okText='Sim'
-          cancelText='Não'
-          title={
-            selectedRowKeys.length === 1
-              ? 'Você deseja aprovar o pagamento selecionado?'
-              : 'Você deseja aprovar os pagamentos selecionados?'
-          }
-          onConfirm={() => {
-            confirm({
-              okText: 'Aprovar',
-              title:
-                selectedRowKeys.length === 1
-                  ? 'Aprovar o pagamento!'
-                  : 'Aprovar os pagamentos',
-              content:
-                'Esta é uma ação irreversível. Ao aprovar um pagamento, ele não poderá ser removido.',
-            });
-          }}
-        >
-          <Button
-            disabled={selectedRowKeys.length === 0}
-            type='primary'
+      <Row justify='space-between' align='middle'>
+        <Col>
+          <Popconfirm
+            okText='Sim'
+            cancelText='Não'
+            title={
+              selectedRowKeys.length === 1
+                ? 'Você deseja aprovar o pagamento selecionado?'
+                : 'Você deseja aprovar os pagamentos selecionados?'
+            }
+            onConfirm={() => {
+              confirm({
+                okText: 'Aprovar',
+                title:
+                  selectedRowKeys.length === 1
+                    ? 'Aprovar o pagamento!'
+                    : 'Aprovar os pagamentos',
+                content:
+                  'Esta é uma ação irreversível. Ao aprovar um pagamento, ele não poderá ser removido.',
+              });
+            }}
           >
-            Aprovar pagamentos
-          </Button>
-        </Popconfirm>
+            <Button
+              disabled={selectedRowKeys.length === 0}
+              type='primary'
+            >
+              Aprovar pagamentos
+            </Button>
+          </Popconfirm>
+        </Col>
+
+        <Col>
+          <DatePicker.MonthPicker
+            style={{ width: 250 }}
+            format={'MMMM - YYYY'}
+            onChange={(date) =>
+              setYearMonth(
+                date ? date.format('YYYY-MM') : undefined,
+              )
+            }
+          />
+        </Col>
       </Row>
 
       <Table<Payment.Summary>

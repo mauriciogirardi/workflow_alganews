@@ -13,29 +13,41 @@ import {
 } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
 import { Payment } from 'mauricio.girardi-sdk';
-import { Key } from 'antd/lib/table/interface';
+import {
+  Key,
+  SorterResult,
+} from 'antd/lib/table/interface';
 
 import { formatterDate } from 'core/utils';
 import { DoubleConfirm } from '../../components/DoubleConfirm';
 import { usePayments } from 'core/hooks/payment/usePayments';
+import { Link } from 'react-router-dom';
+import { USERS } from 'core/constants-paths';
+
+const PAGE_SIZE = 12;
 
 export default function PaymentListPage() {
+  const [page, setPage] = useState(1);
+  const [sortingOrder, setSortingOrder] = useState<
+    'asc' | 'desc' | undefined
+  >();
   const [yearMonth, setYearMonth] = useState<
     string | undefined
   >();
   const [selectedRowKeys, setSelectedRowKeys] = useState<
     Key[]
   >([]);
-  const { fetchPayments, payments } = usePayments();
+  const { fetchPayments, payments, isFetching } =
+    usePayments();
 
   useEffect(() => {
     fetchPayments({
       scheduledToYearMonth: yearMonth,
-      sort: ['scheduledTo', 'desc'],
-      page: 0,
-      size: 10,
+      sort: ['scheduledTo', sortingOrder || 'desc'],
+      page: page - 1,
+      size: PAGE_SIZE,
     });
-  }, [fetchPayments, yearMonth]);
+  }, [fetchPayments, yearMonth, page, sortingOrder]);
 
   const renderAccountingPeriod = (
     period: Payment.Summary['accountingPeriod'],
@@ -145,6 +157,7 @@ export default function PaymentListPage() {
           <DatePicker.MonthPicker
             style={{ width: 250 }}
             format={'MMMM - YYYY'}
+            disabled={isFetching}
             onChange={(date) =>
               setYearMonth(
                 date ? date.format('YYYY-MM') : undefined,
@@ -155,6 +168,13 @@ export default function PaymentListPage() {
       </Row>
 
       <Table<Payment.Summary>
+        loading={isFetching}
+        pagination={{
+          current: page,
+          onChange: setPage,
+          total: payments?.totalElements,
+          pageSize: PAGE_SIZE,
+        }}
         rowKey={'id'}
         dataSource={payments?.content}
         scroll={{ x: 850 }}
@@ -167,13 +187,24 @@ export default function PaymentListPage() {
               : {};
           },
         }}
+        onChange={(p, f, sorter) => {
+          const { order } =
+            sorter as SorterResult<Payment.Summary>;
+          order === 'ascend'
+            ? setSortingOrder('asc')
+            : setSortingOrder('desc');
+        }}
         columns={[
           {
             dataIndex: 'payee',
             title: 'Editor',
             align: 'left',
             render(payee: Payment.Summary['payee']) {
-              return payee.name;
+              return (
+                <Link to={`${USERS}/${payee.id}`}>
+                  {payee.name}
+                </Link>
+              );
             },
           },
           {
@@ -185,6 +216,9 @@ export default function PaymentListPage() {
                 date,
                 typeFormat: 'dd/MM/yyyy',
               });
+            },
+            sorter() {
+              return 0;
             },
           },
           {

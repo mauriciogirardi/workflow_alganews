@@ -8,6 +8,7 @@ export const USER_EDIT = '/users/edit';
 
 export const PAYMENTS = '/payments';
 export const PAYMENTS_CREATE = '/payments/create';
+export const PAYMENTS_DETAILS = '/payments/:id';
 
 export const EXPENSES = '/cashflow/expenses';
 export const REVENUES = '/cashflow/revenues';

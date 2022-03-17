@@ -22,7 +22,10 @@ import { formatterDate } from 'core/utils';
 import { DoubleConfirm } from '../../components/DoubleConfirm';
 import { usePayments } from 'core/hooks/payment/usePayments';
 import { Link } from 'react-router-dom';
-import { USERS } from 'core/constants-paths';
+import {
+  PAYMENTS_DETAILS,
+  USERS,
+} from 'core/constants-paths';
 
 const PAGE_SIZE = 12;
 
@@ -108,11 +111,18 @@ export default function PaymentListPage() {
 
         <Col>
           <Tooltip title='Detalhar' placement='right'>
-            <Button
-              size='middle'
-              type='text'
-              icon={<EyeOutlined />}
-            />
+            <Link
+              to={PAYMENTS_DETAILS.replace(
+                ':id',
+                String(payment.id),
+              )}
+            >
+              <Button
+                size='middle'
+                type='text'
+                icon={<EyeOutlined />}
+              />
+            </Link>
           </Tooltip>
         </Col>
       </Row>

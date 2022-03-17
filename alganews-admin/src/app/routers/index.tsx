@@ -6,6 +6,7 @@ import {
   HOME,
   PAYMENTS,
   PAYMENTS_CREATE,
+  PAYMENTS_DETAILS,
   REVENUES,
   USERS,
   USER_CREATE,
@@ -24,6 +25,7 @@ import UserCreatePage from '../pages/user/UserCreatePage';
 import UserListPage from '../pages/user/UserListPage';
 import UserEditPage from 'app/pages/user/UserEditPage';
 import HomePage from '../pages/HomePage';
+import PaymentDetailsPage from 'app/pages/payment/PaymentDetailsPage';
 
 export const MainRoutes = () => {
   useEffect(() => {
@@ -72,14 +74,22 @@ export const MainRoutes = () => {
         path={REVENUES}
         element={<CashFlowRevenuesPage />}
       />
+
+      {/* Payments */}
+      <Route
+        path={PAYMENTS}
+        element={<PaymentListPage />}
+      />
       <Route
         path={PAYMENTS_CREATE}
         element={<PaymentCreatePage />}
       />
       <Route
-        path={PAYMENTS}
-        element={<PaymentListPage />}
+        path={PAYMENTS_DETAILS}
+        element={<PaymentDetailsPage />}
       />
+
+      {/* Users */}
       <Route path={USERS} element={<UserListPage />} />
       <Route
         path={USER_CREATE}

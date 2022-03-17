@@ -2,7 +2,6 @@ import {
   Button,
   Col,
   DatePicker,
-  Popconfirm,
   Row,
   Table,
   Tag,
@@ -17,8 +16,8 @@ import { Payment } from 'mauricio.girardi-sdk';
 import { Key } from 'antd/lib/table/interface';
 
 import { formatterDate } from 'core/utils';
+import { DoubleConfirm } from '../../components/DoubleConfirm';
 import { usePayments } from 'core/hooks/payment/usePayments';
-import confirm from 'antd/lib/modal/confirm';
 
 export default function PaymentListPage() {
   const [yearMonth, setYearMonth] = useState<
@@ -72,38 +71,27 @@ export default function PaymentListPage() {
     id: number,
     payment: Payment.Summary,
   ) => {
-    const tootipTitleDelete = payment.canBeDeleted
+    const tooltipTitleDelete = payment.canBeDeleted
       ? 'Remover'
       : 'Pagamento já foi aprovado!';
 
     return (
       <Row gutter={10} justify='end'>
         <Col>
-          <Popconfirm
-            title='Remover Agendamento?'
-            okText='Sim'
-            cancelText='Não'
-            onConfirm={() => {
-              confirm({
-                okText: 'Remover',
-                title: 'Remover agendamento!',
-                content:
-                  'Esta é uma ação irreversível. Ao remover um agendamento, ele não poderá ser recuperado.',
-              });
-            }}
+          <DoubleConfirm
+            onConfirmContent='Esta é uma ação irreversível. Ao remover um agendamento, ele não poderá ser recuperado.'
+            onConfirmTitle='Remover agendamento!'
+            popConfirmTitle='Remover Agendamento?'
+            tooltipTitle={tooltipTitleDelete}
+            disabled={!payment.canBeDeleted}
           >
-            <Tooltip
-              title={tootipTitleDelete}
-              placement='left'
-            >
-              <Button
-                size='middle'
-                type='text'
-                disabled={!payment.canBeDeleted}
-                icon={<DeleteOutlined />}
-              />
-            </Tooltip>
-          </Popconfirm>
+            <Button
+              size='middle'
+              type='text'
+              disabled={!payment.canBeDeleted}
+              icon={<DeleteOutlined />}
+            />
+          </DoubleConfirm>
         </Col>
 
         <Col>
@@ -119,29 +107,30 @@ export default function PaymentListPage() {
     );
   };
 
+  const onConfirmTitle =
+    selectedRowKeys.length === 1
+      ? 'Aprovar o pagamento!'
+      : 'Aprovar os pagamentos';
+  const popConfirmTitle =
+    selectedRowKeys.length === 1
+      ? 'Você deseja aprovar o pagamento selecionado?'
+      : 'Você deseja aprovar os pagamentos selecionados?';
+
   return (
     <>
-      <Row justify='space-between' align='middle'>
+      <Row
+        justify='space-between'
+        align='middle'
+        style={{ marginBottom: 30 }}
+        gutter={[20, 20]}
+      >
         <Col>
-          <Popconfirm
+          <DoubleConfirm
+            onConfirmContent='Esta é uma ação irreversível. Ao aprovar um pagamento, ele não poderá ser removido.'
+            onConfirmTitle={onConfirmTitle}
+            popConfirmTitle={popConfirmTitle}
+            disabled={selectedRowKeys.length === 0}
             okText='Sim'
-            cancelText='Não'
-            title={
-              selectedRowKeys.length === 1
-                ? 'Você deseja aprovar o pagamento selecionado?'
-                : 'Você deseja aprovar os pagamentos selecionados?'
-            }
-            onConfirm={() => {
-              confirm({
-                okText: 'Aprovar',
-                title:
-                  selectedRowKeys.length === 1
-                    ? 'Aprovar o pagamento!'
-                    : 'Aprovar os pagamentos',
-                content:
-                  'Esta é uma ação irreversível. Ao aprovar um pagamento, ele não poderá ser removido.',
-              });
-            }}
           >
             <Button
               disabled={selectedRowKeys.length === 0}
@@ -149,7 +138,7 @@ export default function PaymentListPage() {
             >
               Aprovar pagamentos
             </Button>
-          </Popconfirm>
+          </DoubleConfirm>
         </Col>
 
         <Col>

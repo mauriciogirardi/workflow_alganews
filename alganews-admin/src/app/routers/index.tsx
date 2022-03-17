@@ -13,17 +13,17 @@ import {
   USER_EDIT_ID,
 } from '../../core/constants-paths';
 import { notification } from 'core/utils/notification';
+import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
 
 import CashFlowExpensesPage from '../pages/CashFlowExpensesPage';
 import CashFlowRevenuesPage from '../pages/CashFlowRevenuesPage';
-import PaymentCreatePage from '../pages/PaymentCreatePage';
-import PaymentListPage from '../pages/PaymentListPage';
+import PaymentCreatePage from '../pages/payment/PaymentListPage';
+import PaymentListPage from '../pages/payment/PaymentListPage';
+import UserDetailsPage from 'app/pages/user/UserDetailsPage';
 import UserCreatePage from '../pages/user/UserCreatePage';
 import UserListPage from '../pages/user/UserListPage';
 import UserEditPage from 'app/pages/user/UserEditPage';
 import HomePage from '../pages/HomePage';
-import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
-import UserDetailsPage from 'app/pages/user/UserDetailsPage';
 
 export const MainRoutes = () => {
   useEffect(() => {

@@ -3,7 +3,7 @@ import ptBR from 'date-fns/locale/pt-BR';
 
 interface FormatterDateProps {
   date: string;
-  typeFormat:
+  typeFormat?:
     | 'MMMM yyyy'
     | 'MM/yyyy'
     | 'dd/MM/yyyy'
@@ -12,7 +12,7 @@ interface FormatterDateProps {
 
 export const formatterDate = ({
   date,
-  typeFormat,
+  typeFormat = 'dd/MM/yyyy',
 }: FormatterDateProps) => {
   return format(new Date(date), typeFormat, {
     locale: ptBR,

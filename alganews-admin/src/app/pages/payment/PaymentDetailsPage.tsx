@@ -1,80 +1,50 @@
-import {
-  Card,
-  Descriptions,
-  Divider,
-  Table,
-  Tag,
-  Typography,
-} from 'antd';
-import { Post } from 'mauricio.girardi-sdk';
+import { Card, Divider } from 'antd';
+import { usePayment } from 'core/hooks/payment/usePayment';
+import { useEffect } from 'react';
 
-const { Text, Title } = Typography;
-const { Item } = Descriptions;
+import { PaymentBonuses } from 'app/features/payment/PaymentBonuses';
+import { PaymentHeader } from 'app/features/payment/PaymentHeader';
+import { PaymentPosts } from 'app/features/payment/PaymentPosts';
 
 export default function PaymentDetailsPage() {
+  const {
+    fetchPayment,
+    fetchPosts,
+    fetchingPayment,
+    fetchingPost,
+    payment,
+    posts,
+  } = usePayment();
+
+  useEffect(() => {
+    fetchPayment(1);
+    fetchPosts(1);
+  }, [fetchPayment, fetchPosts]);
+
   return (
     <Card>
-      <Title>Pagamento</Title>
-      <Text>
-        A base do pagamento é calculada pela quantidade de
-        palavras escritas.
-      </Text>
+      <>
+        <PaymentHeader
+          loading={fetchingPayment}
+          editorId={payment?.payee.id}
+          editorName={payment?.payee.name}
+          periodStart={payment?.accountingPeriod.startsOn}
+          periodEnd={payment?.accountingPeriod.endsOn}
+          postsEarnings={payment?.earnings.totalAmount}
+          totalEarnings={payment?.grandTotalAmount}
+        />
+        <Divider />
+        <PaymentBonuses
+          bonuses={payment?.bonuses}
+          loading={fetchingPayment}
+        />
+        <Divider />
 
-      <Divider />
-
-      <Descriptions column={2}>
-        <Item label='Editor'>Mauricio Girardi</Item>
-        <Item label='Período'>
-          <Tag>01/01/2022</Tag>
-          <Text style={{ marginRight: 8 }}>até</Text>
-          <Tag>30/21/2022</Tag>
-        </Item>
-        <Item label='Ganhos por posts'>
-          <Tag>R$ 12.365,00</Tag>
-        </Item>
-        <Item label='Total'>
-          <Tag>R$ 12.365,00</Tag>
-        </Item>
-      </Descriptions>
-
-      <Divider />
-
-      <Title level={2}>Bônus</Title>
-      <Descriptions column={1} bordered size='small'>
-        <Item label='1 milhão de views em 1 dia'>
-          R$ 12.365,00
-        </Item>
-        <Item label='20 milhão de views no mês'>
-          R$ 12.365,00
-        </Item>
-      </Descriptions>
-
-      <Divider />
-
-      <Table<Post.WithEarnings>
-        rowKey={'id'}
-        scroll={{ x: 850 }}
-        dataSource={[]}
-        columns={[
-          {
-            dataIndex: 'title',
-            title: 'Post',
-            ellipsis: true,
-          },
-          {
-            dataIndex: 'earnings.pricePerWord',
-            title: 'Preço por palavra',
-          },
-          {
-            dataIndex: 'earnings.words',
-            title: 'Palavras no post',
-          },
-          {
-            dataIndex: 'earnings.total',
-            title: 'Total de ganho nest post',
-          },
-        ]}
-      />
+        <PaymentPosts
+          posts={posts}
+          loading={fetchingPost}
+        />
+      </>
     </Card>
   );
 }

@@ -1,15 +1,18 @@
-import { Card, Divider } from 'antd';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button, Card, Col, Divider, Row } from 'antd';
+import { PrinterOutlined } from '@ant-design/icons';
 import { usePayment } from 'core/hooks/payment/usePayment';
 import { useEffect } from 'react';
 
 import { PaymentBonuses } from 'app/features/payment/PaymentBonuses';
 import { PaymentHeader } from 'app/features/payment/PaymentHeader';
-import { PaymentPosts } from 'app/features/payment/PaymentPosts';
-import { useNavigate, useParams } from 'react-router-dom';
 import { NotFoundError } from 'app/components/NotFoundError';
+import { PaymentPosts } from 'app/features/payment/PaymentPosts';
 import { PAYMENTS } from 'core/constants-paths';
+import { usePageTitle } from 'core/utils/hooks/usePageTitle';
 
 export default function PaymentDetailsPage() {
+  usePageTitle('Detalhes do pagamento');
   const navigate = useNavigate();
   const params = useParams<{ id: string }>();
   const userId = Number(params.id);
@@ -44,29 +47,42 @@ export default function PaymentDetailsPage() {
   }
 
   return (
-    <Card>
-      <>
-        <PaymentHeader
-          loading={fetchingPayment}
-          editorId={payment?.payee.id}
-          editorName={payment?.payee.name}
-          periodStart={payment?.accountingPeriod.startsOn}
-          periodEnd={payment?.accountingPeriod.endsOn}
-          postsEarnings={payment?.earnings.totalAmount}
-          totalEarnings={payment?.grandTotalAmount}
-        />
-        <Divider />
-        <PaymentBonuses
-          bonuses={payment?.bonuses}
-          loading={fetchingPayment}
-        />
-        <Divider />
+    <Row gutter={[20, 20]} justify='end'>
+      <Col>
+        <Button
+          className='no-print'
+          type='primary'
+          icon={<PrinterOutlined />}
+          onClick={window.print}
+        >
+          Imprimir
+        </Button>
+      </Col>
 
-        <PaymentPosts
-          posts={posts}
-          loading={fetchingPost}
-        />
-      </>
-    </Card>
+      <Col>
+        <Card>
+          <PaymentHeader
+            loading={fetchingPayment}
+            editorId={payment?.payee.id}
+            editorName={payment?.payee.name}
+            periodStart={payment?.accountingPeriod.startsOn}
+            periodEnd={payment?.accountingPeriod.endsOn}
+            postsEarnings={payment?.earnings.totalAmount}
+            totalEarnings={payment?.grandTotalAmount}
+          />
+          <Divider />
+          <PaymentBonuses
+            bonuses={payment?.bonuses}
+            loading={fetchingPayment}
+          />
+          <Divider />
+
+          <PaymentPosts
+            posts={posts}
+            loading={fetchingPost}
+          />
+        </Card>
+      </Col>
+    </Row>
   );
 }

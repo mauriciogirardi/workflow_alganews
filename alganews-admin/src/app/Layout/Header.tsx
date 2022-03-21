@@ -6,7 +6,7 @@ const { Header: HeaderAntd } = Layout;
 
 export const Header = () => {
   return (
-    <HeaderAntd className='header'>
+    <HeaderAntd className='header no-print'>
       <Row
         justify='space-between'
         align='middle'

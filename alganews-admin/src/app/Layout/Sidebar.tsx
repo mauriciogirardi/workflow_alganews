@@ -27,7 +27,12 @@ export const Sidebar = () => {
   const location = useLocation();
 
   return (
-    <Sider width={200} breakpoint='lg' collapsedWidth='0'>
+    <Sider
+      width={200}
+      breakpoint='lg'
+      collapsedWidth='0'
+      className='no-print'
+    >
       <Menu
         mode='inline'
         defaultSelectedKeys={[location.pathname]}

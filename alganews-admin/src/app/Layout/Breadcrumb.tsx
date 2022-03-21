@@ -4,7 +4,10 @@ const { Item } = BreadcrumbAntd;
 
 export const Breadcrumb = () => {
   return (
-    <BreadcrumbAntd style={{ margin: '16px 0' }}>
+    <BreadcrumbAntd
+      style={{ margin: '16px 0' }}
+      className='no-print'
+    >
       <Item>Home</Item>
       <Item>List</Item>
       <Item>App</Item>

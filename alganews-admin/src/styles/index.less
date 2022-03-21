@@ -122,3 +122,23 @@
   background: @table-bd;
   z-index: 2;
 }
+
+@media print {
+  .no-print {
+    display: none;
+  }
+
+  * {
+    color: #000 !important;
+    border-color: #ccc !important;
+    background-color: #fff !important;
+  }
+
+  .ant-layout {
+    margin: 0 !important;
+  }
+
+  @page {
+    size: landscape;
+  }
+}

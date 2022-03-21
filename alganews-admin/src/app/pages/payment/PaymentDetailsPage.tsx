@@ -5,8 +5,15 @@ import { useEffect } from 'react';
 import { PaymentBonuses } from 'app/features/payment/PaymentBonuses';
 import { PaymentHeader } from 'app/features/payment/PaymentHeader';
 import { PaymentPosts } from 'app/features/payment/PaymentPosts';
+import { useNavigate, useParams } from 'react-router-dom';
+import { NotFoundError } from 'app/components/NotFoundError';
+import { PAYMENTS } from 'core/constants-paths';
 
 export default function PaymentDetailsPage() {
+  const navigate = useNavigate();
+  const params = useParams<{ id: string }>();
+  const userId = Number(params.id);
+
   const {
     fetchPayment,
     fetchPosts,
@@ -14,12 +21,27 @@ export default function PaymentDetailsPage() {
     fetchingPost,
     payment,
     posts,
+    notFound,
   } = usePayment();
 
   useEffect(() => {
-    fetchPayment(1);
-    fetchPosts(1);
-  }, [fetchPayment, fetchPosts]);
+    if (!isNaN(userId)) {
+      fetchPayment(userId);
+      fetchPosts(userId);
+    } else {
+      navigate(-1);
+    }
+  }, [fetchPayment, fetchPosts, userId, navigate]);
+
+  if (notFound) {
+    return (
+      <NotFoundError
+        title='Pagamento não encontrado'
+        actionDestination={PAYMENTS}
+        actionTitle='Voltar'
+      />
+    );
+  }
 
   return (
     <Card>

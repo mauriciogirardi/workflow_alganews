@@ -16,9 +16,9 @@ import {
 import { notification } from 'core/utils/notification';
 import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
 
-import CashFlowExpensesPage from '../pages/CashFlowExpensesPage';
-import CashFlowRevenuesPage from '../pages/CashFlowRevenuesPage';
-import PaymentCreatePage from '../pages/payment/PaymentListPage';
+import CashFlowExpensesPage from '../pages/cashFlow/CashFlowExpensesPage';
+import CashFlowRevenuesPage from '../pages/cashFlow/CashFlowRevenuesPage';
+import PaymentCreatePage from '../pages/payment/PaymentCreatePage';
 import PaymentListPage from '../pages/payment/PaymentListPage';
 import UserDetailsPage from 'app/pages/user/UserDetailsPage';
 import UserCreatePage from '../pages/user/UserCreatePage';
@@ -81,12 +81,12 @@ export const MainRoutes = () => {
         element={<PaymentListPage />}
       />
       <Route
-        path={PAYMENTS_CREATE}
-        element={<PaymentCreatePage />}
-      />
-      <Route
         path={PAYMENTS_DETAILS}
         element={<PaymentDetailsPage />}
+      />
+      <Route
+        path={PAYMENTS_CREATE}
+        element={<PaymentCreatePage />}
       />
 
       {/* Users */}

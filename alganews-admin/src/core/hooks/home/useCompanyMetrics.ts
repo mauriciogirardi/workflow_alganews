@@ -1,6 +1,6 @@
 import { MetricService } from 'mauricio.girardi-sdk';
 import { useCallback, useState } from 'react';
-import { transformDataIntoAntdChart } from '../utils';
+import { transformDataIntoAntdChart } from '../../utils';
 
 interface DataProps {
   yearMonth: string;

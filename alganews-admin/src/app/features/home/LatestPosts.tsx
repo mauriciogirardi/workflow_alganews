@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { Avatar, Card, Col, Row } from 'antd';
 
-import { useLatestPosts } from '../../core/hooks/post/useLatestPosts';
+import { useLatestPosts } from '../../../core/hooks/post/useLatestPosts';
 
 const { Meta } = Card;
 

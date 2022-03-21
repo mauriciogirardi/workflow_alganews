@@ -1,12 +1,11 @@
 import { useEffect } from 'react';
 import { Area, AreaConfig } from '@ant-design/charts';
-import Skeleton from 'react-loading-skeleton';
 
 import {
   formatterCurrency,
   formatterDate,
-} from '../../core/utils';
-import { useCompanyMetrics } from '../../core/hooks/useCompanyMetrics';
+} from '../../../core/utils';
+import { useCompanyMetrics } from '../../../core/hooks/home/useCompanyMetrics';
 
 export const CompanyMetrics = () => {
   const { data, fetchCompanyMetrics } = useCompanyMetrics();

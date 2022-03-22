@@ -10,6 +10,11 @@ export const useUsers = () => {
   const { fetching, users } = useSelector(
     (state: RootState) => state.user,
   );
+  const editors = useSelector((state: RootState) =>
+    state.user.users.filter(
+      (user) => user.role === 'EDITOR',
+    ),
+  );
 
   const fetchUsers = useCallback(() => {
     dispatch(useActions.getAllUsers());
@@ -32,5 +37,6 @@ export const useUsers = () => {
     fetching,
     users,
     userId,
+    editors,
   };
 };

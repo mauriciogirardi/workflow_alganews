@@ -1,6 +1,6 @@
 import { notification } from 'core/utils/notification';
 
-interface MesssgeProps {
+interface MessageProps {
   active: boolean;
   name: string;
 }
@@ -8,7 +8,7 @@ interface MesssgeProps {
 export const messageSuccessTogglesUserStatus = ({
   active,
   name,
-}: MesssgeProps) => {
+}: MessageProps) => {
   const isActive = active;
   const description = `${name} foi ${
     isActive ? 'Desativado(a)' : 'Habilitado(a)'

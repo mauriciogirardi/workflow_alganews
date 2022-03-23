@@ -1,13 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  Button,
-  Card,
-  Col,
-  Divider,
-  Row,
-  Space,
-  Tag,
-} from 'antd';
+import { Button, Card, Col, Divider, Row, Space, Tag } from 'antd';
 import { PrinterOutlined } from '@ant-design/icons';
 import { usePayment } from 'core/hooks/payment/usePayment';
 import { useEffect } from 'react';
@@ -15,11 +7,11 @@ import { useEffect } from 'react';
 import { PaymentBonuses } from 'app/features/payment/PaymentBonuses';
 import { PaymentHeader } from 'app/features/payment/PaymentHeader';
 import { NotFoundError } from 'app/components/NotFoundError';
-import { PaymentPosts } from 'app/features/payment/PaymentPosts';
-import { PAYMENTS } from 'core/constants-paths';
-import { usePageTitle } from 'core/utils/hooks/usePageTitle';
 import { DoubleConfirm } from 'app/components/DoubleConfirm';
 import { formatterDate } from 'core/utils';
+import { PaymentPosts } from 'app/features/payment/PaymentPosts';
+import { usePageTitle } from 'core/utils/hooks/usePageTitle';
+import { PAYMENTS } from 'core/constants-paths';
 
 export default function PaymentDetailsPage() {
   usePageTitle('Detalhes do pagamento');
@@ -31,10 +23,11 @@ export default function PaymentDetailsPage() {
     fetchPayment,
     fetchPosts,
     fetchingPayment,
-    fetchingPost,
+    fetchingPosts,
     payment,
     posts,
-    notFound,
+    paymentNotFound,
+    postsNotFound,
   } = usePayment();
 
   useEffect(() => {
@@ -51,13 +44,12 @@ export default function PaymentDetailsPage() {
   const renderPaymentApprovedAt = () => {
     return (
       <Tag>{`Pagamento aprovado em ${
-        !!payment?.approvedAt &&
-        formatterDate({ date: payment?.approvedAt })
+        !!payment?.approvedAt && formatterDate({ date: payment?.approvedAt })
       }`}</Tag>
     );
   };
 
-  if (notFound) {
+  if (paymentNotFound || postsNotFound) {
     return (
       <NotFoundError
         title='Pagamento não encontrado'
@@ -121,10 +113,7 @@ export default function PaymentDetailsPage() {
           />
           <Divider />
 
-          <PaymentPosts
-            posts={posts}
-            loading={fetchingPost}
-          />
+          <PaymentPosts posts={posts} loading={fetchingPosts} />
         </Card>
       </Col>
     </Row>

@@ -1,56 +1,31 @@
-import {
-  Button,
-  Col,
-  DatePicker,
-  Row,
-  Table,
-  Tag,
-  Tooltip,
-} from 'antd';
-import {
-  EyeOutlined,
-  DeleteOutlined,
-} from '@ant-design/icons';
-import { useEffect, useState } from 'react';
+import { Button, Col, DatePicker, Row, Table, Tag, Tooltip } from 'antd';
+import { useCallback, useEffect, useState } from 'react';
+import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
+import { Key, SorterResult } from 'antd/lib/table/interface';
 import { Payment } from 'mauricio.girardi-sdk';
-import {
-  Key,
-  SorterResult,
-} from 'antd/lib/table/interface';
+import { Link } from 'react-router-dom';
 
+import { PAYMENTS_DETAILS, USERS } from 'core/constants-paths';
 import { formatterDate } from 'core/utils';
 import { DoubleConfirm } from '../../components/DoubleConfirm';
 import { usePayments } from 'core/hooks/payment/usePayments';
-import { Link } from 'react-router-dom';
-import {
-  PAYMENTS_DETAILS,
-  USERS,
-} from 'core/constants-paths';
-
-const PAGE_SIZE = 12;
+import { notification } from 'core/utils/notification';
 
 export default function PaymentListPage() {
-  const [page, setPage] = useState(1);
-  const [sortingOrder, setSortingOrder] = useState<
-    'asc' | 'desc' | undefined
-  >();
-  const [yearMonth, setYearMonth] = useState<
-    string | undefined
-  >();
-  const [selectedRowKeys, setSelectedRowKeys] = useState<
-    Key[]
-  >([]);
-  const { fetchPayments, payments, isFetching } =
-    usePayments();
+  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
+
+  const {
+    query,
+    setQuery,
+    payments,
+    isFetching,
+    fetchPayments,
+    approvingPaymentsInBatch,
+  } = usePayments();
 
   useEffect(() => {
-    fetchPayments({
-      scheduledToYearMonth: yearMonth,
-      sort: ['scheduledTo', sortingOrder || 'desc'],
-      page: page - 1,
-      size: PAGE_SIZE,
-    });
-  }, [fetchPayments, yearMonth, page, sortingOrder]);
+    fetchPayments();
+  }, [fetchPayments]);
 
   const renderAccountingPeriod = (
     period: Payment.Summary['accountingPeriod'],
@@ -67,9 +42,7 @@ export default function PaymentListPage() {
     return `${dateStarts} - ${dateEnds}`;
   };
 
-  const renderApprovedAt = (
-    approvalDate: Payment.Summary['approvedAt'],
-  ) => {
+  const renderApprovedAt = (approvalDate: Payment.Summary['approvedAt']) => {
     const date = formatterDate({
       date: approvalDate,
       typeFormat: 'dd/MM/yyyy',
@@ -82,10 +55,20 @@ export default function PaymentListPage() {
     );
   };
 
-  const renderAction = (
-    id: number,
-    payment: Payment.Summary,
-  ) => {
+  const confirmPayment = useCallback(
+    async (selectedRowKeys) => {
+      await approvingPaymentsInBatch(selectedRowKeys);
+      setSelectedRowKeys([]);
+      fetchPayments();
+      notification({
+        title: 'Pagamentos',
+        description: 'Os Pagamentos selecionados foram aprovados.',
+      });
+    },
+    [approvingPaymentsInBatch, fetchPayments],
+  );
+
+  const renderAction = (id: number, payment: Payment.Summary) => {
     const tooltipTitleDelete = payment.canBeDeleted
       ? 'Remover'
       : 'Pagamento já foi aprovado!';
@@ -111,17 +94,8 @@ export default function PaymentListPage() {
 
         <Col>
           <Tooltip title='Detalhar' placement='right'>
-            <Link
-              to={PAYMENTS_DETAILS.replace(
-                ':id',
-                String(payment.id),
-              )}
-            >
-              <Button
-                size='middle'
-                type='text'
-                icon={<EyeOutlined />}
-              />
+            <Link to={PAYMENTS_DETAILS.replace(':id', String(payment.id))}>
+              <Button size='middle' type='text' icon={<EyeOutlined />} />
             </Link>
           </Tooltip>
         </Col>
@@ -153,10 +127,12 @@ export default function PaymentListPage() {
             popConfirmTitle={popConfirmTitle}
             disabled={selectedRowKeys.length === 0}
             okText='Sim'
+            onOk={() => confirmPayment(selectedRowKeys)}
           >
             <Button
               disabled={selectedRowKeys.length === 0}
               type='primary'
+              loading={isFetching}
             >
               Aprovar pagamentos
             </Button>
@@ -168,11 +144,12 @@ export default function PaymentListPage() {
             style={{ width: 250 }}
             format={'MMMM - YYYY'}
             disabled={isFetching}
-            onChange={(date) =>
-              setYearMonth(
-                date ? date.format('YYYY-MM') : undefined,
-              )
-            }
+            onChange={(date) => {
+              setQuery({
+                scheduledToYearMonth: date ? date.format('YYYY-MM') : undefined,
+                sort: ['scheduledTo', 'desc'],
+              });
+            }}
           />
         </Col>
       </Row>
@@ -180,10 +157,11 @@ export default function PaymentListPage() {
       <Table<Payment.Summary>
         loading={isFetching}
         pagination={{
-          current: page,
-          onChange: setPage,
+          current: query.page ? query.page + 1 : 1,
+          onChange: (page) =>
+            setQuery({ page: page - 1, sort: ['scheduledTo', 'desc'] }),
           total: payments?.totalElements,
-          pageSize: PAGE_SIZE,
+          pageSize: query.size,
         }}
         rowKey={'id'}
         dataSource={payments?.content}
@@ -192,17 +170,17 @@ export default function PaymentListPage() {
           selectedRowKeys,
           onChange: setSelectedRowKeys,
           getCheckboxProps(payment) {
-            return !payment.canBeApproved
-              ? { disabled: true }
-              : {};
+            return !payment.canBeApproved ? { disabled: true } : {};
           },
         }}
         onChange={(p, f, sorter) => {
-          const { order } =
-            sorter as SorterResult<Payment.Summary>;
-          order === 'ascend'
-            ? setSortingOrder('asc')
-            : setSortingOrder('desc');
+          const { order } = sorter as SorterResult<Payment.Summary>;
+          const direction = order?.replace('end', '');
+          if (direction && direction !== query.sort[1]) {
+            setQuery({
+              sort: [query.sort[0], direction as 'asc' | 'desc'],
+            });
+          }
         }}
         columns={[
           {
@@ -210,11 +188,7 @@ export default function PaymentListPage() {
             title: 'Editor',
             align: 'left',
             render(payee: Payment.Summary['payee']) {
-              return (
-                <Link to={`${USERS}/${payee.id}`}>
-                  {payee.name}
-                </Link>
-              );
+              return <Link to={`${USERS}/${payee.id}`}>{payee.name}</Link>;
             },
           },
           {

@@ -1,29 +1,37 @@
-import {
-  Payment,
-  PayrollService,
-} from 'mauricio.girardi-sdk';
-import { useCallback, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useCallback } from 'react';
+import { RootState } from 'core/store';
+
+import * as paymentActions from '../../store/payment.slice';
+import { Payment } from 'mauricio.girardi-sdk';
 
 export const usePayments = () => {
-  const [isFetching, setIsFetching] = useState(false);
-  const [payments, setPayments] =
-    useState<Payment.Paginated>();
+  const dispatch = useDispatch();
+  const isFetching = useSelector((state: RootState) => state.payment.fetching);
+  const payments = useSelector((state: RootState) => state.payment.paginated);
+  const query = useSelector((state: RootState) => state.payment.query);
 
   const fetchPayments = useCallback(
-    async (query: Payment.Query) => {
-      setIsFetching(true);
-      const payments = await PayrollService.getAllPayments(
-        query,
-      );
-      setPayments(payments);
-      setIsFetching(false);
-    },
-    [],
+    () => dispatch(paymentActions.getAllPayments()),
+    [dispatch],
+  );
+
+  const approvingPaymentsInBatch = useCallback(
+    (ids: number[]) => dispatch(paymentActions.approvedPaymentInBatch(ids)),
+    [dispatch],
+  );
+
+  const setQuery = useCallback(
+    (query: Payment.Query) => dispatch(paymentActions.setQuery(query)),
+    [dispatch],
   );
 
   return {
+    query,
+    setQuery,
     payments,
-    fetchPayments,
     isFetching,
+    fetchPayments,
+    approvingPaymentsInBatch,
   };
 };

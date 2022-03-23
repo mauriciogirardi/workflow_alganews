@@ -7,45 +7,62 @@ import {
   Row,
   Select,
   Divider,
-  Descriptions,
-  Tabs,
 } from 'antd';
-import {
-  PlusOutlined,
-  DeleteOutlined,
-  FileAddOutlined,
-  BankOutlined,
-} from '@ant-design/icons';
+
 import { FormInstance } from 'rc-field-form';
+import { useNavigate } from 'react-router-dom';
 import { RangeValue } from 'rc-picker/lib/interface';
 import { FieldData } from 'rc-field-form/lib/interface';
 import { useUsers } from 'core/hooks/user/useUsers';
 import { Payment } from 'mauricio.girardi-sdk';
 import { useForm } from 'antd/lib/form/Form';
+import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
 import debounce from 'lodash.debounce';
 import moment, { Moment } from 'moment';
 
 import { normalizeFilterOptionSearch } from 'core/utils/normalizeFilterOptionSearch';
-import { CurrencyInput } from '../../components/CurrencyInput';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { PaymentFormBonuses } from './PaymentFormBonuses';
+import { PaymentPreview } from './PaymentPreview';
+import { BusinessError } from 'mauricio.girardi-sdk/dist/errors';
+import { notification } from 'core/utils/notification';
+import { usePayment } from 'core/hooks/payment/usePayment';
+import { PAYMENTS } from 'core/constants-paths';
 
 const { RangePicker } = DatePicker;
-const { Item, List } = Form;
+const { Item } = Form;
 const { Option } = Select;
-const { TabPane } = Tabs;
 
 const FORMAT = 'DD/MM/YYYY';
 const style = { width: '100%' };
+const rules = [
+  {
+    required: true,
+    message: 'O campo é obrigatório',
+  },
+];
 
 export const PaymentForm = () => {
   const [form] = useForm<Payment.Input>();
-  const { fetching, editors } = useUsers();
+  const navigate = useNavigate();
+  const { fetching, editors, fetchUsers } = useUsers();
+  const [scheduledTo, setScheduledTo] = useState('');
+  const [paymentPreviewError, setPaymentPreviewError] = useState<CustomError>();
+  const {
+    fetchPaymentPreview,
+    fetchingPaymentPreview,
+    paymentPreview,
+    clearPaymentPreview,
+    fetchingSchedulePayment,
+    schedulePayment,
+  } = usePayment();
+
+  useEffect(() => {
+    fetchUsers();
+  }, [fetchUsers]);
 
   const disabledDate = (date: Moment) => {
-    return (
-      date.isBefore(moment()) ||
-      date.isAfter(moment().add(7, 'days'))
-    );
+    return date.isBefore(moment()) || date.isAfter(moment().add(7, 'days'));
   };
 
   const onChangeRangePicker = (
@@ -70,165 +87,87 @@ export const PaymentForm = () => {
     }
   };
 
-  const renderListBonuses = (
-    form: FormInstance<Payment.Input>,
-  ) => {
-    return (
-      <List name={'bonuses'}>
-        {(fields, { add, remove }) => (
-          <>
-            {fields.map((field) => (
-              <Row gutter={24} key={field.key}>
-                <Col xs={24} lg={15}>
-                  <Item
-                    {...field}
-                    label='Descrição'
-                    name={[field.name, 'title']}
-                  >
-                    <Input placeholder='E.g.: 1 milhão de views' />
-                  </Item>
-                </Col>
-                <Col xs={24} lg={5}>
-                  <Item
-                    {...field}
-                    initialValue={0}
-                    label='Valor'
-                    name={[field.name, 'amount']}
-                  >
-                    <CurrencyInput
-                      onChange={(evt, amount) => {
-                        const { bonuses } =
-                          form.getFieldsValue();
-                        form.setFieldsValue({
-                          bonuses: bonuses?.map(
-                            (bonus, index) => {
-                              return index === field.name
-                                ? {
-                                    title: bonus.title,
-                                    amount,
-                                  }
-                                : bonus;
-                            },
-                          ),
-                        });
-                      }}
-                    />
-                  </Item>
-                </Col>
-                <Col xs={24} lg={4}>
-                  <Item label='Remover'>
-                    <Button
-                      danger
-                      type='text'
-                      icon={<DeleteOutlined />}
-                      onClick={() => remove(field.name)}
-                    />
-                  </Item>
-                </Col>
-              </Row>
-            ))}
-            <Button
-              type='dashed'
-              block
-              onClick={() => add()}
-              icon={<PlusOutlined />}
-            >
-              Adicionar bônus
-            </Button>
-          </>
-        )}
-      </List>
-    );
-  };
+  const updateScheduleDate = useCallback(() => {
+    const { scheduledTo } = form.getFieldsValue();
+    setScheduledTo(scheduledTo);
+  }, [form]);
 
-  const TabBackAccount = () => {
-    return (
-      <Descriptions
-        column={1}
-        bordered
-        size='small'
-        labelStyle={{ width: 160 }}
-      >
-        <Descriptions.Item label='Código do Banco'>
-          341
-        </Descriptions.Item>
-        <Descriptions.Item label='Número da conta'>
-          1205698
-        </Descriptions.Item>
-        <Descriptions.Item label='Dígito da conta'>
-          5
-        </Descriptions.Item>
-        <Descriptions.Item label='Agência'>
-          0001
-        </Descriptions.Item>
-        <Descriptions.Item label='Tipo de conta'>
-          Conta Corrente
-        </Descriptions.Item>
-      </Descriptions>
-    );
-  };
+  const clearPaymentPreviewError = useCallback(() => {
+    setPaymentPreviewError(undefined);
+  }, []);
 
-  const TabDemonstrative = () => {
-    return (
-      <Descriptions
-        column={1}
-        bordered
-        size='small'
-        labelStyle={{ width: 160 }}
-      >
-        <Descriptions.Item label='Editor'>
-          Mauricio Girardi
-        </Descriptions.Item>
-        <Descriptions.Item label='Período'>
-          20/05/2022 até 30/01/2023
-        </Descriptions.Item>
-        <Descriptions.Item label='Agendamento'>
-          30/01/2023
-        </Descriptions.Item>
-        <Descriptions.Item label='Palavras'>
-          322
-        </Descriptions.Item>
-        {[1, 2, 3].map((bonus) => (
-          <Descriptions.Item
-            key={bonus}
-            label={`Bônus ${bonus}`}
-          >
-            R$ 25.356,22
-          </Descriptions.Item>
-        ))}
-        <Descriptions.Item label='Ganhos'>
-          R$ 25.356,22
-        </Descriptions.Item>
-      </Descriptions>
-    );
-  };
+  const getPaymentPreview = useCallback(async () => {
+    const { accountingPeriod, payee, bonuses } = form.getFieldsValue();
+    if (payee && accountingPeriod) {
+      if (payee.id && accountingPeriod.endsOn && accountingPeriod.startsOn) {
+        try {
+          await fetchPaymentPreview({
+            payee,
+            accountingPeriod,
+            bonuses: bonuses || [],
+          });
+
+          clearPaymentPreviewError();
+        } catch (err) {
+          clearPaymentPreview();
+
+          if (err instanceof BusinessError) {
+            setPaymentPreviewError(err);
+          }
+          throw err;
+        }
+      } else {
+        clearPaymentPreview();
+        clearPaymentPreviewError();
+      }
+    }
+  }, [
+    form,
+    fetchPaymentPreview,
+    clearPaymentPreview,
+    clearPaymentPreviewError,
+  ]);
 
   const handleOnFieldsChange = useCallback(
     ([field]: FieldData[]) => {
-      if (Array.isArray(field.name)) {
+      if (Array.isArray(field?.name)) {
         if (
           field.name.includes('payee') ||
-          field.name.includes('_accountPeriod') ||
+          field.name.includes('_accountingPeriod') ||
           field.name.includes('bonuses')
         ) {
-          console.log('é necessário atualizar!');
+          getPaymentPreview();
+        }
+
+        if (field.name.includes('scheduledTo')) {
+          updateScheduleDate();
         }
       }
     },
-    [],
+    [getPaymentPreview, updateScheduleDate],
   );
 
   const handleOnFinish = useCallback(
-    (form: Payment.Input) => {
-      console.log(form);
+    async (form: Payment.Input) => {
+      const paymentDTO: Payment.Input = {
+        accountingPeriod: form.accountingPeriod,
+        payee: form.payee,
+        bonuses: form.bonuses || [],
+        scheduledTo: moment(form.scheduledTo).format('YYYY-MM-DD'),
+      };
+
+      await schedulePayment(paymentDTO);
+
+      navigate(PAYMENTS);
+      notification({
+        title: 'Pagamento',
+        description: 'O pagamento foi agendado com sucesso',
+      });
     },
-    [],
+    [schedulePayment, navigate],
   );
 
-  const debounceHandleFormChange = debounce(
-    handleOnFieldsChange,
-    1000,
-  );
+  const debounceHandleFormChange = debounce(handleOnFieldsChange, 1000);
 
   return (
     <Form<Payment.Input>
@@ -239,7 +178,7 @@ export const PaymentForm = () => {
     >
       <Row gutter={[20, 0]}>
         <Col xs={24} lg={8}>
-          <Item label='Editor' name={['payee', 'id']}>
+          <Item label='Editor' name={['payee', 'id']} rules={rules}>
             <Select
               showSearch
               loading={fetching}
@@ -255,31 +194,23 @@ export const PaymentForm = () => {
         </Col>
 
         <Col xs={24} lg={8}>
-          <Item
-            hidden
-            name={['accountingPeriod', 'startsOn']}
-          >
+          <Item hidden name={['accountingPeriod', 'startsOn']}>
             <Input hidden />
           </Item>
-          <Item
-            hidden
-            name={['accountingPeriod', 'endsOn']}
-          >
+          <Item hidden name={['accountingPeriod', 'endsOn']}>
             <Input hidden />
           </Item>
-          <Item label='Período' name={'_accountingPeriod'}>
+          <Item label='Período' name={'_accountingPeriod'} rules={rules}>
             <RangePicker
               format={FORMAT}
               style={style}
-              onChange={(date) =>
-                onChangeRangePicker(date, form)
-              }
+              onChange={(date) => onChangeRangePicker(date, form)}
             />
           </Item>
         </Col>
 
         <Col xs={24} lg={8}>
-          <Item label='Agendamento' name={'scheduledTo'}>
+          <Item label='Agendamento' name={'scheduledTo'} rules={rules}>
             <DatePicker
               format={FORMAT}
               style={style}
@@ -290,42 +221,28 @@ export const PaymentForm = () => {
 
         <Divider />
         <Col xs={24} lg={12}>
-          <Tabs defaultActiveKey='demonstrativo'>
-            <TabPane
-              key='personal'
-              tab={
-                <span>
-                  <FileAddOutlined />
-                  demonstrativo
-                </span>
-              }
-            >
-              <TabDemonstrative />
-            </TabPane>
-            <TabPane
-              forceRender
-              key='bankAccount'
-              tab={
-                <span>
-                  <BankOutlined />
-                  Dados bancários
-                </span>
-              }
-            >
-              <TabBackAccount />
-            </TabPane>
-          </Tabs>
+          <PaymentPreview
+            fetchingPaymentPreview={fetchingPaymentPreview}
+            paymentPreviewError={paymentPreviewError}
+            paymentPreview={paymentPreview}
+            scheduledTo={scheduledTo}
+          />
         </Col>
 
         <Col xs={24} lg={12} style={{ marginTop: 15 }}>
-          {renderListBonuses(form)}
+          <PaymentFormBonuses form={form} />
         </Col>
       </Row>
 
       <Divider />
       <Row justify='end'>
-        <Button htmlType='submit' type='primary'>
-          Enviar
+        <Button
+          htmlType='submit'
+          type='primary'
+          loading={fetchingSchedulePayment}
+          disabled={!!paymentPreviewError}
+        >
+          Cadastrar um agendamento
         </Button>
       </Row>
     </Form>

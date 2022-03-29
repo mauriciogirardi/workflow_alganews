@@ -84,21 +84,21 @@ export const usePayment = () => {
   }, []);
 
   return {
-    fetchPayment,
+    posts,
+    payment,
     fetchPosts,
-    approvePayment,
-    fetchPaymentPreview,
-    fetchingPayment,
+    fetchPayment,
     fetchingPosts,
+    postsNotFound,
+    paymentPreview,
+    approvePayment,
+    schedulePayment,
+    fetchingPayment,
+    paymentNotFound,
     approvingPayment,
+    fetchPaymentPreview,
     clearPaymentPreview,
     fetchingPaymentPreview,
     fetchingSchedulePayment,
-    schedulePayment,
-    paymentNotFound,
-    postsNotFound,
-    posts,
-    payment,
-    paymentPreview,
   };
 };

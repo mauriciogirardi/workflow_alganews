@@ -11,6 +11,7 @@ import { DoubleConfirm } from 'app/components/DoubleConfirm';
 import { formatterDate } from 'core/utils';
 import { PaymentPosts } from 'app/features/payment/PaymentPosts';
 import { usePageTitle } from 'core/utils/hooks/usePageTitle';
+import { notification } from 'core/utils/notification';
 import { PAYMENTS } from 'core/constants-paths';
 
 export default function PaymentDetailsPage() {
@@ -20,14 +21,16 @@ export default function PaymentDetailsPage() {
   const userId = Number(params.id);
 
   const {
-    fetchPayment,
-    fetchPosts,
-    fetchingPayment,
-    fetchingPosts,
-    payment,
     posts,
-    paymentNotFound,
+    payment,
+    fetchPosts,
+    fetchPayment,
+    fetchingPosts,
     postsNotFound,
+    fetchingPayment,
+    paymentNotFound,
+    approvePayment,
+    fetchingSchedulePayment,
   } = usePayment();
 
   useEffect(() => {
@@ -39,7 +42,15 @@ export default function PaymentDetailsPage() {
     }
   }, [fetchPayment, fetchPosts, userId, navigate]);
 
-  const handleConfirmSchedule = () => {};
+  const handleConfirmSchedule = async (id: number) => {
+    await approvePayment(id);
+    notification({
+      title: 'Pagamento',
+      description: 'O Pagamento selecionado foi aprovado.',
+    });
+
+    navigate(PAYMENTS);
+  };
 
   const renderPaymentApprovedAt = () => {
     return (
@@ -71,15 +82,16 @@ export default function PaymentDetailsPage() {
               onConfirmTitle='Ação irreversível'
               popConfirmTitle='Deseja aprovar este agendamento?'
               okText='Sim'
-              onOk={handleConfirmSchedule}
+              onOk={() => handleConfirmSchedule(payment?.id)}
             >
               <Button
                 className='no-print'
                 type='primary'
                 danger
                 icon={<PrinterOutlined />}
+                loading={fetchingSchedulePayment}
               >
-                Aprovar agendamentos
+                Aprovar agendamento
               </Button>
             </DoubleConfirm>
           )}

@@ -7,16 +7,19 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import { Payment, PayrollService } from 'mauricio.girardi-sdk';
+import { Key } from 'antd/lib/table/interface';
 import { RootState } from '.';
 
 interface PaymentState {
   paginated: Payment.Paginated;
   fetching: boolean;
   query: Payment.Query;
+  selected: Key[];
 }
 
 const initialState: PaymentState = {
   fetching: false,
+  selected: [],
   query: {
     sort: ['scheduledTo', 'desc'],
     page: 0,
@@ -42,10 +45,20 @@ export const getAllPayments = createAsyncThunk(
   },
 );
 
+export const deletePayment = createAsyncThunk(
+  'payment/deletePayment',
+  async (id: number, { dispatch }) => {
+    await PayrollService.removeExistingPayment(id);
+    await dispatch(getAllPayments());
+  },
+);
+
 export const approvedPaymentInBatch = createAsyncThunk(
   'payment/approvedPaymentInBatch',
-  async (paymentId: number[]) => {
+  async (paymentId: number[], { dispatch }) => {
     await PayrollService.approvePaymentsBatch(paymentId);
+    await dispatch(getAllPayments());
+    await dispatch(storeSelectedKeys([]));
   },
 );
 
@@ -70,12 +83,27 @@ const paymentSlice = createSlice({
         ...action.payload,
       };
     },
+    storeSelectedKeys(state, action: PayloadAction<Key[]>) {
+      state.selected = action.payload;
+    },
   },
 
   extraReducers(builder) {
-    const loading = isPending(getAllPayments, approvedPaymentInBatch);
-    const success = isFulfilled(getAllPayments, approvedPaymentInBatch);
-    const error = isRejected(getAllPayments, approvedPaymentInBatch);
+    const loading = isPending(
+      getAllPayments,
+      approvedPaymentInBatch,
+      deletePayment,
+    );
+    const success = isFulfilled(
+      getAllPayments,
+      approvedPaymentInBatch,
+      deletePayment,
+    );
+    const error = isRejected(
+      getAllPayments,
+      approvedPaymentInBatch,
+      deletePayment,
+    );
 
     builder
       .addMatcher(success, (state) => {
@@ -90,7 +118,8 @@ const paymentSlice = createSlice({
   },
 });
 
-export const { storeList, storeQuery } = paymentSlice.actions;
+export const { storeList, storeQuery, storeSelectedKeys } =
+  paymentSlice.actions;
 
 const paymentReducer = paymentSlice.reducer;
 export default paymentReducer;

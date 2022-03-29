@@ -1,25 +1,26 @@
 import { Button, Col, DatePicker, Row, Table, Tag, Tooltip } from 'antd';
-import { useCallback, useEffect, useState } from 'react';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Key, SorterResult } from 'antd/lib/table/interface';
+import { useCallback, useEffect } from 'react';
+import { SorterResult } from 'antd/lib/table/interface';
 import { Payment } from 'mauricio.girardi-sdk';
 import { Link } from 'react-router-dom';
 
 import { PAYMENTS_DETAILS, USERS } from 'core/constants-paths';
 import { formatterDate } from 'core/utils';
 import { DoubleConfirm } from '../../components/DoubleConfirm';
-import { usePayments } from 'core/hooks/payment/usePayments';
 import { notification } from 'core/utils/notification';
+import { usePayments } from 'core/hooks/payment/usePayments';
 
 export default function PaymentListPage() {
-  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
-
   const {
     query,
     setQuery,
     payments,
+    selected,
     isFetching,
+    setSelected,
     fetchPayments,
+    deletePayment,
     approvingPaymentsInBatch,
   } = usePayments();
 
@@ -58,14 +59,23 @@ export default function PaymentListPage() {
   const confirmPayment = useCallback(
     async (selectedRowKeys) => {
       await approvingPaymentsInBatch(selectedRowKeys);
-      setSelectedRowKeys([]);
-      fetchPayments();
       notification({
         title: 'Pagamentos',
         description: 'Os Pagamentos selecionados foram aprovados.',
       });
     },
-    [approvingPaymentsInBatch, fetchPayments],
+    [approvingPaymentsInBatch],
+  );
+
+  const confirmDeletePayment = useCallback(
+    async (id: number) => {
+      await deletePayment(id);
+      notification({
+        title: 'Deletar Pagamento',
+        description: 'O Pagamento foi deletado com sucesso.',
+      });
+    },
+    [deletePayment],
   );
 
   const renderAction = (id: number, payment: Payment.Summary) => {
@@ -82,6 +92,7 @@ export default function PaymentListPage() {
             popConfirmTitle='Remover Agendamento?'
             tooltipTitle={tooltipTitleDelete}
             disabled={!payment.canBeDeleted}
+            onOk={() => confirmDeletePayment(id)}
           >
             <Button
               size='middle'
@@ -104,11 +115,9 @@ export default function PaymentListPage() {
   };
 
   const onConfirmTitle =
-    selectedRowKeys.length === 1
-      ? 'Aprovar o pagamento!'
-      : 'Aprovar os pagamentos';
+    selected.length === 1 ? 'Aprovar o pagamento!' : 'Aprovar os pagamentos';
   const popConfirmTitle =
-    selectedRowKeys.length === 1
+    selected.length === 1
       ? 'Você deseja aprovar o pagamento selecionado?'
       : 'Você deseja aprovar os pagamentos selecionados?';
 
@@ -125,12 +134,12 @@ export default function PaymentListPage() {
             onConfirmContent='Esta é uma ação irreversível. Ao aprovar um pagamento, ele não poderá ser removido.'
             onConfirmTitle={onConfirmTitle}
             popConfirmTitle={popConfirmTitle}
-            disabled={selectedRowKeys.length === 0}
+            disabled={selected.length === 0}
             okText='Sim'
-            onOk={() => confirmPayment(selectedRowKeys)}
+            onOk={() => confirmPayment(selected)}
           >
             <Button
-              disabled={selectedRowKeys.length === 0}
+              disabled={selected.length === 0}
               type='primary'
               loading={isFetching}
             >
@@ -167,8 +176,8 @@ export default function PaymentListPage() {
         dataSource={payments?.content}
         scroll={{ x: 850 }}
         rowSelection={{
-          selectedRowKeys,
-          onChange: setSelectedRowKeys,
+          selectedRowKeys: selected,
+          onChange: setSelected,
           getCheckboxProps(payment) {
             return !payment.canBeApproved ? { disabled: true } : {};
           },

@@ -1,14 +1,8 @@
-import {
-  createAsyncThunk,
-  createSlice,
-  isFulfilled,
-  isPending,
-  isRejected,
-  PayloadAction,
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Payment, PayrollService } from 'mauricio.girardi-sdk';
 import { Key } from 'antd/lib/table/interface';
 import { RootState } from '.';
+import { getThunkStatus } from './utils/getThunksStatus';
 
 interface PaymentState {
   paginated: Payment.Paginated;
@@ -89,21 +83,11 @@ const paymentSlice = createSlice({
   },
 
   extraReducers(builder) {
-    const loading = isPending(
+    const { error, loading, success } = getThunkStatus([
       getAllPayments,
       approvedPaymentInBatch,
       deletePayment,
-    );
-    const success = isFulfilled(
-      getAllPayments,
-      approvedPaymentInBatch,
-      deletePayment,
-    );
-    const error = isRejected(
-      getAllPayments,
-      approvedPaymentInBatch,
-      deletePayment,
-    );
+    ]);
 
     builder
       .addMatcher(success, (state) => {

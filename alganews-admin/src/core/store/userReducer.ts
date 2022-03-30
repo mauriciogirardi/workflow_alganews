@@ -1,12 +1,7 @@
 import { User, UserService } from 'mauricio.girardi-sdk';
-import {
-  createReducer,
-  createAsyncThunk,
-  isFulfilled,
-  isRejected,
-  isPending,
-} from '@reduxjs/toolkit';
+import { createReducer, createAsyncThunk } from '@reduxjs/toolkit';
 import { messageSuccessTogglesUserStatus } from './utils/messageSuccessToggleUserStatus';
+import { getThunkStatus } from './utils/getThunksStatus';
 
 interface UserState {
   users: User.Summary[];
@@ -18,9 +13,8 @@ const initialState: UserState = {
   users: [],
 };
 
-export const getAllUsers = createAsyncThunk(
-  'user/getAllUsers',
-  async () => UserService.getAllUsers(),
+export const getAllUsers = createAsyncThunk('user/getAllUsers', async () =>
+  UserService.getAllUsers(),
 );
 
 export const toggleUsersStatus = createAsyncThunk(
@@ -35,34 +29,29 @@ export const toggleUsersStatus = createAsyncThunk(
 );
 
 export default createReducer(initialState, (builder) => {
-  const success = isFulfilled(
+  const { error, loading, success } = getThunkStatus([
     getAllUsers,
     toggleUsersStatus,
-  );
-  const error = isRejected(getAllUsers, toggleUsersStatus);
-  const loading = isPending(getAllUsers, toggleUsersStatus);
+  ]);
 
   builder
     .addCase(getAllUsers.fulfilled, (state, action) => {
       state.users = action.payload;
     })
-    .addCase(
-      toggleUsersStatus.fulfilled,
-      (state, action) => {
-        const { id } = action.payload;
+    .addCase(toggleUsersStatus.fulfilled, (state, action) => {
+      const { id } = action.payload;
 
-        state.users = state.users.map((user) => {
-          if (user.id === id) {
-            messageSuccessTogglesUserStatus({
-              active: user.active,
-              name: user.name,
-            });
-            return { ...user, active: !user.active };
-          }
-          return user;
-        });
-      },
-    )
+      state.users = state.users.map((user) => {
+        if (user.id === id) {
+          messageSuccessTogglesUserStatus({
+            active: user.active,
+            name: user.name,
+          });
+          return { ...user, active: !user.active };
+        }
+        return user;
+      });
+    })
     .addMatcher(success, (state) => {
       state.fetching = false;
     })

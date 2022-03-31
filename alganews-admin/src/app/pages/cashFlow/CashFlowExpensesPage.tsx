@@ -1,15 +1,18 @@
-import { Button, Divider, Row, Space, Tooltip, Typography } from 'antd';
-import { InfoCircleFilled } from '@ant-design/icons';
+import { Button, Divider, Modal, Row, Space, Tooltip, Typography } from 'antd';
+import { InfoCircleFilled, TagOutlined } from '@ant-design/icons';
 
 import { EntryList } from 'app/features/cashFlow/EntryList';
 import { useCashFlow } from 'core/hooks/cashFlow/useCashFlow';
 import { DoubleConfirm } from 'app/components/DoubleConfirm';
 import { notification } from 'core/utils/notification';
+import { useCallback, useState } from 'react';
+import { EntryCategoryManager } from 'app/features/cashFlow/category/EntryCategoryManager';
 
 const { Title, Text } = Typography;
 
 export default function CashFlowExpensesPage() {
   const { selected, removeEntriesInBatch } = useCashFlow('EXPENSE');
+  const [shoeCategoryModal, setShowCategoryModal] = useState(false);
 
   const handleDeleteEntriesInBatch = async (ids: number[]) => {
     await removeEntriesInBatch(ids);
@@ -22,8 +25,23 @@ export default function CashFlowExpensesPage() {
     });
   };
 
+  const handleCategoryModal = useCallback(
+    () => setShowCategoryModal((prevState) => !prevState),
+    [],
+  );
+
   return (
     <>
+      <Modal
+        key='categories'
+        visible={shoeCategoryModal}
+        onCancel={handleCategoryModal}
+        title='Categoria'
+        footer={null}
+      >
+        <EntryCategoryManager type={'EXPENSE'} />
+      </Modal>
+
       <Space direction='vertical'>
         <Title level={3}>Recuperando entradas do mês de agosto</Title>
         <Space>
@@ -35,7 +53,7 @@ export default function CashFlowExpensesPage() {
       </Space>
 
       <Divider />
-      <Row>
+      <Row justify='space-between' align='middle' style={{ marginBottom: 16 }}>
         <DoubleConfirm
           onConfirmContent='Remover uma ou mais entradas pode gerar impacto negativo no gráfico de receitas e despesas da empresa. Esta ação é irreversível.'
           onConfirmTitle={`Remover ${
@@ -54,6 +72,14 @@ export default function CashFlowExpensesPage() {
             Remover
           </Button>
         </DoubleConfirm>
+
+        <Button
+          type='primary'
+          icon={<TagOutlined />}
+          onClick={handleCategoryModal}
+        >
+          Categorias
+        </Button>
       </Row>
 
       <EntryList />

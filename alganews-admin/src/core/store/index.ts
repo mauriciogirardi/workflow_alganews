@@ -1,6 +1,7 @@
 import { configureStore, isRejected, combineReducers } from '@reduxjs/toolkit';
 
 import { notification } from 'core/utils/notification';
+import entriesCategoryReducer from './cashFlow/entriesCategory.slice';
 import expenseReducer from './cashFlow/expense.slice';
 import revenueReducer from './cashFlow/revenue.slice';
 import paymentReducer from './payment.slice';
@@ -21,6 +22,7 @@ const observeActions = () => (next: any) => (action: any) => {
 const cashFlowReducer = combineReducers({
   expense: expenseReducer,
   revenue: revenueReducer,
+  category: entriesCategoryReducer,
 });
 
 export const store = configureStore({

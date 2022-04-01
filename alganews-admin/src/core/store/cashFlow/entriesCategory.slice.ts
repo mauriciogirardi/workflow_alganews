@@ -41,6 +41,14 @@ export const createCategory = createAsyncThunk(
   },
 );
 
+export const deleteCategory = createAsyncThunk(
+  'cash-flow/categories/deleteCategory',
+  async (categoryId: number, { dispatch }) => {
+    await CashFlowService.removeExistingCategory(categoryId);
+    await dispatch(getCategories());
+  },
+);
+
 const entriesCategorySlice = createSlice({
   initialState,
   name: 'cash-flow/categories',
@@ -61,6 +69,7 @@ const entriesCategorySlice = createSlice({
     const { error, loading, success } = getThunkStatus([
       getCategories,
       createCategory,
+      deleteCategory,
     ]);
 
     builder

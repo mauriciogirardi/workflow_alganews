@@ -1,12 +1,12 @@
-import { useDispatch, useSelector } from 'react-redux';
 import { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { RootState } from 'core/store';
-import * as categoryActions from '../../store/cashFlow/entriesCategory.slice';
+import { AppDispatch, RootState } from 'core/store';
+import * as categoryActions from 'core/store/cashFlow/entriesCategory.slice';
 import { CashFlow } from 'mauricio.girardi-sdk';
 
 export const useEntriesCategories = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const isFetchingCategories = useSelector(
     (state: RootState) => state.cashFlow.category.isFetchingCategories,
   );
@@ -24,7 +24,13 @@ export const useEntriesCategories = () => {
 
   const createCategory = useCallback(
     (category: CashFlow.CategoryInput) =>
-      dispatch(categoryActions.createCategory(category)),
+      dispatch(categoryActions.createCategory(category)).unwrap(),
+    [dispatch],
+  );
+
+  const deleteCategory = useCallback(
+    (categoryId: number) =>
+      dispatch(categoryActions.deleteCategory(categoryId)).unwrap(),
     [dispatch],
   );
 
@@ -33,6 +39,7 @@ export const useEntriesCategories = () => {
     revenues,
     fetchCategories,
     createCategory,
+    deleteCategory,
     isFetchingCategories,
   };
 };

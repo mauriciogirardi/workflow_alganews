@@ -1,10 +1,11 @@
-import { Button, Col, Modal, Row, Table, Tooltip } from 'antd';
+import { Button, Col, Modal, Popconfirm, Row, Table, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
 import { DeleteOutlined } from '@ant-design/icons';
 import { CashFlow } from 'mauricio.girardi-sdk';
 
 import { useEntriesCategories } from 'core/hooks/cashFlow/useEntriesCategories';
 import { CategoryForm } from './CategoryForm';
+import { notification } from 'core/utils/notification';
 
 interface EntryCategoryManagerProps {
   type: 'EXPENSE' | 'REVENUES';
@@ -12,15 +13,63 @@ interface EntryCategoryManagerProps {
 
 export const EntryCategoryManager = ({ type }: EntryCategoryManagerProps) => {
   const [showCategoryForm, setShowCategoryForm] = useState(false);
-  const { fetchCategories, expenses, isFetchingCategories, revenues } =
-    useEntriesCategories();
+  const {
+    expenses,
+    revenues,
+    deleteCategory,
+    fetchCategories,
+    isFetchingCategories,
+  } = useEntriesCategories();
 
   useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
 
-  const handleShowCategoryForm = () =>
+  const handleShowCategoryForm = () => {
     setShowCategoryForm((prevState) => !prevState);
+  };
+
+  const handleRemoveCategory = async (categoryId: number) => {
+    await deleteCategory(categoryId);
+    notification({
+      title: 'Categoria',
+      description: 'Categoria removida com sucesso!',
+    });
+  };
+
+  const renderActions = (
+    categoryId: number,
+    record: CashFlow.CategorySummary,
+  ) => {
+    const { canBeDeleted } = record;
+
+    return (
+      <Popconfirm
+        title='Remover categoria'
+        okText='Sim'
+        cancelText='Não'
+        onConfirm={() => handleRemoveCategory(categoryId)}
+        disabled={!canBeDeleted}
+      >
+        <Tooltip
+          placement='right'
+          title={
+            !canBeDeleted
+              ? 'Você não pode remover uma categoria com vínculos!'
+              : ''
+          }
+        >
+          <Button
+            disabled={!canBeDeleted}
+            type='text'
+            danger
+            size='small'
+            icon={<DeleteOutlined />}
+          />
+        </Tooltip>
+      </Popconfirm>
+    );
+  };
 
   return (
     <>
@@ -37,7 +86,7 @@ export const EntryCategoryManager = ({ type }: EntryCategoryManagerProps) => {
 
       <Row align='middle' justify='space-between' style={{ marginBottom: 16 }}>
         <Col>
-          <Button size='small' type='primary'>
+          <Button size='small' type='primary' onClick={() => fetchCategories()}>
             Atualizar Categorias
           </Button>
         </Col>
@@ -76,16 +125,7 @@ export const EntryCategoryManager = ({ type }: EntryCategoryManagerProps) => {
             dataIndex: 'id',
             title: 'Ação',
             align: 'right',
-            render() {
-              return (
-                <Button
-                  type='text'
-                  danger
-                  size='small'
-                  icon={<DeleteOutlined />}
-                />
-              );
-            },
+            render: renderActions,
           },
         ]}
       />

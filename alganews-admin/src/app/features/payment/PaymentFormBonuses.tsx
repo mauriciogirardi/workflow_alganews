@@ -43,7 +43,7 @@ export const PaymentFormBonuses = ({ form }: PaymentFormBonusesProps) => {
                   rules={rules}
                 >
                   <CurrencyInput
-                    onChange={(evt, amount) => {
+                    onChange={(_, amount) => {
                       const { bonuses } = form.getFieldsValue();
                       form.setFieldsValue({
                         bonuses: bonuses?.map((bonus, index) => {

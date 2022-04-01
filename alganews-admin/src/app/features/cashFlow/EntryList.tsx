@@ -65,6 +65,7 @@ export const EntryList = () => {
       <Table<CashFlow.EntrySummary>
         rowKey={'id'}
         dataSource={entries}
+        scroll={{ x: 850 }}
         loading={isFetchingEntries}
         rowSelection={{
           selectedRowKeys: selected,

@@ -1,4 +1,9 @@
-import { configureStore, isRejected, combineReducers } from '@reduxjs/toolkit';
+import {
+  configureStore,
+  isRejected,
+  combineReducers,
+  Middleware,
+} from '@reduxjs/toolkit';
 
 import { notification } from 'core/utils/notification';
 import entriesCategoryReducer from './cashFlow/entriesCategory.slice';
@@ -7,13 +12,21 @@ import revenueReducer from './cashFlow/revenue.slice';
 import paymentReducer from './payment.slice';
 import userReducer from './userReducer';
 
-const observeActions = () => (next: any) => (action: any) => {
+const observeActions: Middleware = () => (next) => (action) => {
   if (isRejected(action)) {
-    notification({
-      type: 'error',
-      title: 'Erro Observado',
-      description: action.error.message || 'Erro no servidor',
-    });
+    const ignoredActions = [
+      'cash-flow/categories/createCategory/rejected',
+      'cash-flow/categories/deleteCategory/rejected',
+    ];
+
+    const shouldNotify = !ignoredActions.includes(action.type);
+
+    if (shouldNotify)
+      notification({
+        type: 'error',
+        title: 'Erro Observado',
+        description: action.error.message || 'Erro no servidor',
+      });
   }
 
   next(action);

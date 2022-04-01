@@ -44,16 +44,14 @@ export const MainRoutes = () => {
             type: 'error',
             title: reason.message || 'Erro',
             description:
-              reason.data?.detail ||
-              'Erro desconhecido tente mais tarde.',
+              reason.data?.detail || 'Erro desconhecido tente mais tarde.',
           });
         }
       } else {
         notification({
           type: 'error',
           title: 'Houve um error',
-          description:
-            'Erro ao criar um usuário tente novamente.',
+          description: reason?.message || '',
         });
       }
     };
@@ -66,45 +64,21 @@ export const MainRoutes = () => {
   return (
     <Routes>
       <Route path={HOME} element={<HomePage />} />
-      <Route
-        path={EXPENSES}
-        element={<CashFlowExpensesPage />}
-      />
-      <Route
-        path={REVENUES}
-        element={<CashFlowRevenuesPage />}
-      />
+      <Route path={EXPENSES} element={<CashFlowExpensesPage />} />
+      <Route path={REVENUES} element={<CashFlowRevenuesPage />} />
 
       {/* Payments */}
-      <Route
-        path={PAYMENTS}
-        element={<PaymentListPage />}
-      />
-      <Route
-        path={PAYMENTS_DETAILS}
-        element={<PaymentDetailsPage />}
-      />
-      <Route
-        path={PAYMENTS_CREATE}
-        element={<PaymentCreatePage />}
-      />
+      <Route path={PAYMENTS} element={<PaymentListPage />} />
+      <Route path={PAYMENTS_DETAILS} element={<PaymentDetailsPage />} />
+      <Route path={PAYMENTS_CREATE} element={<PaymentCreatePage />} />
 
       {/* Users */}
       <Route path={USERS} element={<UserListPage />} />
-      <Route
-        path={USER_CREATE}
-        element={<UserCreatePage />}
-      />
+      <Route path={USER_CREATE} element={<UserCreatePage />} />
 
-      <Route
-        path={USER_DETAILS}
-        element={<UserDetailsPage />}
-      />
+      <Route path={USER_DETAILS} element={<UserDetailsPage />} />
 
-      <Route
-        path={USER_EDIT_ID}
-        element={<UserEditPage />}
-      />
+      <Route path={USER_EDIT_ID} element={<UserEditPage />} />
     </Routes>
   );
 };

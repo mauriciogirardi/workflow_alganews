@@ -1,7 +1,7 @@
 import { Button, Col, Form, Input, Row } from 'antd';
 import { CheckCircleOutlined } from '@ant-design/icons';
 import { useEntriesCategories } from 'core/hooks/cashFlow/useEntriesCategories';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { CashFlow } from 'mauricio.girardi-sdk';
 import { notification } from 'core/utils/notification';
 
@@ -12,7 +12,12 @@ interface CategoryFormProps {
 const { Item } = Form;
 
 export const CategoryForm = ({ onSuccess }: CategoryFormProps) => {
-  const { createCategory, isFetchingCategories } = useEntriesCategories();
+  const { createCategory, isFetchingCategories, fetchCategories } =
+    useEntriesCategories();
+
+  useEffect(() => {
+    fetchCategories();
+  }, [fetchCategories]);
 
   const onFinish = useCallback(
     async (category: CashFlow.CategoryInput) => {

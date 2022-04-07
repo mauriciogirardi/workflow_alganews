@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useCallback } from 'react';
 import { CashFlow } from 'mauricio.girardi-sdk';
 
-import { RootState } from 'core/store';
+import { AppDispatch, RootState } from 'core/store';
 import { Key } from 'antd/lib/table/interface';
 
 import * as expensesActions from '../../store/cashFlow/expense.slice';
@@ -11,7 +11,7 @@ import * as revenuesActions from '../../store/cashFlow/revenue.slice';
 type CashFlowEntryType = CashFlow.EntrySummary['type'];
 
 export const useCashFlow = (type: CashFlowEntryType) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const query = useSelector((state: RootState) =>
     type === 'EXPENSE'
       ? state.cashFlow.expense.query
@@ -76,11 +76,22 @@ export const useCashFlow = (type: CashFlowEntryType) => {
     [dispatch, type],
   );
 
+  const createEntry = useCallback(
+    (entry: CashFlow.EntryInput) =>
+      dispatch(
+        type === 'EXPENSE'
+          ? expensesActions.createExpenses(entry)
+          : revenuesActions.createRevenue(entry),
+      ).unwrap(),
+    [dispatch, type],
+  );
+
   return {
     query,
     entries,
     setQuery,
     selected,
+    createEntry,
     setSelected,
     fetchEntries,
     isFetchingEntries,

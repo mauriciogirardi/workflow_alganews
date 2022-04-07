@@ -48,6 +48,16 @@ export const MainRoutes = () => {
           });
         }
       } else {
+        if (reason?.data?.objects) {
+          return reason.data.objects.map((obj: { userMessage: string }) => {
+            return notification({
+              type: 'error',
+              title: 'Error no formulário',
+              description: obj.userMessage || '',
+            });
+          });
+        }
+
         notification({
           type: 'error',
           title: 'Houve um error',

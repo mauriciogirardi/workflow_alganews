@@ -49,6 +49,18 @@ export const setQuery = createAsyncThunk(
   },
 );
 
+export const createRevenue = createAsyncThunk(
+  'cash-flow/revenues/createRevenue',
+  async (revenue: CashFlow.EntryInput, { dispatch, rejectWithValue }) => {
+    try {
+      await CashFlowService.insertNewEntry(revenue);
+      await dispatch(fetchRevenues());
+    } catch (err) {
+      if (typeof err === 'object') return rejectWithValue({ ...err });
+    }
+  },
+);
+
 const revenueSlice = createSlice({
   initialState,
   name: 'cash-flow/expense',
@@ -73,6 +85,7 @@ const revenueSlice = createSlice({
     const { error, loading, success } = getThunkStatus([
       removeRevenuesInBatch,
       fetchRevenues,
+      createRevenue,
     ]);
 
     builder

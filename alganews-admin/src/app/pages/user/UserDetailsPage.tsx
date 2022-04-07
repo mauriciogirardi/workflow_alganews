@@ -37,8 +37,7 @@ export default function UserDetailsPage() {
   usePageTitle('Detalhes do usuário');
 
   const [page, setPage] = useState(0);
-  const { fetchUser, user, notFound, toggleUserStatus } =
-    useUser();
+  const { fetchUser, user, notFound, toggleUserStatus } = useUser();
   const {
     fetchUserPosts,
     loadingToggle,
@@ -62,7 +61,7 @@ export default function UserDetailsPage() {
   }, [fetchUser, userId, navigate]);
 
   useEffect(() => {
-    if (isEditor) fetchUserPosts(user.id, page);
+    if (isEditor && user) fetchUserPosts(user.id, page);
   }, [fetchUserPosts, user, isEditor, page]);
 
   if (notFound) {
@@ -77,10 +76,7 @@ export default function UserDetailsPage() {
 
   if (!user) return <Skeleton />;
 
-  const handleToggle = (
-    published: boolean,
-    post: Post.Summary,
-  ) => {
+  const handleToggle = (published: boolean, post: Post.Summary) => {
     return (
       <Switch
         checked={published}
@@ -170,17 +166,11 @@ export default function UserDetailsPage() {
 
       {isEditor && (
         <Col xs={24} lg={12}>
-          <Space
-            direction='vertical'
-            style={{ width: '100%' }}
-          >
+          <Space direction='vertical' style={{ width: '100%' }}>
             {user.skills?.map((skill, index) => (
               <div key={index}>
                 <Text>{skill.name}</Text>
-                <Progress
-                  percent={skill.percentage}
-                  success={{ percent: 0 }}
-                />
+                <Progress percent={skill.percentage} success={{ percent: 0 }} />
               </div>
             ))}
           </Space>

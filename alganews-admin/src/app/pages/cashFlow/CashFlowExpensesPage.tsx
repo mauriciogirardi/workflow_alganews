@@ -62,7 +62,7 @@ export default function CashFlowExpensesPage() {
         footer={null}
         destroyOnClose
       >
-        <EntryForm onClose={handleEntryFormModal} />
+        <EntryForm onClose={handleEntryFormModal} type='EXPENSE' />
       </Modal>
 
       <Space direction='vertical'>

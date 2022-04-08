@@ -19,6 +19,9 @@ export default function CashFlowExpensesPage() {
   const { selected, removeEntriesInBatch } = useCashFlow('EXPENSE');
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showEntryFormModal, setShowEntryFormModal] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<number | undefined>(
+    undefined,
+  );
 
   const handleDeleteEntriesInBatch = async (ids: number[]) => {
     await removeEntriesInBatch(ids);
@@ -41,6 +44,14 @@ export default function CashFlowExpensesPage() {
     [],
   );
 
+  const handleEditing = useCallback(
+    (id: number) => {
+      setEditingEntry(id);
+      handleEntryFormModal();
+    },
+    [handleEntryFormModal],
+  );
+
   return (
     <>
       <Modal
@@ -57,12 +68,22 @@ export default function CashFlowExpensesPage() {
       <Modal
         key='entryForm'
         visible={showEntryFormModal}
-        onCancel={handleEntryFormModal}
-        title='CADASTRAR DESPESA'
+        onCancel={() => {
+          handleEntryFormModal();
+          setEditingEntry(undefined);
+        }}
+        title={`${editingEntry ? 'EDITAR' : 'CADASTRAR'} DESPESA`}
         footer={null}
         destroyOnClose
       >
-        <EntryForm onClose={handleEntryFormModal} type='EXPENSE' />
+        <EntryForm
+          onClose={() => {
+            handleEntryFormModal();
+            setEditingEntry(undefined);
+          }}
+          type='EXPENSE'
+          editingEntry={editingEntry}
+        />
       </Modal>
 
       <Space direction='vertical'>
@@ -120,7 +141,7 @@ export default function CashFlowExpensesPage() {
         </Space>
       </Row>
 
-      <EntryList />
+      <EntryList onEdit={handleEditing} type='EXPENSE' />
     </>
   );
 }

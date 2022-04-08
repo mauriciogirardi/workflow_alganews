@@ -56,6 +56,16 @@ export const useCashFlow = (type: CashFlowEntryType) => {
     [dispatch, type],
   );
 
+  const removeEntry = useCallback(
+    (id: number) =>
+      dispatch(
+        type === 'EXPENSE'
+          ? expensesActions.removeExpense(id)
+          : revenuesActions.removeRevenue(id),
+      ),
+    [dispatch, type],
+  );
+
   const setSelected = useCallback(
     (keys: Key[]) =>
       dispatch(
@@ -86,6 +96,22 @@ export const useCashFlow = (type: CashFlowEntryType) => {
     [dispatch, type],
   );
 
+  const updateEntry = useCallback(
+    (entryId: number, entry: CashFlow.EntryInput) =>
+      dispatch(
+        type === 'EXPENSE'
+          ? expensesActions.updateExpenses({
+              entryId,
+              entry,
+            })
+          : revenuesActions.updateRevenues({
+              entryId,
+              entry,
+            }),
+      ).unwrap(),
+    [dispatch, type],
+  );
+
   return {
     query,
     entries,
@@ -93,6 +119,8 @@ export const useCashFlow = (type: CashFlowEntryType) => {
     selected,
     createEntry,
     setSelected,
+    removeEntry,
+    updateEntry,
     fetchEntries,
     isFetchingEntries,
     removeEntriesInBatch,

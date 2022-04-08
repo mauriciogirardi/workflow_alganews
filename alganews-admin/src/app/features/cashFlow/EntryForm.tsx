@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import moment, { Moment } from 'moment';
 import {
   Button,
@@ -9,6 +9,7 @@ import {
   Input,
   Row,
   Select,
+  Skeleton,
   Space,
 } from 'antd';
 
@@ -18,6 +19,7 @@ import { notification } from 'core/utils/notification';
 import { CashFlow } from 'mauricio.girardi-sdk';
 import { useForm } from 'antd/lib/form/Form';
 import { useCashFlow } from 'core/hooks/cashFlow/useCashFlow';
+import { CashFlowService } from 'danielbonifacio-sdk';
 
 type FromProps = Omit<CashFlow.EntryInput, 'transactedOn'> & {
   transactedOn: Moment;
@@ -26,13 +28,15 @@ type FromProps = Omit<CashFlow.EntryInput, 'transactedOn'> & {
 interface EntryFormProps {
   onClose?: () => void;
   type: 'EXPENSE' | 'REVENUE';
+  editingEntry?: number;
 }
 
 const { Item } = Form;
 const rules = [{ required: true, message: 'O campo  obrigatório' }];
 
-export const EntryForm = ({ onClose, type }: EntryFormProps) => {
-  const { createEntry, isFetchingEntries } = useCashFlow(type);
+export const EntryForm = ({ onClose, type, editingEntry }: EntryFormProps) => {
+  const [loading, setLoading] = useState(false);
+  const { createEntry, isFetchingEntries, updateEntry } = useCashFlow(type);
   const { revenues, expenses, isFetchingCategories, fetchCategories } =
     useEntriesCategories();
   const [form] = useForm();
@@ -40,6 +44,19 @@ export const EntryForm = ({ onClose, type }: EntryFormProps) => {
   useEffect(() => {
     fetchCategories();
   }, [fetchCategories]);
+
+  useEffect(() => {
+    if (editingEntry) {
+      setLoading(true);
+      CashFlowService.getExistingEntry(editingEntry)
+        .then((entry) => ({
+          ...entry,
+          transactedOn: moment(entry.transactedOn),
+        }))
+        .then(form.setFieldsValue)
+        .finally(() => setLoading(false));
+    }
+  }, [editingEntry, form.setFieldsValue]);
 
   const categories = useMemo(
     () => (type === 'EXPENSE' ? expenses : revenues),
@@ -60,25 +77,38 @@ export const EntryForm = ({ onClose, type }: EntryFormProps) => {
 
   const onFinish = useCallback(
     async (form: FromProps) => {
-      const newEntryDTO: CashFlow.EntryInput = {
+      const entryDTO: CashFlow.EntryInput = {
         ...form,
         transactedOn: form.transactedOn.format('YYYY-MM-DD'),
         type,
       };
 
       const title = type === 'EXPENSE' ? 'Despesa' : 'Receita';
+      const text = editingEntry ? 'editado' : 'cadastrada';
 
-      await createEntry(newEntryDTO);
+      editingEntry
+        ? await updateEntry(editingEntry, entryDTO)
+        : await createEntry(entryDTO);
 
       notification({
         title,
-        description: `A ${title} foi cadastrada com sucesso!`,
+        description: `A ${title} foi ${text} com sucesso!`,
       });
 
       onClose && onClose();
     },
-    [type, createEntry, onClose],
+    [type, createEntry, onClose, editingEntry, updateEntry],
   );
+
+  if (loading) {
+    return (
+      <>
+        <Skeleton />
+        <Skeleton title={false} />
+        <Skeleton title={false} />
+      </>
+    );
+  }
 
   return (
     <Form form={form} layout='vertical' onFinish={onFinish}>
@@ -120,7 +150,7 @@ export const EntryForm = ({ onClose, type }: EntryFormProps) => {
         <Space>
           <Button onClick={onClose}>Cancelar</Button>
           <Button type='primary' htmlType='submit' loading={isFetchingEntries}>
-            Cadastrar
+            {editingEntry ? 'Editar' : 'Cadastrar'}
           </Button>
         </Space>
       </Row>

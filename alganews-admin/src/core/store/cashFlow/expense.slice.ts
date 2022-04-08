@@ -41,6 +41,14 @@ export const removeEntriesInBatch = createAsyncThunk(
   },
 );
 
+export const removeExpense = createAsyncThunk(
+  'cash-flow/expenses/removeExpense',
+  async (id: number, { dispatch }) => {
+    await CashFlowService.removeExistingEntry(id);
+    await dispatch(fetchExpenses());
+  },
+);
+
 export const setQuery = createAsyncThunk(
   'cash-flow/expenses/setQuery',
   async (query: Partial<CashFlow.Query>, { dispatch }) => {
@@ -54,6 +62,21 @@ export const createExpenses = createAsyncThunk(
   async (expenses: CashFlow.EntryInput, { dispatch, rejectWithValue }) => {
     try {
       await CashFlowService.insertNewEntry(expenses);
+      await dispatch(fetchExpenses());
+    } catch (err) {
+      if (typeof err === 'object') return rejectWithValue({ ...err });
+    }
+  },
+);
+
+export const updateExpenses = createAsyncThunk(
+  'cash-flow/expenses/updateExpenses',
+  async (
+    { entry, entryId }: { entry: CashFlow.EntryInput; entryId: number },
+    { dispatch, rejectWithValue },
+  ) => {
+    try {
+      await CashFlowService.updateExistingEntry(entryId, entry);
       await dispatch(fetchExpenses());
     } catch (err) {
       if (typeof err === 'object') return rejectWithValue({ ...err });
@@ -86,6 +109,8 @@ const expenseSlice = createSlice({
       removeEntriesInBatch,
       fetchExpenses,
       createExpenses,
+      updateExpenses,
+      removeExpense,
     ]);
 
     builder

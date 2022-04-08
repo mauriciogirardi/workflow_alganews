@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Button, Card, DatePicker, Space, Table, Tag } from 'antd';
 import { DeleteOutlined, EyeOutlined, EditOutlined } from '@ant-design/icons';
 import { CashFlow } from 'mauricio.girardi-sdk';
@@ -6,10 +6,17 @@ import moment from 'moment';
 
 import { formatterCurrency, formatterDate } from 'core/utils';
 import { useCashFlow } from 'core/hooks/cashFlow/useCashFlow';
+import { notification } from 'core/utils/notification';
+import { DoubleConfirm } from 'app/components/DoubleConfirm';
+
+interface EntryListProps {
+  onEdit: (id: number) => any;
+  type: 'EXPENSE' | 'REVENUE';
+}
 
 const TYPE_FORMAT = 'YYYY-MM';
 
-export const EntryList = () => {
+export const EntryList = ({ onEdit, type }: EntryListProps) => {
   const {
     query,
     entries,
@@ -18,6 +25,7 @@ export const EntryList = () => {
     setSelected,
     fetchEntries,
     isFetchingEntries,
+    removeEntry,
   } = useCashFlow('EXPENSE');
 
   useEffect(() => {
@@ -27,8 +35,27 @@ export const EntryList = () => {
   const renderActions = (id: number) => {
     return (
       <Space>
-        <Button size='small' danger type='text' icon={<DeleteOutlined />} />
-        <Button size='small' type='text' icon={<EditOutlined />} />
+        <DoubleConfirm
+          onConfirmContent='Remover uma despesa pode gerar um impacto negativo no gráfico de receitas e despesas. Esta ação é irreversível!'
+          onConfirmTitle={`Deseja mesmo remover essa ${
+            type === 'EXPENSE' ? 'despesa ' : 'receita '
+          }?`}
+          popConfirmTitle={`Remover ${
+            type === 'EXPENSE' ? 'despesa selecionada' : 'receita selecionada'
+          }`}
+          disabled={selected.length === 0}
+          okText='Sim'
+          onOk={() => handleRemoveEntry(id)}
+        >
+          <Button size='small' danger type='text' icon={<DeleteOutlined />} />
+        </DoubleConfirm>
+
+        <Button
+          size='small'
+          type='text'
+          icon={<EditOutlined />}
+          onClick={() => onEdit(id)}
+        />
         <Button size='small' type='text' icon={<EyeOutlined />} />
       </Space>
     );
@@ -59,6 +86,19 @@ export const EntryList = () => {
       typeFormat: 'dd/MM/yyyy',
     });
   };
+
+  const handleRemoveEntry = useCallback(
+    async (id: number) => {
+      const title = type === 'EXPENSE' ? 'Despesa' : 'Receita';
+
+      await removeEntry(id);
+      notification({
+        title: 'Removido',
+        description: `A ${title} foi removido com sucesso!`,
+      });
+    },
+    [removeEntry, type],
+  );
 
   return (
     <>

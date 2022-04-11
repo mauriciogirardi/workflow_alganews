@@ -12,6 +12,7 @@ import { notification } from 'core/utils/notification';
 import { useCashFlow } from 'core/hooks/cashFlow/useCashFlow';
 import { EntryList } from 'app/features/cashFlow/EntryList';
 import { EntryForm } from 'app/features/cashFlow/EntryForm';
+import { EntryDetails } from 'app/features/cashFlow/EntryDetails';
 
 const { Title, Text } = Typography;
 
@@ -19,7 +20,12 @@ export default function CashFlowExpensesPage() {
   const { selected, removeEntriesInBatch } = useCashFlow('EXPENSE');
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showEntryFormModal, setShowEntryFormModal] = useState(false);
+  const [showEntryDetails, setShowEntryDetails] = useState(false);
   const [editingEntry, setEditingEntry] = useState<number | undefined>(
+    undefined,
+  );
+
+  const [detailsEntry, setDetailsEntry] = useState<number | undefined>(
     undefined,
   );
 
@@ -44,10 +50,15 @@ export default function CashFlowExpensesPage() {
     [],
   );
 
+  const handleEntryDetailsModal = useCallback(
+    () => setShowEntryDetails((prevState) => !prevState),
+    [],
+  );
+
   const handleEditing = useCallback(
     (id: number) => {
-      setEditingEntry(id);
       handleEntryFormModal();
+      setEditingEntry(id);
     },
     [handleEntryFormModal],
   );
@@ -84,6 +95,17 @@ export default function CashFlowExpensesPage() {
           type='EXPENSE'
           editingEntry={editingEntry}
         />
+      </Modal>
+
+      <Modal
+        key='entryDetails'
+        visible={showEntryDetails}
+        onCancel={handleEntryDetailsModal}
+        title={`DETALHES DA DESPESA`}
+        footer={null}
+        destroyOnClose
+      >
+        {detailsEntry && <EntryDetails entryId={detailsEntry} />}
       </Modal>
 
       <Space direction='vertical'>
@@ -141,7 +163,14 @@ export default function CashFlowExpensesPage() {
         </Space>
       </Row>
 
-      <EntryList onEdit={handleEditing} type='EXPENSE' />
+      <EntryList
+        onEdit={handleEditing}
+        onDetails={(id: number) => {
+          setDetailsEntry(id);
+          handleEntryDetailsModal();
+        }}
+        type='EXPENSE'
+      />
     </>
   );
 }

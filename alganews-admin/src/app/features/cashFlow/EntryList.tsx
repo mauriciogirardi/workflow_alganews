@@ -11,12 +11,13 @@ import { DoubleConfirm } from 'app/components/DoubleConfirm';
 
 interface EntryListProps {
   onEdit: (id: number) => any;
+  onDetails: (id: number) => any;
   type: 'EXPENSE' | 'REVENUE';
 }
 
 const TYPE_FORMAT = 'YYYY-MM';
 
-export const EntryList = ({ onEdit, type }: EntryListProps) => {
+export const EntryList = ({ onEdit, type, onDetails }: EntryListProps) => {
   const {
     query,
     entries,
@@ -32,7 +33,7 @@ export const EntryList = ({ onEdit, type }: EntryListProps) => {
     fetchEntries();
   }, [fetchEntries]);
 
-  const renderActions = (id: number) => {
+  const renderActions = (id: number, record: CashFlow.EntrySummary) => {
     return (
       <Space>
         <DoubleConfirm
@@ -43,11 +44,17 @@ export const EntryList = ({ onEdit, type }: EntryListProps) => {
           popConfirmTitle={`Remover ${
             type === 'EXPENSE' ? 'despesa selecionada' : 'receita selecionada'
           }`}
-          disabled={selected.length === 0}
+          disabled={!record.canBeDeleted}
           okText='Sim'
           onOk={() => handleRemoveEntry(id)}
         >
-          <Button size='small' danger type='text' icon={<DeleteOutlined />} />
+          <Button
+            size='small'
+            danger
+            type='text'
+            disabled={!record.canBeDeleted}
+            icon={<DeleteOutlined />}
+          />
         </DoubleConfirm>
 
         <Button
@@ -56,7 +63,13 @@ export const EntryList = ({ onEdit, type }: EntryListProps) => {
           icon={<EditOutlined />}
           onClick={() => onEdit(id)}
         />
-        <Button size='small' type='text' icon={<EyeOutlined />} />
+
+        <Button
+          size='small'
+          type='text'
+          icon={<EyeOutlined />}
+          onClick={() => onDetails(id)}
+        />
       </Space>
     );
   };

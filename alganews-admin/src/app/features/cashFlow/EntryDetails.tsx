@@ -38,13 +38,30 @@ export const EntryDetails = ({ entryId }: EntryDetailsProps) => {
     <Descriptions column={1} bordered size='small'>
       <Item label={'Descrição'}>{entry?.description}</Item>
       <Item label={'Categoria'}>{entry?.category.name}</Item>
+      <Item label={'Criado por'}>{entry?.createdBy.name}</Item>
       <Item label={'Data de entrada'}>
         {entry?.transactedOn && formatterDate({ date: entry.transactedOn })}
       </Item>
       <Item label={'Valor'}>{formatterCurrency(entry?.amount || 0)}</Item>
       <Item label={'Criado em'}>
-        {entry?.createdAt && formatterDate({ date: entry.createdAt })}
+        {entry?.createdAt &&
+          formatterDate({
+            date: entry.createdAt,
+            typeFormat: "dd/MM/yyyy 'às' hh:mm",
+          })}
       </Item>
+      {entry?.createdAt !== entry?.updatedAt && (
+        <>
+          <Item label={'Atualizado em'}>
+            {entry?.updatedAt &&
+              formatterDate({
+                date: entry.updatedAt,
+                typeFormat: "dd/MM/yyyy 'às' hh:mm",
+              })}
+          </Item>
+          <Item label={'Atualizado por'}>{entry?.updatedBy.name}</Item>
+        </>
+      )}
     </Descriptions>
   );
 };

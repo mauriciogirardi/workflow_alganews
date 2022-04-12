@@ -7,11 +7,12 @@ import { notification } from 'core/utils/notification';
 
 interface CategoryFormProps {
   onSuccess?: () => void;
+  type: 'EXPENSE' | 'REVENUE';
 }
 
 const { Item } = Form;
 
-export const CategoryForm = ({ onSuccess }: CategoryFormProps) => {
+export const CategoryForm = ({ onSuccess, type }: CategoryFormProps) => {
   const { createCategory, isFetchingCategories, fetchCategories } =
     useEntriesCategories();
 
@@ -23,7 +24,7 @@ export const CategoryForm = ({ onSuccess }: CategoryFormProps) => {
     async (category: CashFlow.CategoryInput) => {
       const newCategoryDTO: CashFlow.CategoryInput = {
         ...category,
-        type: 'EXPENSE',
+        type,
       };
 
       await createCategory(newCategoryDTO);
@@ -33,7 +34,7 @@ export const CategoryForm = ({ onSuccess }: CategoryFormProps) => {
         description: 'A categoria foi salva com sucesso!',
       });
     },
-    [createCategory, onSuccess],
+    [createCategory, onSuccess, type],
   );
 
   return (

@@ -81,7 +81,7 @@ export const EntryCategoryManager = ({ type }: EntryCategoryManagerProps) => {
         footer={null}
         destroyOnClose
       >
-        <CategoryForm onSuccess={handleShowCategoryForm} />
+        <CategoryForm onSuccess={handleShowCategoryForm} type={type} />
       </Modal>
 
       <Row align='middle' justify='space-between' style={{ marginBottom: 16 }}>

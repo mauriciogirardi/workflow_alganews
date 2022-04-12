@@ -1,6 +1,7 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { Button, Card, DatePicker, Space, Table, Tag } from 'antd';
 import { DeleteOutlined, EyeOutlined, EditOutlined } from '@ant-design/icons';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { CashFlow } from 'mauricio.girardi-sdk';
 import moment from 'moment';
 
@@ -18,8 +19,10 @@ interface EntryListProps {
 const TYPE_FORMAT = 'YYYY-MM';
 
 export const EntryList = ({ onEdit, type, onDetails }: EntryListProps) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const {
-    query,
     entries,
     setQuery,
     selected,
@@ -29,9 +32,21 @@ export const EntryList = ({ onEdit, type, onDetails }: EntryListProps) => {
     removeEntry,
   } = useCashFlow('EXPENSE');
 
+  const didMount = useRef(false);
+
   useEffect(() => {
     fetchEntries();
   }, [fetchEntries]);
+
+  useEffect(() => {
+    if (didMount.current) {
+      const params = new URLSearchParams(location.search);
+      const yearMonth = params.get('yearMonth');
+      if (yearMonth) setQuery({ yearMonth });
+    } else {
+      didMount.current = true;
+    }
+  }, [location.search, setQuery]);
 
   const renderActions = (id: number, record: CashFlow.EntrySummary) => {
     return (
@@ -79,11 +94,12 @@ export const EntryList = ({ onEdit, type, onDetails }: EntryListProps) => {
       <Card>
         <DatePicker.MonthPicker
           format={'YYYY - MMMM'}
+          allowClear
           onChange={(date) => {
-            setQuery({
-              ...query,
-              yearMonth:
-                date?.format(TYPE_FORMAT) || moment().format(TYPE_FORMAT),
+            navigate({
+              search: `yearMonth=${
+                date?.format(TYPE_FORMAT) || moment().format(TYPE_FORMAT)
+              }`,
             });
           }}
         />

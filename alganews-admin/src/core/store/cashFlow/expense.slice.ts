@@ -13,6 +13,9 @@ interface ExpenseState {
   selected: Key[];
 }
 
+const params = new URLSearchParams(window.location.search);
+const yearMonth = params.get('yearMonth');
+
 const initialState: ExpenseState = {
   isFetchingExpenses: false,
   selected: [],
@@ -20,7 +23,7 @@ const initialState: ExpenseState = {
   query: {
     type: 'EXPENSE',
     sort: ['transactedOn', 'desc'],
-    yearMonth: format(new Date(), 'yyyy-MM'),
+    yearMonth: yearMonth || format(new Date(), 'yyyy-MM'),
   },
 };
 

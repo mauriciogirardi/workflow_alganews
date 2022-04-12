@@ -1,7 +1,5 @@
+import EntryCRUD from 'app/features/cashFlow/EntryCRUD';
+
 export default function CashFlowRevenuesPage() {
-  return (
-    <>
-      <h1>CashFlowRevenuesPage</h1>
-    </>
-  );
+  return <EntryCRUD type='REVENUE' />;
 }

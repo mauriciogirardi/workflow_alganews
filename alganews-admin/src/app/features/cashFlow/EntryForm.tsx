@@ -136,7 +136,11 @@ export const EntryForm = ({ onClose, type, editingEntry }: EntryFormProps) => {
           </Item>
         </Col>
         <Col xs={24} lg={12}>
-          <Item label='Data de entrada' name='transactedOn' rules={rules}>
+          <Item
+            label={type === 'EXPENSE' ? 'Data de saída' : 'Data de entrada'}
+            name='transactedOn'
+            rules={rules}
+          >
             <DatePicker
               format={'DD/MM/YYYY'}
               style={{ width: '100%' }}

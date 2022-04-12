@@ -5,6 +5,7 @@ interface FormatterDateProps {
   date: string;
   typeFormat?:
     | 'MMMM yyyy'
+    | "MMMM 'de' yyyy"
     | 'MM/yyyy'
     | 'dd/MM/yyyy'
     | "dd/MM/yyyy 'às' hh:mm";

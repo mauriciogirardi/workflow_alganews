@@ -1,14 +1,15 @@
-import { useCallback, useEffect, useRef } from 'react';
 import { Button, Card, DatePicker, Space, Table, Tag } from 'antd';
 import { DeleteOutlined, EyeOutlined, EditOutlined } from '@ant-design/icons';
+import { useCallback, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { CashFlow } from 'mauricio.girardi-sdk';
 import moment from 'moment';
 
+import { msgConfirmContent, msgConfirmTitle } from '../utils/funcMsgsEntryCrud';
 import { formatterCurrency, formatterDate } from 'core/utils';
-import { useCashFlow } from 'core/hooks/cashFlow/useCashFlow';
-import { notification } from 'core/utils/notification';
 import { DoubleConfirm } from 'app/components/DoubleConfirm';
+import { notification } from 'core/utils/notification';
+import { useCashFlow } from 'core/hooks/cashFlow/useCashFlow';
 
 interface EntryListProps {
   onEdit: (id: number) => any;
@@ -30,8 +31,9 @@ export const EntryList = ({ onEdit, type, onDetails }: EntryListProps) => {
     fetchEntries,
     isFetchingEntries,
     removeEntry,
-  } = useCashFlow('EXPENSE');
+  } = useCashFlow(type);
 
+  const entryName = type === 'EXPENSE' ? 'despesa' : 'receita';
   const didMount = useRef(false);
 
   useEffect(() => {
@@ -52,13 +54,9 @@ export const EntryList = ({ onEdit, type, onDetails }: EntryListProps) => {
     return (
       <Space>
         <DoubleConfirm
-          onConfirmContent='Remover uma despesa pode gerar um impacto negativo no gráfico de receitas e despesas. Esta ação é irreversível!'
-          onConfirmTitle={`Deseja mesmo remover essa ${
-            type === 'EXPENSE' ? 'despesa ' : 'receita '
-          }?`}
-          popConfirmTitle={`Remover ${
-            type === 'EXPENSE' ? 'despesa selecionada' : 'receita selecionada'
-          }`}
+          onConfirmContent={msgConfirmContent(entryName)}
+          onConfirmTitle={msgConfirmTitle(false, entryName)}
+          popConfirmTitle={msgConfirmTitle(false, entryName, true)}
           disabled={!record.canBeDeleted}
           okText='Sim'
           onOk={() => handleRemoveEntry(id)}

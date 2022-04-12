@@ -8,7 +8,7 @@ import { CategoryForm } from './CategoryForm';
 import { notification } from 'core/utils/notification';
 
 interface EntryCategoryManagerProps {
-  type: 'EXPENSE' | 'REVENUES';
+  type: 'EXPENSE' | 'REVENUE';
 }
 
 export const EntryCategoryManager = ({ type }: EntryCategoryManagerProps) => {

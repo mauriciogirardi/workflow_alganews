@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
+import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
 
 import {
   EXPENSES,
@@ -14,10 +15,11 @@ import {
   USER_EDIT_ID,
 } from '../../core/constants-paths';
 import { notification } from 'core/utils/notification';
-import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
+import { AuthService } from 'auth/Authorization.service';
 
 import CashFlowExpensesPage from '../pages/cashFlow/CashFlowExpensesPage';
 import CashFlowRevenuesPage from '../pages/cashFlow/CashFlowRevenuesPage';
+import PaymentDetailsPage from 'app/pages/payment/PaymentDetailsPage';
 import PaymentCreatePage from '../pages/payment/PaymentCreatePage';
 import PaymentListPage from '../pages/payment/PaymentListPage';
 import UserDetailsPage from 'app/pages/user/UserDetailsPage';
@@ -25,9 +27,10 @@ import UserCreatePage from '../pages/user/UserCreatePage';
 import UserListPage from '../pages/user/UserListPage';
 import UserEditPage from 'app/pages/user/UserEditPage';
 import HomePage from '../pages/HomePage';
-import PaymentDetailsPage from 'app/pages/payment/PaymentDetailsPage';
 
 export const MainRoutes = () => {
+  const navigate = useNavigate();
+
   useEffect(() => {
     window.onunhandledrejection = ({ reason }) => {
       if (reason instanceof CustomError) {
@@ -70,6 +73,51 @@ export const MainRoutes = () => {
       window.onunhandledrejection = null;
     };
   }, []);
+
+  useEffect(() => {
+    async function identify() {
+      const isInAuthRouter = window.location.pathname === '/authorize';
+      const accessToken = AuthService.getAccessToken();
+
+      const code = new URLSearchParams(window.location.search).get('code');
+      const codeVerifier = AuthService.getCodeVerifier();
+
+      if (!accessToken && !isInAuthRouter) {
+        AuthService.imperativelySendToLoginScreen();
+      }
+
+      if (isInAuthRouter) {
+        if (!code) {
+          notification({
+            type: 'error',
+            title: 'Erro',
+            description: 'Código não foi informado!',
+          });
+          return;
+        }
+
+        if (!codeVerifier) {
+          // TODO logout
+          return;
+        }
+
+        const redirectUri = 'http://localhost:3000/authorize';
+        const { access_token, refresh_token } =
+          await AuthService.getFirstAccessToken({
+            code,
+            codeVerifier,
+            redirectUri,
+          });
+
+        AuthService.setAccessToken(access_token);
+        AuthService.setRefreshToken(refresh_token);
+
+        navigate(HOME);
+      }
+    }
+
+    identify();
+  }, [navigate]);
 
   return (
     <Routes>

@@ -51,7 +51,7 @@ services:
       JAVA_OPTS: "-Xms256m -Xmx1024m"
       SPRING_PROFILES_ACTIVE: "docker"
       SPRING_FLYWAY_LOCATIONS: "classpath:db/migration,classpath:db/testdata"
-      ALGANEWS_SECURITY_DISABLED: "true"
+      ALGANEWS_SECURITY_DISABLED: "false"
       ALGANEWS_SECURITY_DEFAULT_USER_ID_IF_DISABLED: "1"
       SPRING_DATASOURCE_URL: "jdbc:mysql://alganews-mysql-database/alganews?createDatabaseIfNotExist=true&serverTimezone=UTC"
       SPRING_DATASOURCE_USERNAME: "alganews"

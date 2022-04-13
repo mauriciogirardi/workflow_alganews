@@ -1,9 +1,4 @@
-import {
-  Fragment,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { Fragment, useCallback, useEffect, useState } from 'react';
 import {
   Avatar,
   Button,
@@ -18,16 +13,8 @@ import {
   Tabs,
   Upload,
 } from 'antd';
-import {
-  FileAddOutlined,
-  BankOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
-import {
-  FileService,
-  User,
-  UserService,
-} from 'mauricio.girardi-sdk';
+import { FileAddOutlined, BankOutlined, UserOutlined } from '@ant-design/icons';
+import { FileService, User, UserService } from 'mauricio.girardi-sdk';
 import ImageCrop from 'antd-img-crop';
 import MaskedInput from 'antd-mask-input';
 import { InternalNamePath } from 'antd/lib/form/interface';
@@ -59,37 +46,24 @@ type UserFormType = {
   createdAt: Moment;
   updatedAt: Moment;
   birthdate: Moment;
-} & Omit<
-  User.Detailed,
-  'createdAt' | 'updatedAt' | 'birthdate'
->;
+} & Omit<User.Detailed, 'createdAt' | 'updatedAt' | 'birthdate'>;
 
 interface UserFormProps {
   user?: UserFormType;
   onUpdate?: (user: User.Input) => Promise<any>;
 }
 
-export const UserForm = ({
-  user: userEdit,
-  onUpdate,
-}: UserFormProps) => {
+export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
   const navigate = useNavigate();
   const [form] = Form.useForm<User.Input>();
 
   const [loadingAvatar, setLoadingAvatar] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isEditorRole, setIsEditorRole] = useState(
-    userEdit?.role === 'EDITOR',
-  );
-  const [avatar, setAvatar] = useState(
-    userEdit?.avatarUrls.default || '',
-  );
-  const [activeTab, setActiveTab] =
-    useState<ActiveTabProps>('personal');
+  const [isEditorRole, setIsEditorRole] = useState(userEdit?.role === 'EDITOR');
+  const [avatar, setAvatar] = useState(userEdit?.avatarUrls.default || '');
+  const [activeTab, setActiveTab] = useState<ActiveTabProps>('personal');
 
-  const hasAvatar = [
-    ...(avatar ? [{ name: 'avatar', uid: '' }] : []),
-  ];
+  const hasAvatar = [...(avatar ? [{ name: 'avatar', uid: '' }] : [])];
 
   const messageError = useCallback(
     (err: unknown) => {
@@ -101,14 +75,9 @@ export const UserForm = ({
                 ?.split(/(\.|\]|\[)/gi)
                 .filter(
                   (str) =>
-                    str !== '.' &&
-                    str !== ']' &&
-                    str !== '[' &&
-                    str !== '',
+                    str !== '.' && str !== ']' && str !== '[' && str !== '',
                 )
-                .map((str) =>
-                  isNaN(+str) ? str : +str,
-                ) as string[],
+                .map((str) => (isNaN(+str) ? str : +str)) as string[],
               errors: [error.userMessage],
             })),
           );
@@ -117,16 +86,14 @@ export const UserForm = ({
             type: 'error',
             title: err.message || 'Erro',
             description:
-              err.data?.detail ||
-              'Erro desconhecido tente mais tarde.',
+              err.data?.detail || 'Erro desconhecido tente mais tarde.',
           });
         }
       } else {
         notification({
           type: 'error',
           title: 'Houve um error',
-          description:
-            'Erro ao criar um usuário tente novamente.',
+          description: 'Erro ao criar um usuário tente novamente.',
         });
       }
     },
@@ -199,8 +166,8 @@ export const UserForm = ({
             ]}
           >
             <MaskedInput
-              mask='(11) 11111-1111'
               placeholder='E.g.: (47) 99999-0000'
+              mask={'(11) 11111-1111'}
             />
           </Item>
         </Col>
@@ -286,14 +253,10 @@ export const UserForm = ({
                         },
                         {
                           async validator(field, value) {
-                            if (isNaN(value))
-                              throw new Error(
-                                'Apenas números',
-                              );
+                            if (isNaN(value)) throw new Error('Apenas números');
                             if (Number(value) > 100)
                               throw new Error('Maxímo 100');
-                            if (Number(value) < 0)
-                              throw new Error('Mínimo 0');
+                            if (Number(value) < 0) throw new Error('Mínimo 0');
                           },
                         },
                       ]}
@@ -402,9 +365,7 @@ export const UserForm = ({
           >
             <Select placeholder='Selecione o tipo de conta'>
               <Option value='SAVING'>Conta poupança</Option>
-              <Option value='CHECKING'>
-                Conta corrente
-              </Option>
+              <Option value='CHECKING'>Conta corrente</Option>
             </Select>
           </Item>
         </Col>
@@ -471,10 +432,7 @@ export const UserForm = ({
     };
 
     if (userEdit) {
-      return (
-        onUpdate &&
-        onUpdate(userDTO).finally(() => setLoading(false))
-      );
+      return onUpdate && onUpdate(userDTO).finally(() => setLoading(false));
     }
 
     try {
@@ -491,9 +449,7 @@ export const UserForm = ({
     }
   };
 
-  usePageTitle(
-    userEdit ? 'Editar usuário' : 'Criar usuário',
-  );
+  usePageTitle(userEdit ? 'Editar usuário' : 'Criar usuário');
   return (
     <Form
       form={form}
@@ -506,12 +462,7 @@ export const UserForm = ({
       <Row gutter={24} align='middle'>
         <Col lg={4} xs={24}>
           <Row justify='center'>
-            <ImageCrop
-              rotate
-              shape={'round'}
-              grid
-              aspect={1}
-            >
+            <ImageCrop rotate shape={'round'} grid aspect={1}>
               <Upload
                 maxCount={1}
                 onRemove={() => {
@@ -591,8 +542,7 @@ export const UserForm = ({
               },
               {
                 max: 255,
-                message:
-                  'A biografia não pode ter mais de 255 caracteres.',
+                message: 'A biografia não pode ter mais de 255 caracteres.',
               },
               {
                 min: 10,
@@ -626,9 +576,7 @@ export const UserForm = ({
           >
             <Select
               placeholder='Selecione um perfil'
-              onChange={(value) =>
-                setIsEditorRole(value === 'EDITOR')
-              }
+              onChange={(value) => setIsEditorRole(value === 'EDITOR')}
             >
               <Option value='EDITOR'>Editor</Option>
               <Option value='ASSISTANT'>Assistente</Option>
@@ -648,10 +596,7 @@ export const UserForm = ({
               },
             ]}
           >
-            <Input
-              type='email'
-              placeholder='E.g.: John@Doe.com'
-            />
+            <Input type='email' placeholder='E.g.: John@Doe.com' />
           </Item>
         </Col>
 
@@ -659,9 +604,7 @@ export const UserForm = ({
           <Tabs
             defaultActiveKey='personal'
             activeKey={activeTab}
-            onChange={(tab) =>
-              setActiveTab(tab as ActiveTabProps)
-            }
+            onChange={(tab) => setActiveTab(tab as ActiveTabProps)}
           >
             <TabPane
               key='personal'
@@ -697,19 +640,11 @@ export const UserForm = ({
           <Row justify={'end'} gutter={24}>
             <Col>
               {userEdit && (
-                <Button onClick={() => navigate(-1)}>
-                  Cancelar
-                </Button>
+                <Button onClick={() => navigate(-1)}>Cancelar</Button>
               )}
             </Col>
-            <Button
-              type='primary'
-              htmlType='submit'
-              loading={loading}
-            >
-              {`${
-                userEdit ? 'Editar' : 'Cadastrar'
-              } usuário`}
+            <Button type='primary' htmlType='submit' loading={loading}>
+              {`${userEdit ? 'Editar' : 'Cadastrar'} usuário`}
             </Button>
           </Row>
         </Col>

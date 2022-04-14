@@ -5,7 +5,7 @@ interface SetRequestInterceptorsProps {
   onFulfilled: (
     request: AxiosRequestConfig
   ) => AxiosRequestConfig | Promise<AxiosRequestConfig>
-  onRejected: (error: any) => any
+  onRejected?: (error: any) => any
 }
 
 const Http = axios.create()

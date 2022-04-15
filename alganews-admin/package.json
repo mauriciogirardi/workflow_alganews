@@ -14,7 +14,7 @@
     "danielbonifacio-sdk": "2.7.3",
     "date-fns": "^2.23.0",
     "lodash.debounce": "^4.0.8",
-    "mauricio.girardi-sdk": "^4.4.2",
+    "mauricio.girardi-sdk": "^5.0.0",
     "pkce-challenge": "^3.0.0",
     "qs": "^6.10.3",
     "react": "^17.0.2",

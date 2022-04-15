@@ -8,6 +8,11 @@ interface GetFirstAccessTokenProps {
   redirectUri: string;
 }
 
+interface GetNewTokenProps {
+  refreshToken: string;
+  codeVerifier: string;
+}
+
 export interface OAuthAuthorizationTokenResponse {
   access_token: string;
   token_type: 'bearer' | string;
@@ -17,17 +22,56 @@ export interface OAuthAuthorizationTokenResponse {
   [key: string]: string | number;
 }
 
+const BASE_URL = 'http://localhost:8081';
 const ACCESS_TOKEN = 'accessToken';
 const REFRESH_TOKEN = 'refreshToken';
 const CODE_VERIFIER = 'codeVerifier';
-
-const URL = 'http://localhost:8081';
+const CLIENT_ID = 'alganews-admin';
+const PATH_OAUTH_TOKEN = '/oauth/token';
+const PATH_OAUTH_AUTHORIZE = `${BASE_URL}/oauth/authorize`;
+const PATH_LOGOUT =
+  'http//localhost:8081/logout?redirect=http://localhost:3000';
 
 const authServer = axios.create({
-  baseURL: URL,
+  baseURL: BASE_URL,
+});
+
+authServer.interceptors.response.use(undefined, async (error) => {
+  if (error?.response?.status === 401) {
+    AuthService.imperativelySendToLogout();
+  }
+
+  return Promise.reject(error);
 });
 
 export class AuthService {
+  public static imperativelySendToLogout() {
+    window.localStorage.clear();
+    window.location.href = PATH_LOGOUT;
+  }
+
+  public static async getNewToken({
+    codeVerifier,
+    refreshToken,
+  }: GetNewTokenProps) {
+    const formUrlEncoded = qs.stringify({
+      refresh_token: refreshToken,
+      code_verifier: codeVerifier,
+      grant_type: 'refresh_token',
+      client_id: CLIENT_ID,
+    });
+
+    const headers = {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    };
+
+    return authServer
+      .post<OAuthAuthorizationTokenResponse>(PATH_OAUTH_TOKEN, formUrlEncoded, {
+        headers,
+      })
+      .then((res) => res.data);
+  }
+
   public static async getFirstAccessToken({
     code,
     codeVerifier,
@@ -38,7 +82,7 @@ export class AuthService {
       code_verifier: codeVerifier,
       redirect_uri: redirectUri,
       grant_type: 'authorization_code',
-      client_id: 'alganews-admin',
+      client_id: CLIENT_ID,
     };
 
     const encodedData = qs.stringify(data);
@@ -48,7 +92,7 @@ export class AuthService {
     };
 
     return authServer
-      .post<OAuthAuthorizationTokenResponse>('/oauth/token', encodedData, {
+      .post<OAuthAuthorizationTokenResponse>(PATH_OAUTH_TOKEN, encodedData, {
         headers,
       })
       .then((res) => res.data);
@@ -57,13 +101,13 @@ export class AuthService {
   public static getLoginScreenUrl(codeChallenge: string) {
     const config = qs.stringify({
       response_type: 'code',
-      client_id: 'alganews-admin',
+      client_id: CLIENT_ID,
       redirect_uri: `${window.location.origin}/authorize`,
       code_challenge: codeChallenge,
       code_challenge_method: 'S256',
     });
 
-    return `${URL}/oauth/authorize?${config}`;
+    return `${PATH_OAUTH_AUTHORIZE}?${config}`;
   }
 
   public static async imperativelySendToLoginScreen() {

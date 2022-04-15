@@ -10,6 +10,7 @@ import 'moment/locale/pt-br';
 import { store } from './core/store';
 import { MainRoutes } from './app/routers';
 import { DefaultLayout } from './app/Layout';
+import './auth/httpConfig';
 
 import './styles/index.less';
 import 'react-loading-skeleton/dist/skeleton.css';

@@ -21,6 +21,7 @@ const observeActions: Middleware = () => (next) => (action) => {
       'cash-flow/revenues/createRevenue/rejected',
       'cash-flow/revenues/updateRevenues/rejected',
       'cash-flow/expenses/updateExpenses/rejected',
+      'user/getAllUsers/rejected',
     ];
 
     const shouldNotify = !ignoredActions.includes(action.type);

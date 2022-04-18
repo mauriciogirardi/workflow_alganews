@@ -30,24 +30,26 @@ import { TagTable } from 'app/components/TagTable';
 import { CardUser } from 'app/components/CardUser';
 import { Link } from 'react-router-dom';
 import { USERS, USER_EDIT } from 'core/constants-paths';
+import { Forbidden } from 'app/components/Forbidden';
 
 interface TableActionsProps {
   userId: number;
 }
 
 export const UserList = () => {
+  const [forbidden, setForbidden] = useState(false);
   const [page, setPage] = useState(0);
 
-  const {
-    fetchUsers,
-    users,
-    toggleUserStatus,
-    fetching,
-    userId,
-  } = useUsers();
+  const { fetchUsers, users, toggleUserStatus, fetching, userId } = useUsers();
 
   useEffect(() => {
-    fetchUsers();
+    fetchUsers().catch((err) => {
+      if (err?.data?.status === 403) {
+        return setForbidden(true);
+      }
+
+      throw err;
+    });
   }, [fetchUsers]);
 
   const TableActions = ({ userId }: TableActionsProps) => {
@@ -56,25 +58,14 @@ export const UserList = () => {
         <Col>
           <Tooltip title='Editar usuário!' placement='left'>
             <Link to={`${USER_EDIT}/${userId}`}>
-              <Button
-                size='middle'
-                type='text'
-                icon={<EditOutlined />}
-              />
+              <Button size='middle' type='text' icon={<EditOutlined />} />
             </Link>
           </Tooltip>
         </Col>
         <Col>
-          <Tooltip
-            title='Visualizar usuário'
-            placement='right'
-          >
+          <Tooltip title='Visualizar usuário' placement='right'>
             <Link to={`${USERS}/${userId}`}>
-              <Button
-                size='middle'
-                type='text'
-                icon={<EyeOutlined />}
-              />
+              <Button size='middle' type='text' icon={<EyeOutlined />} />
             </Link>
           </Tooltip>
         </Col>
@@ -98,9 +89,7 @@ export const UserList = () => {
           value={selectedKeys[0]}
           placeholder={`Buscar ${displayName || dataIndex}`}
           onChange={(e) => {
-            setSelectedKeys(
-              e.target.value ? [e.target.value] : [],
-            );
+            setSelectedKeys(e.target.value ? [e.target.value] : []);
           }}
           onPressEnter={() => confirm()}
         />
@@ -129,9 +118,7 @@ export const UserList = () => {
       </Card>
     ),
     filterIcon: (filtered: boolean) => (
-      <SearchOutlined
-        style={{ color: filtered ? '#0099ff' : undefined }}
-      />
+      <SearchOutlined style={{ color: filtered ? '#0099ff' : undefined }} />
     ),
     // @ts-ignore
     onFilter: (value, record) =>
@@ -146,6 +133,10 @@ export const UserList = () => {
   const handleReloadListUser = () => {
     fetchUsers();
   };
+
+  if (forbidden) {
+    return <Forbidden />;
+  }
 
   return (
     <>
@@ -235,10 +226,7 @@ export const UserList = () => {
             responsive: ['sm'],
             width: 130,
             sorter(a, b) {
-              return new Date(a.createdAt) >
-                new Date(b.createdAt)
-                ? 1
-                : -1;
+              return new Date(a.createdAt) > new Date(b.createdAt) ? 1 : -1;
             },
             render(createdAt: string) {
               return formatterDate({
@@ -256,9 +244,7 @@ export const UserList = () => {
             width: 100,
             render(active: boolean, user) {
               if (user.id === userId && fetching) {
-                return (
-                  <Spin indicator={<LoadingOutlined />} />
-                );
+                return <Spin indicator={<LoadingOutlined />} />;
               }
 
               return (

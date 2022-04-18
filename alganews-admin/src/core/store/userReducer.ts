@@ -13,8 +13,19 @@ const initialState: UserState = {
   users: [],
 };
 
-export const getAllUsers = createAsyncThunk('user/getAllUsers', async () =>
-  UserService.getAllUsers(),
+export const getAllUsers = createAsyncThunk(
+  'user/getAllUsers',
+  async (_, { rejectWithValue }) => {
+    try {
+      return await UserService.getAllUsers();
+    } catch (err) {
+      if (typeof err === 'object') {
+        return rejectWithValue({ ...err });
+      }
+    }
+
+    return [];
+  },
 );
 
 export const toggleUsersStatus = createAsyncThunk(

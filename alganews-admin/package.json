@@ -13,6 +13,7 @@
     "craco-less": "^1.18.0",
     "danielbonifacio-sdk": "2.7.3",
     "date-fns": "^2.23.0",
+    "jwt-decode": "^3.1.2",
     "lodash.debounce": "^4.0.8",
     "mauricio.girardi-sdk": "^5.0.0",
     "pkce-challenge": "^3.0.0",

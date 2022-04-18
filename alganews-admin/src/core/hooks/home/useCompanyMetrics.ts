@@ -1,4 +1,5 @@
 import { MetricService } from 'mauricio.girardi-sdk';
+import { ForbiddenError } from 'mauricio.girardi-sdk/dist/errors';
 import { useCallback, useState } from 'react';
 import { transformDataIntoAntdChart } from '../../utils';
 
@@ -10,18 +11,25 @@ interface DataProps {
 
 export const useCompanyMetrics = () => {
   const [data, setData] = useState<DataProps[]>([]);
-  const [error, setError] = useState<Error>();
+  const [forbidden, setForbidden] = useState(false);
 
   const fetchCompanyMetrics = useCallback(() => {
     MetricService.getMonthlyRevenuesExpenses()
       .then(transformDataIntoAntdChart)
       .then(setData)
-      .catch((err) => setError(new Error(err.message)));
+      .catch((err) => {
+        if (err instanceof ForbiddenError) {
+          setForbidden(true);
+          return;
+        }
+
+        throw err;
+      });
   }, []);
 
   return {
     data,
     fetchCompanyMetrics,
-    error,
+    forbidden,
   };
 };

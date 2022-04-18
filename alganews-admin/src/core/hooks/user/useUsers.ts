@@ -1,23 +1,19 @@
 import { useCallback, useState } from 'react';
 import { User } from 'mauricio.girardi-sdk';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState } from 'core/store';
+import { AppDispatch, RootState } from 'core/store';
 import * as useActions from 'core/store/userReducer';
 
 export const useUsers = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [userId, setUserId] = useState<number | null>(null);
-  const { fetching, users } = useSelector(
-    (state: RootState) => state.user,
-  );
+  const { fetching, users } = useSelector((state: RootState) => state.user);
   const editors = useSelector((state: RootState) =>
-    state.user.users.filter(
-      (user) => user.role === 'EDITOR',
-    ),
+    state.user.users.filter((user) => user.role === 'EDITOR'),
   );
 
   const fetchUsers = useCallback(() => {
-    dispatch(useActions.getAllUsers());
+    return dispatch(useActions.getAllUsers()).unwrap();
   }, [dispatch]);
 
   const toggleUserStatus = useCallback(

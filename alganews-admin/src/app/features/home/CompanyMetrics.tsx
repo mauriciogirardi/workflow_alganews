@@ -1,14 +1,12 @@
 import { useEffect } from 'react';
 import { Area, AreaConfig } from '@ant-design/charts';
 
-import {
-  formatterCurrency,
-  formatterDate,
-} from '../../../core/utils';
+import { formatterCurrency, formatterDate } from '../../../core/utils';
 import { useCompanyMetrics } from '../../../core/hooks/home/useCompanyMetrics';
+import { Forbidden } from 'app/components/Forbidden';
 
 export const CompanyMetrics = () => {
-  const { data, fetchCompanyMetrics } = useCompanyMetrics();
+  const { data, fetchCompanyMetrics, forbidden } = useCompanyMetrics();
 
   const formatterLegend = (legend: string) =>
     legend === 'totalRevenues' ? 'Receitas' : 'Despesas';
@@ -16,6 +14,10 @@ export const CompanyMetrics = () => {
   useEffect(() => {
     fetchCompanyMetrics();
   }, [fetchCompanyMetrics]);
+
+  if (forbidden) {
+    return <Forbidden minHeight={256} />;
+  }
 
   const config: AreaConfig = {
     data,

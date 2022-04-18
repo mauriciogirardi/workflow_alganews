@@ -6,6 +6,7 @@ import {
 } from '@reduxjs/toolkit';
 
 import { notification } from 'core/utils/notification';
+import authReducer from './auth.slice';
 import entriesCategoryReducer from './cashFlow/entriesCategory.slice';
 import expenseReducer from './cashFlow/expense.slice';
 import revenueReducer from './cashFlow/revenue.slice';
@@ -48,6 +49,7 @@ export const store = configureStore({
     user: userReducer,
     payment: paymentReducer,
     cashFlow: cashFlowReducer,
+    auth: authReducer,
   },
   middleware: function (getDefaultMiddleware) {
     return getDefaultMiddleware().concat(observeActions);

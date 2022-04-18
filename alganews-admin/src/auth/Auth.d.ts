@@ -6,7 +6,6 @@ declare namespace Authentication {
     'alganews:user_id': number;
     user_name: string;
     scope: string[];
-    ati: string;
     exp: number;
     authorities: User.Role[];
     jti: string;

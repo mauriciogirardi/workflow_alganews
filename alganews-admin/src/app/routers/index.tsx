@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
+import jwtDecode from 'jwt-decode';
 
 import {
   EXPENSES,
@@ -14,8 +15,10 @@ import {
   USER_DETAILS,
   USER_EDIT_ID,
 } from '../../core/constants-paths';
+import { Authentication } from 'auth/Auth';
 import { notification } from 'core/utils/notification';
 import { AuthService } from 'auth/Authorization.service';
+import { useAuth } from 'core/hooks/auth/useAuth';
 
 import CashFlowExpensesPage from '../pages/cashFlow/CashFlowExpensesPage';
 import CashFlowRevenuesPage from '../pages/cashFlow/CashFlowRevenuesPage';
@@ -29,6 +32,7 @@ import UserEditPage from 'app/pages/user/UserEditPage';
 import HomePage from '../pages/HomePage';
 
 export const MainRoutes = () => {
+  const { fetchUser } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -114,10 +118,16 @@ export const MainRoutes = () => {
 
         navigate(HOME);
       }
+
+      if (accessToken) {
+        const decodedToken: Authentication.AccessTokenDecodedBody =
+          jwtDecode(accessToken);
+        fetchUser(decodedToken['alganews:user_id']);
+      }
     }
 
     identify();
-  }, [navigate]);
+  }, [navigate, fetchUser]);
 
   return (
     <Routes>

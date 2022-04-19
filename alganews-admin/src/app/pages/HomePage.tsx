@@ -1,4 +1,5 @@
 import { Col, Row, Typography, Space, Divider } from 'antd';
+import { useAuth } from 'core/hooks/auth/useAuth';
 import { usePageTitle } from 'core/utils/hooks/usePageTitle';
 
 import { CompanyMetrics } from '../features/home/CompanyMetrics';
@@ -7,20 +8,16 @@ import { LatestPosts } from '../features/home/LatestPosts';
 const { Title, Paragraph } = Typography;
 
 export default function HomePage() {
+  const { user } = useAuth();
   usePageTitle('Home');
 
   return (
-    <Space
-      direction='vertical'
-      size={'small'}
-      style={{ maxWidth: '100%' }}
-    >
+    <Space direction='vertical' size={'small'} style={{ maxWidth: '100%' }}>
       <Row>
         <Col span={24}>
-          <Title level={2}>Olá, Mauricio Girardi</Title>
+          <Title level={2}>Olá, {user?.name}</Title>
           <Paragraph>
-            Este é o resumo da empresa nos últimos doze
-            meses.
+            Este é o resumo da empresa nos últimos doze meses.
           </Paragraph>
         </Col>
         <Col span={24}>

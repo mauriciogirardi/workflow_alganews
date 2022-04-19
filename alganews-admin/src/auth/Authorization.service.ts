@@ -29,8 +29,6 @@ const CODE_VERIFIER = 'codeVerifier';
 const CLIENT_ID = 'alganews-admin';
 const PATH_OAUTH_TOKEN = '/oauth/token';
 const PATH_OAUTH_AUTHORIZE = `${BASE_URL}/oauth/authorize`;
-const PATH_LOGOUT =
-  'http//localhost:8081/logout?redirect=http://localhost:3000';
 
 const authServer = axios.create({
   baseURL: BASE_URL,
@@ -47,7 +45,7 @@ authServer.interceptors.response.use(undefined, async (error) => {
 export class AuthService {
   public static imperativelySendToLogout() {
     window.localStorage.clear();
-    window.location.href = PATH_LOGOUT;
+    window.location.href = `http://localhost:8081/logout?redirect=http://localhost:3000`;
   }
 
   public static async getNewToken({

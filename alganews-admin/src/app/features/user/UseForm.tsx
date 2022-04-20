@@ -15,23 +15,23 @@ import {
 } from 'antd';
 import { FileAddOutlined, BankOutlined, UserOutlined } from '@ant-design/icons';
 import { FileService, User, UserService } from 'mauricio.girardi-sdk';
-import ImageCrop from 'antd-img-crop';
-import MaskedInput from 'antd-mask-input';
 import { InternalNamePath } from 'antd/lib/form/interface';
 import { Moment } from 'moment';
-
-import { notification } from 'core/utils/notification';
 import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
-import { useNavigate } from 'react-router-dom';
-import { USERS } from 'core/constants-paths';
+import MaskedInput from 'antd-mask-input';
+import ImageCrop from 'antd-img-crop';
+
 import { CurrencyInput } from 'app/components/CurrencyInput';
 import { usePageTitle } from 'core/utils/hooks/usePageTitle';
+import { notification } from 'core/utils/notification';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from 'core/hooks/auth/useAuth';
+import { USERS } from 'core/constants-paths';
 
-const { Item } = Form;
 const { TextArea } = Input;
-const { Option } = Select;
 const { TabPane } = Tabs;
+const { Option } = Select;
+const { Item } = Form;
 
 interface FieldsProps<Values = any> {
   values: Values;
@@ -168,9 +168,8 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
             ]}
           >
             <MaskedInput
-              placeholder='E.g.: (47) 99999-0000'
               disabled={userEdit && !userEdit.canSensitiveDataBeUpdated}
-              mask={'(11) 11111-1111'}
+              mask={'(00) 00000-0000'}
             />
           </Item>
         </Col>
@@ -189,10 +188,7 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
               },
             ]}
           >
-            <MaskedInput
-              mask='111.111.111-11'
-              placeholder='E.g.: 111.222.333-44'
-            />
+            <MaskedInput mask='000.000.000-00' />
           </Item>
         </Col>
         {isEditorRole && (

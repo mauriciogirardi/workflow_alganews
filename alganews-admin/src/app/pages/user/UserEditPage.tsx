@@ -9,8 +9,13 @@ import { USERS } from 'core/constants-paths';
 import { UseFormSkeleton } from 'app/features/user/UserFormSkeleton';
 import { NotFoundError } from 'app/components/NotFoundError';
 import { notification } from 'core/utils/notification';
+import { usePageTitle } from 'core/utils/hooks/usePageTitle';
+import { useBreadcrumb } from 'core/hooks/useBreadcrumb';
 
 export default function UserEditPage() {
+  usePageTitle('Editar de usuário');
+  useBreadcrumb('Usuários/Cadastro/Editar usuário');
+
   const { fetchUser, user, notFound } = useUser();
   const params = useParams<{ id: string }>();
   const navigate = useNavigate();

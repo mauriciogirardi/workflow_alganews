@@ -13,9 +13,12 @@ import { PaymentPosts } from 'app/features/payment/PaymentPosts';
 import { usePageTitle } from 'core/utils/hooks/usePageTitle';
 import { notification } from 'core/utils/notification';
 import { PAYMENTS } from 'core/constants-paths';
+import { useBreadcrumb } from 'core/hooks/useBreadcrumb';
 
 export default function PaymentDetailsPage() {
   usePageTitle('Detalhes do pagamento');
+  useBreadcrumb('Pagamentos/Consulta/Detalhes do pagamento');
+
   const navigate = useNavigate();
   const params = useParams<{ id: string }>();
   const userId = Number(params.id);

@@ -10,8 +10,13 @@ import { formatterDate } from 'core/utils';
 import { DoubleConfirm } from '../../components/DoubleConfirm';
 import { notification } from 'core/utils/notification';
 import { usePayments } from 'core/hooks/payment/usePayments';
+import { usePageTitle } from 'core/utils/hooks/usePageTitle';
+import { useBreadcrumb } from 'core/hooks/useBreadcrumb';
 
 export default function PaymentListPage() {
+  usePageTitle('Consulta do pagamento');
+  useBreadcrumb('Pagamentos/Consulta');
+
   const {
     query,
     setQuery,

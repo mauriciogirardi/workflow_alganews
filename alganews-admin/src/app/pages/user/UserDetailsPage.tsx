@@ -30,11 +30,13 @@ import { formatPhone } from 'core/utils/formatPhone';
 import { usePosts } from 'core/hooks/post/usePosts';
 import { useUser } from 'core/hooks/user/useUser';
 import { Post } from 'mauricio.girardi-sdk';
+import { useBreadcrumb } from 'core/hooks/useBreadcrumb';
 
 const { Title, Paragraph, Text } = Typography;
 
 export default function UserDetailsPage() {
   usePageTitle('Detalhes do usuário');
+  useBreadcrumb('Usuários/Cadastro/Detalhes do usuário');
 
   const [page, setPage] = useState(0);
   const { fetchUser, user, notFound, toggleUserStatus } = useUser();

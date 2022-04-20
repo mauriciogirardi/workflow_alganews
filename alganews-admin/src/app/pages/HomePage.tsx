@@ -1,5 +1,6 @@
 import { Col, Row, Typography, Space, Divider } from 'antd';
 import { useAuth } from 'core/hooks/auth/useAuth';
+import { useBreadcrumb } from 'core/hooks/useBreadcrumb';
 import { usePageTitle } from 'core/utils/hooks/usePageTitle';
 
 import { CompanyMetrics } from '../features/home/CompanyMetrics';
@@ -10,6 +11,7 @@ const { Title, Paragraph } = Typography;
 export default function HomePage() {
   const { user } = useAuth();
   usePageTitle('Home');
+  useBreadcrumb('Home');
 
   return (
     <Space direction='vertical' size={'small'} style={{ maxWidth: '100%' }}>

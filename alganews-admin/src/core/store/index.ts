@@ -11,6 +11,7 @@ import entriesCategoryReducer from './cashFlow/entriesCategory.slice';
 import expenseReducer from './cashFlow/expense.slice';
 import revenueReducer from './cashFlow/revenue.slice';
 import paymentReducer from './payment.slice';
+import uiReducer from './ui.slice';
 import userReducer from './userReducer';
 
 const observeActions: Middleware = () => (next) => (action) => {
@@ -50,6 +51,7 @@ export const store = configureStore({
     payment: paymentReducer,
     cashFlow: cashFlowReducer,
     auth: authReducer,
+    ui: uiReducer,
   },
   middleware: function (getDefaultMiddleware) {
     return getDefaultMiddleware().concat(observeActions);

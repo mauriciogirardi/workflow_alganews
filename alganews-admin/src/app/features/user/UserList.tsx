@@ -249,6 +249,10 @@ export const UserList = () => {
 
               return (
                 <Switch
+                  disabled={
+                    (active && !user.canBeDeactivated) ||
+                    (!active && !user.canBeActivated)
+                  }
                   checked={active}
                   onChange={() => toggleUserStatus(user)}
                 />

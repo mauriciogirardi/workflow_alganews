@@ -10,13 +10,12 @@ export const useUpdate = () => {
   const [error, setError] = useState<Error>();
 
   const fetchUpdateUser = useCallback(
-    (userId: number, user: User.Input) => {
-      UserService.updateExistingUser(userId, user)
+    async (userId: number, user: User.Input) => {
+      await UserService.updateExistingUser(userId, user)
         .then(() => {
           notification({
             title: 'Atializado',
-            description:
-              'Usuário foi atualizado com sucesso.',
+            description: 'Usuário foi atualizado com sucesso.',
           });
           navigate(USERS);
         })

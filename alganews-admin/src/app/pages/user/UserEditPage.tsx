@@ -1,18 +1,17 @@
 import { useCallback, useEffect } from 'react';
-import { User } from 'mauricio.girardi-sdk';
+import { User, UserService } from 'mauricio.girardi-sdk';
 import { useNavigate, useParams } from 'react-router-dom';
 import moment from 'moment';
 
 import { UserForm } from 'app/features/user/UseForm';
-import { useUpdate } from 'core/hooks/user/useUpdate';
 import { useUser } from 'core/hooks/user/useUser';
 import { USERS } from 'core/constants-paths';
 import { UseFormSkeleton } from 'app/features/user/UserFormSkeleton';
 import { NotFoundError } from 'app/components/NotFoundError';
+import { notification } from 'core/utils/notification';
 
 export default function UserEditPage() {
   const { fetchUser, user, notFound } = useUser();
-  const { fetchUpdateUser } = useUpdate();
   const params = useParams<{ id: string }>();
   const navigate = useNavigate();
   const userId = Number(params.id);
@@ -25,20 +24,23 @@ export default function UserEditPage() {
     }
   }, [fetchUser, userId, navigate]);
 
-  const transformUserData = useCallback(
-    (user: User.Detailed) => {
-      return {
-        ...user,
-        createdAt: moment(user.createdAt),
-        updatedAt: moment(user.updatedAt),
-        birthdate: moment(user.birthdate),
-      };
-    },
-    [],
-  );
+  const transformUserData = useCallback((user: User.Detailed) => {
+    return {
+      ...user,
+      createdAt: moment(user.createdAt),
+      updatedAt: moment(user.updatedAt),
+      birthdate: moment(user.birthdate),
+    };
+  }, []);
 
   const handleUserUpdate = async (user: User.Input) => {
-    await fetchUpdateUser(userId, user);
+    await UserService.updateExistingUser(userId, user).then(() => {
+      notification({
+        title: 'Atializado',
+        description: 'Usuário foi atualizado com sucesso.',
+      });
+      navigate(USERS);
+    });
   };
 
   if (notFound) {
@@ -55,10 +57,7 @@ export default function UserEditPage() {
 
   return (
     <>
-      <UserForm
-        onUpdate={handleUserUpdate}
-        user={transformUserData(user)}
-      />
+      <UserForm onUpdate={handleUserUpdate} user={transformUserData(user)} />
     </>
   );
 }

@@ -26,6 +26,7 @@ import { useNavigate } from 'react-router-dom';
 import { USERS } from 'core/constants-paths';
 import { CurrencyInput } from 'app/components/CurrencyInput';
 import { usePageTitle } from 'core/utils/hooks/usePageTitle';
+import { useAuth } from 'core/hooks/auth/useAuth';
 
 const { Item } = Form;
 const { TextArea } = Input;
@@ -64,6 +65,7 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
   const [activeTab, setActiveTab] = useState<ActiveTabProps>('personal');
 
   const hasAvatar = [...(avatar ? [{ name: 'avatar', uid: '' }] : [])];
+  const { user: userAuthenticate } = useAuth();
 
   const messageError = useCallback(
     (err: unknown) => {
@@ -167,6 +169,7 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
           >
             <MaskedInput
               placeholder='E.g.: (47) 99999-0000'
+              disabled={userEdit && !userEdit.canSensitiveDataBeUpdated}
               mask={'(11) 11111-1111'}
             />
           </Item>
@@ -576,11 +579,17 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
           >
             <Select
               placeholder='Selecione um perfil'
+              disabled={userEdit && !userEdit.canSensitiveDataBeUpdated}
               onChange={(value) => setIsEditorRole(value === 'EDITOR')}
             >
               <Option value='EDITOR'>Editor</Option>
               <Option value='ASSISTANT'>Assistente</Option>
-              <Option value='MANAGER'>Gerente</Option>
+              <Option
+                disabled={userAuthenticate?.role !== 'MANAGER'}
+                value='MANAGER'
+              >
+                Gerente
+              </Option>
             </Select>
           </Item>
         </Col>
@@ -596,7 +605,11 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
               },
             ]}
           >
-            <Input type='email' placeholder='E.g.: John@Doe.com' />
+            <Input
+              type='email'
+              disabled={userEdit && !userEdit.canSensitiveDataBeUpdated}
+              placeholder='E.g.: John@Doe.com'
+            />
           </Item>
         </Col>
 

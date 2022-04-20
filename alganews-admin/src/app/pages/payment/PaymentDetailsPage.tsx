@@ -74,17 +74,23 @@ export default function PaymentDetailsPage() {
     <Row gutter={[20, 20]} justify='end'>
       <Col>
         <Space>
-          {!payment?.canBeApproved ? (
+          {payment?.approvedAt ? (
             renderPaymentApprovedAt()
           ) : (
             <DoubleConfirm
+              disabled={!payment || !payment.canBeApproved}
               onConfirmContent='Aprovar um agendamento de pagamento gera uma despesa que não pode ser removida do fluxo de caixa. Essa ação não poderá ser desfeita.'
               onConfirmTitle='Ação irreversível'
               popConfirmTitle='Deseja aprovar este agendamento?'
               okText='Sim'
-              onOk={() => handleConfirmSchedule(payment?.id)}
+              onOk={() => {
+                if (payment) {
+                  handleConfirmSchedule(payment?.id);
+                }
+              }}
             >
               <Button
+                disabled={!payment || !payment.canBeApproved}
                 className='no-print'
                 type='primary'
                 danger

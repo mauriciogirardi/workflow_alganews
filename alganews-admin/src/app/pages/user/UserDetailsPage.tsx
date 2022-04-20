@@ -14,8 +14,9 @@ import {
   Typography,
 } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
-import { WarningFilled } from '@ant-design/icons';
 import { useEffect, useState } from 'react';
+import { WarningFilled } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 
 import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
 import confirm from 'antd/lib/modal/confirm';
@@ -23,13 +24,12 @@ import confirm from 'antd/lib/modal/confirm';
 import { messageSuccessTogglesUserStatus } from 'core/store/utils/messageSuccessToggleUserStatus';
 import { USERS, USER_EDIT } from 'core/constants-paths';
 import { formatterDate } from 'core/utils';
+import { NotFoundError } from 'app/components/NotFoundError';
 import { usePageTitle } from 'core/utils/hooks/usePageTitle';
+import { formatPhone } from 'core/utils/formatPhone';
 import { usePosts } from 'core/hooks/post/usePosts';
 import { useUser } from 'core/hooks/user/useUser';
-import { Link } from 'react-router-dom';
 import { Post } from 'mauricio.girardi-sdk';
-import { NotFoundError } from 'app/components/NotFoundError';
-import { formatPhone } from 'core/utils/formatPhone';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -143,6 +143,10 @@ export default function UserDetailsPage() {
             <Popconfirm
               cancelText='Não'
               okText='Sim'
+              disabled={
+                (user.active && !user.canBeDeactivated) ||
+                (!user.active && !user.canBeActivated)
+              }
               title={
                 user.active
                   ? `Desabilitar ${user.name}`
@@ -150,7 +154,13 @@ export default function UserDetailsPage() {
               }
               onConfirm={handleOnConfirm}
             >
-              <Button type='primary'>
+              <Button
+                type='primary'
+                disabled={
+                  (user.active && !user.canBeDeactivated) ||
+                  (!user.active && !user.canBeActivated)
+                }
+              >
                 {user.active ? 'Desabilitar' : 'Habilitar'}
               </Button>
             </Popconfirm>

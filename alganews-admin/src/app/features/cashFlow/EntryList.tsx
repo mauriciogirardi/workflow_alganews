@@ -74,6 +74,7 @@ export const EntryList = ({ onEdit, type, onDetails }: EntryListProps) => {
           size='small'
           type='text'
           icon={<EditOutlined />}
+          disabled={!record.canBeEdited}
           onClick={() => onEdit(id)}
         />
 

@@ -8,6 +8,7 @@ import { GlobalStyles } from 'core/styles/globalStyles';
 import { MainRoutes } from 'app/routes';
 import { store } from 'core/store';
 
+import 'auth/httpConfig';
 import 'core/styles/imports.css';
 
 ReactDOM.render(

@@ -1,6 +1,6 @@
 import { Button, Col, DatePicker, Row, Table, Tag, Tooltip } from 'antd';
 import { EyeOutlined, DeleteOutlined } from '@ant-design/icons';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { SorterResult } from 'antd/lib/table/interface';
 import { Payment } from 'mauricio.girardi-sdk';
 import { Link } from 'react-router-dom';
@@ -12,10 +12,12 @@ import { notification } from 'core/utils/notification';
 import { usePayments } from 'core/hooks/payment/usePayments';
 import { usePageTitle } from 'core/utils/hooks/usePageTitle';
 import { useBreadcrumb } from 'core/hooks/useBreadcrumb';
+import { Forbidden } from 'app/components/Forbidden';
 
 export default function PaymentListPage() {
   usePageTitle('Consulta do pagamento');
   useBreadcrumb('Pagamentos/Consulta');
+  const [forbidden, setForbidden] = useState(false);
 
   const {
     query,
@@ -30,7 +32,13 @@ export default function PaymentListPage() {
   } = usePayments();
 
   useEffect(() => {
-    fetchPayments();
+    fetchPayments().catch((err) => {
+      if (err?.data?.status === 403) {
+        return setForbidden(true);
+      }
+
+      throw err;
+    });
   }, [fetchPayments]);
 
   const renderAccountingPeriod = (
@@ -125,6 +133,10 @@ export default function PaymentListPage() {
     selected.length === 1
       ? 'Você deseja aprovar o pagamento selecionado?'
       : 'Você deseja aprovar os pagamentos selecionados?';
+
+  if (forbidden) {
+    return <Forbidden />;
+  }
 
   return (
     <>

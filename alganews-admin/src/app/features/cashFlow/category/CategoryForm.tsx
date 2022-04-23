@@ -4,6 +4,7 @@ import { useEntriesCategories } from 'core/hooks/cashFlow/useEntriesCategories';
 import { useCallback, useEffect } from 'react';
 import { CashFlow } from 'mauricio.girardi-sdk';
 import { notification } from 'core/utils/notification';
+import { Forbidden } from 'app/components/Forbidden';
 
 interface CategoryFormProps {
   onSuccess?: () => void;
@@ -13,7 +14,7 @@ interface CategoryFormProps {
 const { Item } = Form;
 
 export const CategoryForm = ({ onSuccess, type }: CategoryFormProps) => {
-  const { createCategory, isFetchingCategories, fetchCategories } =
+  const { createCategory, isFetchingCategories, fetchCategories, forbidden } =
     useEntriesCategories();
 
   useEffect(() => {
@@ -36,6 +37,10 @@ export const CategoryForm = ({ onSuccess, type }: CategoryFormProps) => {
     },
     [createCategory, onSuccess, type],
   );
+
+  if (forbidden) {
+    return <Forbidden />;
+  }
 
   return (
     <Form layout='vertical' onFinish={onFinish}>

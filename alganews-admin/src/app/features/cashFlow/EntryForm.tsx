@@ -20,6 +20,7 @@ import { CashFlow } from 'mauricio.girardi-sdk';
 import { useForm } from 'antd/lib/form/Form';
 import { useCashFlow } from 'core/hooks/cashFlow/useCashFlow';
 import { CashFlowService } from 'danielbonifacio-sdk';
+import { Forbidden } from 'app/components/Forbidden';
 
 type FromProps = Omit<CashFlow.EntryInput, 'transactedOn'> & {
   transactedOn: Moment;
@@ -37,8 +38,13 @@ const rules = [{ required: true, message: 'O campo  obrigatório' }];
 export const EntryForm = ({ onClose, type, editingEntry }: EntryFormProps) => {
   const [loading, setLoading] = useState(false);
   const { createEntry, isFetchingEntries, updateEntry } = useCashFlow(type);
-  const { revenues, expenses, isFetchingCategories, fetchCategories } =
-    useEntriesCategories();
+  const {
+    revenues,
+    expenses,
+    isFetchingCategories,
+    forbidden,
+    fetchCategories,
+  } = useEntriesCategories();
   const [form] = useForm();
 
   useEffect(() => {
@@ -108,6 +114,10 @@ export const EntryForm = ({ onClose, type, editingEntry }: EntryFormProps) => {
         <Skeleton title={false} />
       </>
     );
+  }
+
+  if (forbidden) {
+    return <Forbidden />;
   }
 
   return (

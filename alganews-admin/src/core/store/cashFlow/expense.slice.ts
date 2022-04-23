@@ -29,10 +29,16 @@ const initialState: ExpenseState = {
 
 export const fetchExpenses = createAsyncThunk(
   'cash-flow/expenses/fetchExpenses',
-  async (_, { getState, dispatch }) => {
-    const { query } = (getState() as RootState).cashFlow.expense;
-    const expenses = await CashFlowService.getAllEntries(query);
-    await dispatch(storeExpenses(expenses));
+  async (_, { getState, dispatch, rejectWithValue }) => {
+    try {
+      const { query } = (getState() as RootState).cashFlow.expense;
+      const expenses = await CashFlowService.getAllEntries(query);
+      await dispatch(storeExpenses(expenses));
+    } catch (err) {
+      if (typeof err === 'object') {
+        return rejectWithValue({ ...err });
+      }
+    }
   },
 );
 
@@ -46,9 +52,15 @@ export const removeEntriesInBatch = createAsyncThunk(
 
 export const removeExpense = createAsyncThunk(
   'cash-flow/expenses/removeExpense',
-  async (id: number, { dispatch }) => {
-    await CashFlowService.removeExistingEntry(id);
-    await dispatch(fetchExpenses());
+  async (id: number, { dispatch, rejectWithValue }) => {
+    try {
+      await CashFlowService.removeExistingEntry(id);
+      await dispatch(fetchExpenses());
+    } catch (err) {
+      if (typeof err === 'object') {
+        return rejectWithValue({ ...err });
+      }
+    }
   },
 );
 

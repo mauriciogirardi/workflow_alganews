@@ -10,6 +10,7 @@ import { formatterCurrency, formatterDate } from 'core/utils';
 import { DoubleConfirm } from 'app/components/DoubleConfirm';
 import { notification } from 'core/utils/notification';
 import { useCashFlow } from 'core/hooks/cashFlow/useCashFlow';
+import { Forbidden } from 'app/components/Forbidden';
 
 interface EntryListProps {
   onEdit: (id: number) => any;
@@ -27,6 +28,7 @@ export const EntryList = ({ onEdit, type, onDetails }: EntryListProps) => {
     entries,
     setQuery,
     selected,
+    forbidden,
     setSelected,
     fetchEntries,
     isFetchingEntries,
@@ -127,6 +129,10 @@ export const EntryList = ({ onEdit, type, onDetails }: EntryListProps) => {
     },
     [removeEntry, type],
   );
+
+  if (forbidden) {
+    return <Forbidden />;
+  }
 
   return (
     <>

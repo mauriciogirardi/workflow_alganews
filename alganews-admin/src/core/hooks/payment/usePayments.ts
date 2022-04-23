@@ -1,20 +1,20 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useCallback } from 'react';
-import { RootState } from 'core/store';
+import { AppDispatch, RootState } from 'core/store';
 
 import * as paymentActions from '../../store/payment.slice';
 import { Payment } from 'mauricio.girardi-sdk';
 import { Key } from 'antd/lib/table/interface';
 
 export const usePayments = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const isFetching = useSelector((state: RootState) => state.payment.fetching);
   const payments = useSelector((state: RootState) => state.payment.paginated);
   const query = useSelector((state: RootState) => state.payment.query);
   const selected = useSelector((state: RootState) => state.payment.selected);
 
   const fetchPayments = useCallback(
-    () => dispatch(paymentActions.getAllPayments()),
+    () => dispatch(paymentActions.getAllPayments()).unwrap(),
     [dispatch],
   );
 

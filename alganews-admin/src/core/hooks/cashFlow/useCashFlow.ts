@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { CashFlow } from 'mauricio.girardi-sdk';
 
 import { AppDispatch, RootState } from 'core/store';
@@ -11,6 +11,8 @@ import * as revenuesActions from '../../store/cashFlow/revenue.slice';
 type CashFlowEntryType = CashFlow.EntrySummary['type'];
 
 export const useCashFlow = (type: CashFlowEntryType) => {
+  const [forbidden, setForbidden] = useState(false);
+
   const dispatch = useDispatch<AppDispatch>();
   const query = useSelector((state: RootState) =>
     type === 'EXPENSE'
@@ -42,7 +44,15 @@ export const useCashFlow = (type: CashFlowEntryType) => {
         type === 'EXPENSE'
           ? expensesActions.fetchExpenses()
           : revenuesActions.fetchRevenues(),
-      ),
+      )
+        .unwrap()
+        .catch((err) => {
+          if (err?.data?.status === 403) {
+            return setForbidden(true);
+          }
+
+          throw err;
+        }),
     [dispatch, type],
   );
 
@@ -115,6 +125,7 @@ export const useCashFlow = (type: CashFlowEntryType) => {
   return {
     query,
     entries,
+    forbidden,
     setQuery,
     selected,
     createEntry,

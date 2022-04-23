@@ -1,11 +1,17 @@
 import { Button, Col, Modal, Popconfirm, Row, Table, Tooltip } from 'antd';
 import { useEffect, useState } from 'react';
-import { DeleteOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  ReloadOutlined,
+  PlusCircleOutlined,
+} from '@ant-design/icons';
 import { CashFlow } from 'mauricio.girardi-sdk';
 
 import { useEntriesCategories } from 'core/hooks/cashFlow/useEntriesCategories';
 import { CategoryForm } from './CategoryForm';
 import { notification } from 'core/utils/notification';
+import useBreakpoint from 'antd/lib/grid/hooks/useBreakpoint';
+import { Forbidden } from 'app/components/Forbidden';
 
 interface EntryCategoryManagerProps {
   type: 'EXPENSE' | 'REVENUE';
@@ -13,12 +19,14 @@ interface EntryCategoryManagerProps {
 
 export const EntryCategoryManager = ({ type }: EntryCategoryManagerProps) => {
   const [showCategoryForm, setShowCategoryForm] = useState(false);
+  const { xs } = useBreakpoint();
   const {
     expenses,
     revenues,
     deleteCategory,
     fetchCategories,
     isFetchingCategories,
+    forbidden,
   } = useEntriesCategories();
 
   useEffect(() => {
@@ -71,6 +79,10 @@ export const EntryCategoryManager = ({ type }: EntryCategoryManagerProps) => {
     );
   };
 
+  if (forbidden) {
+    return <Forbidden />;
+  }
+
   return (
     <>
       <Modal
@@ -86,13 +98,22 @@ export const EntryCategoryManager = ({ type }: EntryCategoryManagerProps) => {
 
       <Row align='middle' justify='space-between' style={{ marginBottom: 16 }}>
         <Col>
-          <Button size='small' type='primary' onClick={() => fetchCategories()}>
-            Atualizar Categorias
+          <Button
+            size='small'
+            icon={<ReloadOutlined />}
+            onClick={() => fetchCategories()}
+          >
+            {xs ? 'Atualizar' : 'Atualizar Categorias'}
           </Button>
         </Col>
         <Col>
-          <Button size='small' type='primary' onClick={handleShowCategoryForm}>
-            Cadastrar categoria
+          <Button
+            size='small'
+            type='primary'
+            icon={<PlusCircleOutlined />}
+            onClick={handleShowCategoryForm}
+          >
+            {xs ? 'Adicionar' : 'Cadastrar categoria'}
           </Button>
         </Col>
       </Row>

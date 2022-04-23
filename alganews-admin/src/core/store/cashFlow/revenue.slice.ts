@@ -26,10 +26,16 @@ const initialState: RevenueState = {
 
 export const fetchRevenues = createAsyncThunk(
   'cash-flow/revenues/fetchRevenues',
-  async (_, { getState, dispatch }) => {
-    const { query } = (getState() as RootState).cashFlow.revenue;
-    const revenues = await CashFlowService.getAllEntries(query);
-    await dispatch(storeRevenues(revenues));
+  async (_, { getState, dispatch, rejectWithValue }) => {
+    try {
+      const { query } = (getState() as RootState).cashFlow.revenue;
+      const revenues = await CashFlowService.getAllEntries(query);
+      await dispatch(storeRevenues(revenues));
+    } catch (err) {
+      if (typeof err === 'object') {
+        return rejectWithValue({ ...err });
+      }
+    }
   },
 );
 
@@ -43,9 +49,15 @@ export const removeRevenuesInBatch = createAsyncThunk(
 
 export const removeRevenue = createAsyncThunk(
   'cash-flow/revenue/removeRevenue',
-  async (id: number, { dispatch }) => {
-    await CashFlowService.removeExistingEntry(id);
-    await dispatch(fetchRevenues());
+  async (id: number, { dispatch, rejectWithValue }) => {
+    try {
+      await CashFlowService.removeExistingEntry(id);
+      await dispatch(fetchRevenues());
+    } catch (err) {
+      if (typeof err === 'object') {
+        return rejectWithValue({ ...err });
+      }
+    }
   },
 );
 

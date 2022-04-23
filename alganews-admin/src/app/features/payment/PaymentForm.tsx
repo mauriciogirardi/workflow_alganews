@@ -28,6 +28,7 @@ import { BusinessError } from 'mauricio.girardi-sdk/dist/errors';
 import { notification } from 'core/utils/notification';
 import { usePayment } from 'core/hooks/payment/usePayment';
 import { PAYMENTS } from 'core/constants-paths';
+import { Forbidden } from 'app/components/Forbidden';
 
 const { RangePicker } = DatePicker;
 const { Item } = Form;
@@ -46,6 +47,7 @@ export const PaymentForm = () => {
   const [form] = useForm<Payment.Input>();
   const navigate = useNavigate();
   const { fetching, editors, fetchUsers } = useUsers();
+  const [forbidden, setForbidden] = useState(false);
   const [scheduledTo, setScheduledTo] = useState('');
   const [paymentPreviewError, setPaymentPreviewError] = useState<CustomError>();
   const {
@@ -58,7 +60,13 @@ export const PaymentForm = () => {
   } = usePayment();
 
   useEffect(() => {
-    fetchUsers();
+    fetchUsers().catch((err) => {
+      if (err?.data?.status === 403) {
+        return setForbidden(true);
+      }
+
+      throw err;
+    });
   }, [fetchUsers]);
 
   const disabledDate = (date: Moment) => {
@@ -168,6 +176,10 @@ export const PaymentForm = () => {
   );
 
   const debounceHandleFormChange = debounce(handleOnFieldsChange, 1000);
+
+  if (forbidden) {
+    return <Forbidden />;
+  }
 
   return (
     <Form<Payment.Input>

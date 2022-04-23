@@ -8,7 +8,6 @@ import { NotFound404 } from 'app/views/NotFound404';
 import { info } from 'core/utils/info';
 
 import HomeView from '../views/HomeView';
-import Calendar from 'app/views/Calendar';
 
 export const MainRoutes = () => {
     useEffect(() => {
@@ -30,7 +29,6 @@ export const MainRoutes = () => {
             <Route path="/posts/criar" element={<PostCreateView />} />
             <Route path="/posts/editar/:id" element={<PostCreateView />} />
 
-            <Route path="/calendar" element={<Calendar />} />
             <Route path="*" element={<NotFound404 />} />
         </Routes>
     );

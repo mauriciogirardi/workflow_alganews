@@ -6,16 +6,13 @@ export const Navbar = () => {
         <S.Nav>
             <ul>
                 <li>
-                    <NavLink to="/">início</NavLink>
+                    <NavLink to="/">home</NavLink>
                 </li>
                 <li>
                     <NavLink to="/editores">editores</NavLink>
                 </li>
                 <li>
                     <NavLink to="/posts/criar">novo post</NavLink>
-                </li>
-                <li>
-                    <NavLink to="/calendar">calendario</NavLink>
                 </li>
             </ul>
         </S.Nav>

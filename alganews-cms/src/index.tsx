@@ -9,7 +9,6 @@ import { MainRoutes } from 'app/routes';
 import { store } from 'core/store';
 
 import 'core/styles/imports.css';
-import 'app/views/Calendar/calendar.css';
 
 ReactDOM.render(
     <React.StrictMode>

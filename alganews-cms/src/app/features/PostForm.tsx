@@ -1,35 +1,31 @@
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { PostService } from 'mauricio.girardi-sdk';
 import { Tag } from 'react-tag-input';
 
 import { countWordsInMarkdown } from 'core/utils/countWordsInMarkdown';
 import { WordPriceCounter } from 'app/components/WordPriceCounter';
-import { MarkdownEditor } from 'app/components/MarkdownEditor'
-import { ImageUpload } from 'app/components/ImageUpload'
-import { TagInput } from 'app/components/TagInput'
+import { MarkdownEditor } from 'app/components/MarkdownEditor';
+import { ImageUpload } from 'app/components/ImageUpload';
+import { TagInput } from 'app/components/TagInput';
 import { Loading } from 'app/components/Loading';
 import { Button } from 'app/components/Button';
-import { Input } from 'app/components/Input'
+import { Input } from 'app/components/Input';
 import { info } from 'core/utils/info';
 
-import * as S from './styles'
-
-interface PostFormProps {
-    postId?: number
-}
+import * as S from './styles';
 
 export const PostForm = () => {
-    const params = useParams<{ id: string }>()
-    const navigate = useNavigate()
-    const [body, setBody] = useState("")
-    const [title, setTitle] = useState("")
-    const [tags, setTags] = useState<Tag[]>([])
-    const [imageUrl, setImageUrl] = useState("")
-    const [isPublishing, setIsPublishing] = useState(false)
+    const params = useParams<{ id: string }>();
+    const navigate = useNavigate();
+    const [body, setBody] = useState('');
+    const [title, setTitle] = useState('');
+    const [tags, setTags] = useState<Tag[]>([]);
+    const [imageUrl, setImageUrl] = useState('');
+    const [isPublishing, setIsPublishing] = useState(false);
 
-    const postId = Number(params.id) || null
-    const allFieldsAreFilled = !body || !title || !imageUrl || !tags.length
+    const postId = Number(params.id) || null;
+    const allFieldsAreFilled = !body || !title || !imageUrl || !tags.length;
 
     const insertNewPost = async () => {
         const newPost = {
@@ -37,16 +33,16 @@ export const PostForm = () => {
             body,
             title,
             imageUrl,
-        }
+        };
 
-        await PostService.insertNewPost(newPost)
+        await PostService.insertNewPost(newPost);
 
         info({
             title: 'Post salvo com sucesso',
             description: `Você acabou de criar o post!`,
-            status: 'success'
-        })
-    }
+            status: 'success',
+        });
+    };
 
     const updateExistingPost = async (postId: number) => {
         const newPost = {
@@ -54,49 +50,45 @@ export const PostForm = () => {
             body,
             title,
             imageUrl,
-        }
+        };
 
-        await PostService.updateExistingPost(postId, newPost)
+        await PostService.updateExistingPost(postId, newPost);
 
         info({
             title: 'Post editado com sucesso',
             description: `Você acabou de editar o post!`,
-            status: 'success'
-        })
-    }
+            status: 'success',
+        });
+    };
 
     const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
+        e.preventDefault();
 
         try {
-            setIsPublishing(true)
+            setIsPublishing(true);
 
-            !!postId
-                ? await updateExistingPost(postId)
-                : await insertNewPost()
+            !!postId ? await updateExistingPost(postId) : await insertNewPost();
 
-            navigate('/')
+            navigate('/');
         } finally {
-            setIsPublishing(false)
+            setIsPublishing(false);
         }
-    }
+    };
 
     const fetchPost = (postId: number) => {
-        PostService
-            .getExistingPost(postId)
-            .then(post => {
-                setTitle(post.title)
-                setImageUrl(post.imageUrls.default)
-                setBody(post.body)
-                setTags(post.tags.map(tag => ({ id: tag, text: tag })))
-            })
-    }
+        PostService.getExistingPost(postId).then(post => {
+            setTitle(post.title);
+            setImageUrl(post.imageUrls.default);
+            setBody(post.body);
+            setTags(post.tags.map(tag => ({ id: tag, text: tag })));
+        });
+    };
 
     useEffect(() => {
         if (postId) {
-            fetchPost(postId)
+            fetchPost(postId);
         }
-    }, [postId])
+    }, [postId]);
 
     return (
         <S.PostFormWrapper onSubmit={handleFormSubmit}>
@@ -125,14 +117,17 @@ export const PostForm = () => {
             />
 
             <S.PostFormSubmitWrapper>
-                <WordPriceCounter pricePerWord={0.15} wordsCount={countWordsInMarkdown(body)} />
+                <WordPriceCounter
+                    pricePerWord={0.15}
+                    wordsCount={countWordsInMarkdown(body)}
+                />
                 <Button
                     variant="primary"
-                    label={!!postId ? "Editar post" : "Salvar post"}
+                    label={!!postId ? 'Editar post' : 'Salvar post'}
                     type="submit"
                     disabled={allFieldsAreFilled}
                 />
             </S.PostFormSubmitWrapper>
         </S.PostFormWrapper>
-    )
-}
+    );
+};

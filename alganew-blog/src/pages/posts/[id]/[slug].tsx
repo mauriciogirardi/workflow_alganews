@@ -1,26 +1,26 @@
-import Head from "next/head"
+import Head from "next/head";
 
-import { ResourceNotFoundError } from "mauricio.girardi-sdk/dist/errors"
-import { DiscussionEmbed } from 'disqus-react'
-import { GetServerSideProps } from "next"
-import { Post, PostService } from "mauricio.girardi-sdk"
-import { ParsedUrlQuery } from "querystring"
+import { ResourceNotFoundError } from "mauricio.girardi-sdk/dist/errors";
+import { DiscussionEmbed } from "disqus-react";
+import { GetServerSideProps } from "next";
+import { Post, PostService } from "mauricio.girardi-sdk";
+import { ParsedUrlQuery } from "querystring";
 
-import { PostHeader } from "components/PostHeader"
-import { Markdown } from "components/Markdown"
+import { PostHeader } from "components/PostHeader";
+import { Markdown } from "components/Markdown";
 
 interface Params extends ParsedUrlQuery {
-    id: string
-    slug: string
+    id: string;
+    slug: string;
 }
 
 interface PostPageProps extends NextPageProps {
-    post?: Post.Detailed
-    host?: string
+    post?: Post.Detailed;
+    host?: string;
 }
 
 export default function PostPage({ post, host }: PostPageProps) {
-    if (!post) return
+    if (!post) return;
 
     return (
         <>
@@ -28,7 +28,10 @@ export default function PostPage({ post, host }: PostPageProps) {
                 <meta property="og:title" content={post.title} />
                 <meta property="og:site_name" content="Alganews" />
                 <meta property="og:url" content="github.com/mauriciogirardi" />
-                <meta property="og:description" content={post.body.slice(0, 54)} />
+                <meta
+                    property="og:description"
+                    content={post.body.slice(0, 54)}
+                />
                 <meta property="og:type" content="article" />
                 <meta property="og:image" content={post.imageUrls.medium} />
                 <link
@@ -53,42 +56,45 @@ export default function PostPage({ post, host }: PostPageProps) {
                     url: `http://${host}/${post.id}/${post.slug}`,
                     identifier: String(post.id),
                     title: post.title,
-                    language: "pt_BR"
+                    language: "pt_BR",
                 }}
             />
         </>
-    )
+    );
 }
 
-export const getServerSideProps: GetServerSideProps<PostPageProps, Params> = async ({ params, req }) => {
+export const getServerSideProps: GetServerSideProps<
+    PostPageProps,
+    Params
+> = async ({ params, res, req, query }) => {
     try {
-        if (!params) return { notFound: true }
+        if (!params) return { notFound: true };
 
-        const { id, slug } = params
-        const postId = Number(id)
+        const { id, slug } = params;
+        const postId = Number(id);
+        const { token } = query;
 
-        if (isNaN(postId)) return { notFound: true }
+        if (isNaN(postId)) return { notFound: true };
 
-        const post = await PostService.getExistingPost(postId)
+        const post = await PostService.getExistingPost(postId, token as string);
 
         return {
             props: {
                 post,
-                host: req.headers.host
-            }
-        }
+                host: req.headers.host,
+            },
+        };
     } catch (err) {
         if (err instanceof ResourceNotFoundError) {
-            return { notFound: true }
+            return { notFound: true };
         }
         return {
             props: {
                 error: {
                     message: err.message,
-                    statusCode: err.data?.status || 500
-                }
-            }
-
-        }
+                    statusCode: err.data?.status || 500,
+                },
+            },
+        };
     }
-}
+};

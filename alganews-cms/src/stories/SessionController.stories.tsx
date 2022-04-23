@@ -7,16 +7,14 @@ export default {
     component: SessionController,
     argTypes: {
         onLogout: {
-            action: 'logout'
-        }
-    }
+            action: 'logout',
+        },
+    },
 } as ComponentMeta<typeof SessionController>;
 
-const Template: ComponentStory<typeof SessionController> = (args) => <SessionController {...args} />;
+const Template: ComponentStory<typeof SessionController> = args => (
+    <SessionController />
+);
 
 export const Default = Template.bind({});
-Default.args = {
-    name: 'Cristiano Moreira Silvano',
-    description: 'editor há 2 anos.',
-    url: 'https://avatars.githubusercontent.com/u/51093343?v=4',
-};
+Default.args = {};

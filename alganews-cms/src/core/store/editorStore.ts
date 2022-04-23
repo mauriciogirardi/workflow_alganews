@@ -1,30 +1,38 @@
-import { createAsyncThunk, createReducer, isFulfilled, isPending, isRejected } from "@reduxjs/toolkit";
-import { User, UserService } from "mauricio.girardi-sdk";
+import { createAsyncThunk, createReducer } from '@reduxjs/toolkit';
+import { User, UserService } from 'mauricio.girardi-sdk';
+import { getThunkStatus } from './getThunkStatus';
 
 interface EditorStoreState {
-    editorsList: User.EditorSummary[]
-    fetching: boolean
+    editorsList: User.EditorSummary[];
+    fetching: boolean;
 }
 
 const initialState: EditorStoreState = {
     fetching: false,
     editorsList: [],
-}
+};
 
-export const fetchAllEditors = createAsyncThunk('editor/fetchAllEditor', async () => {
-    return UserService.getAllEditors()
-})
+export const fetchAllEditors = createAsyncThunk(
+    'editor/fetchAllEditor',
+    async () => {
+        return UserService.getAllEditors();
+    },
+);
 
 export const editorReducer = createReducer(initialState, builder => {
-    const pending = isPending(fetchAllEditors)
-    const rejected = isRejected(fetchAllEditors)
-    const fulfilled = isFulfilled(fetchAllEditors)
+    const { error, loading, success } = getThunkStatus([fetchAllEditors]);
 
     builder
         .addCase(fetchAllEditors.fulfilled, (state, action) => {
-            state.editorsList = action.payload
+            state.editorsList = action.payload;
         })
-        .addMatcher(pending, state => { state.fetching = true })
-        .addMatcher(fulfilled, state => { state.fetching = false })
-        .addMatcher(rejected, state => { state.fetching = false })
-})
+        .addMatcher(loading, state => {
+            state.fetching = true;
+        })
+        .addMatcher(error, state => {
+            state.fetching = false;
+        })
+        .addMatcher(success, state => {
+            state.fetching = false;
+        });
+});

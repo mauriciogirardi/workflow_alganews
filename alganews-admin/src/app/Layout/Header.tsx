@@ -1,6 +1,6 @@
 import { Avatar, Card, Dropdown, Layout, Menu, Row } from 'antd';
 import Meta from 'antd/lib/card/Meta';
-import { UserOutlined, LogoutOutlined } from '@ant-design/icons';
+import { UserOutlined, LogoutOutlined, SettingFilled } from '@ant-design/icons';
 import confirm from 'antd/lib/modal/confirm';
 
 import { AuthService } from 'auth/Authorization.service';
@@ -59,7 +59,17 @@ export const Header = () => {
         <img src={logoSvg} alt='AlgaNews Admin' />
 
         <Dropdown overlay={renderMenuDropdown} placement='bottomRight'>
-          <Avatar src={user?.avatarUrls.small} />
+          <div style={{ position: 'relative' }}>
+            <Avatar src={user?.avatarUrls.small} />
+            <SettingFilled
+              style={{
+                color: '#0199ff',
+                position: 'absolute',
+                left: 0,
+                bottom: 10,
+              }}
+            />
+          </div>
         </Dropdown>
       </Row>
     </HeaderAntd>

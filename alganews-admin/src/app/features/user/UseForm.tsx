@@ -1,6 +1,5 @@
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import {
-  Avatar,
   Button,
   Col,
   DatePicker,
@@ -9,17 +8,14 @@ import {
   Input,
   Row,
   Select,
-  Skeleton,
   Tabs,
-  Upload,
 } from 'antd';
-import { FileAddOutlined, BankOutlined, UserOutlined } from '@ant-design/icons';
+import { FileAddOutlined, BankOutlined } from '@ant-design/icons';
 import { FileService, User, UserService } from 'mauricio.girardi-sdk';
 import { InternalNamePath } from 'antd/lib/form/interface';
 import { Moment } from 'moment';
 import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
 import MaskedInput from 'antd-mask-input';
-import ImageCrop from 'antd-img-crop';
 
 import { CurrencyInput } from 'app/components/CurrencyInput';
 import { usePageTitle } from 'core/utils/hooks/usePageTitle';
@@ -27,6 +23,21 @@ import { notification } from 'core/utils/notification';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from 'core/hooks/auth/useAuth';
 import { USERS } from 'core/constants-paths';
+import { UploadAvatar } from 'app/components/UploadAvatar';
+import {
+  ruleAgency,
+  ruleBankCode,
+  ruleBio,
+  ruleCountry,
+  ruleCPF,
+  ruleDigit,
+  rulePercentage,
+  rulePhone,
+  rulePricePerWord,
+  ruleRequired,
+  ruleRole,
+  ruleSkills,
+} from './rulesForm';
 
 const { TextArea } = Input;
 const { TabPane } = Tabs;
@@ -58,13 +69,11 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
   const navigate = useNavigate();
   const [form] = Form.useForm<User.Input>();
 
-  const [loadingAvatar, setLoadingAvatar] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isEditorRole, setIsEditorRole] = useState(userEdit?.role === 'EDITOR');
   const [avatar, setAvatar] = useState(userEdit?.avatarUrls.default || '');
   const [activeTab, setActiveTab] = useState<ActiveTabProps>('personal');
 
-  const hasAvatar = [...(avatar ? [{ name: 'avatar', uid: '' }] : [])];
   const { user: userAuthenticate } = useAuth();
 
   const messageError = useCallback(
@@ -106,20 +115,7 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
     return (
       <Row gutter={20}>
         <Col lg={8} xs={24}>
-          <Item
-            label='País'
-            name={['location', 'country']}
-            rules={[
-              {
-                required: true,
-                message: 'O Campo é obrigatório.',
-              },
-              {
-                max: 50,
-                message: `O país não pode ter mais de 50 caracteres`,
-              },
-            ]}
-          >
+          <Item label='País' name={['location', 'country']} rules={ruleCountry}>
             <Input placeholder='E.g.: Brasil' />
           </Item>
         </Col>
@@ -127,46 +123,19 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
           <Item
             label='Estado'
             name={['location', 'state']}
-            rules={[
-              {
-                required: true,
-                message: 'O Campo é obrigatório.',
-              },
-            ]}
+            rules={ruleRequired}
           >
             <Input placeholder='E.g.: Santa Catarina' />
           </Item>
         </Col>
         <Col lg={8} xs={24}>
-          <Item
-            label='Cidade'
-            name={['location', 'city']}
-            rules={[
-              {
-                required: true,
-                message: 'O Campo é obrigatório.',
-              },
-            ]}
-          >
+          <Item label='Cidade' name={['location', 'city']} rules={ruleRequired}>
             <Input placeholder='E.g.: São Francisco do Sul' />
           </Item>
         </Col>
 
         <Col lg={8} xs={24}>
-          <Item
-            label='Telefone'
-            name='phone'
-            rules={[
-              {
-                required: true,
-                message: 'O Campo é obrigatório.',
-              },
-              {
-                max: 20,
-                message: `O telefone não pode ter mais de 20 caracteres`,
-              },
-            ]}
-          >
+          <Item label='Telefone' name='phone' rules={rulePhone}>
             <MaskedInput
               disabled={userEdit && !userEdit.canSensitiveDataBeUpdated}
               mask={'(00) 00000-0000'}
@@ -174,20 +143,7 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
           </Item>
         </Col>
         <Col lg={8} xs={24}>
-          <Item
-            label='CPF'
-            name='taxpayerId'
-            rules={[
-              {
-                required: true,
-                message: 'O Campo é obrigatório.',
-              },
-              {
-                max: 14,
-                message: `O CPF não pode ter mais de 14 caracteres`,
-              },
-            ]}
-          >
+          <Item label='CPF' name='taxpayerId' rules={ruleCPF}>
             <MaskedInput mask='000.000.000-00' />
           </Item>
         </Col>
@@ -197,17 +153,7 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
               <Item
                 label='Preço por palavra'
                 name='pricePerWord'
-                rules={[
-                  {
-                    required: true,
-                    message: 'O campo é obrigatório',
-                  },
-                  {
-                    type: 'number',
-                    min: 0.01,
-                    message: 'O valor mínimo é 1 centavo',
-                  },
-                ]}
+                rules={rulePricePerWord}
               >
                 <CurrencyInput
                   onChange={(_, value) => {
@@ -227,16 +173,7 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
                     <Item
                       label='Habilidade'
                       name={['skills', i, 'name']}
-                      rules={[
-                        {
-                          required: true,
-                          message: 'O campo é obrigatório',
-                        },
-                        {
-                          max: 50,
-                          message: `A habilidade não pode ter mais de 50 caracteres`,
-                        },
-                      ]}
+                      rules={ruleSkills}
                     >
                       <Input placeholder='E.g.: JavaScript' />
                     </Item>
@@ -245,20 +182,7 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
                     <Item
                       label='%'
                       name={['skills', i, 'percentage']}
-                      rules={[
-                        {
-                          required: true,
-                          message: '',
-                        },
-                        {
-                          async validator(field, value) {
-                            if (isNaN(value)) throw new Error('Apenas números');
-                            if (Number(value) > 100)
-                              throw new Error('Maxímo 100');
-                            if (Number(value) < 0) throw new Error('Mínimo 0');
-                          },
-                        },
-                      ]}
+                      rules={rulePercentage}
                     >
                       <Input />
                     </Item>
@@ -278,20 +202,7 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
           <Item
             label='Instituição'
             name={['bankAccount', 'bankCode']}
-            rules={[
-              {
-                required: true,
-                message: 'O campo é obrigatório',
-              },
-              {
-                max: 3,
-                message: `A instituição precisa ter 3 caracteres`,
-              },
-              {
-                min: 3,
-                message: `A instituição precisa ter 3 caracteres`,
-              },
-            ]}
+            rules={ruleBankCode}
           >
             <Input placeholder='E.g.: 260' />
           </Item>
@@ -300,20 +211,7 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
           <Item
             label='Agência'
             name={['bankAccount', 'agency']}
-            rules={[
-              {
-                required: true,
-                message: 'O campo é obrigatório',
-              },
-              {
-                max: 10,
-                message: `A agência precisa ter no máximo 10 caracteres`,
-              },
-              {
-                min: 1,
-                message: `A agência precisa ter no mínimo 1 caractere`,
-              },
-            ]}
+            rules={ruleAgency}
           >
             <Input placeholder='E.g.: 0001' />
           </Item>
@@ -322,12 +220,7 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
           <Item
             label='Conta sem dígito'
             name={['bankAccount', 'number']}
-            rules={[
-              {
-                required: true,
-                message: 'O campo é obrigatório',
-              },
-            ]}
+            rules={ruleRequired}
           >
             <Input placeholder='E.g.: 12345' />
           </Item>
@@ -337,16 +230,7 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
           <Item
             label='Dígito'
             name={['bankAccount', 'digit']}
-            rules={[
-              {
-                required: true,
-                message: 'O campo é obrigatório',
-              },
-              {
-                max: 1,
-                message: `O dígito precisa ser único`,
-              },
-            ]}
+            rules={ruleDigit}
           >
             <Input placeholder='E.g.: 1' />
           </Item>
@@ -355,12 +239,7 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
           <Item
             label='Tipo de conta'
             name={['bankAccount', 'type']}
-            rules={[
-              {
-                required: true,
-                message: 'O campo é obrigatório',
-              },
-            ]}
+            rules={ruleRequired}
           >
             <Select placeholder='Selecione o tipo de conta'>
               <Option value='SAVING'>Conta poupança</Option>
@@ -372,20 +251,10 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
     );
   };
 
-  const handleAvatarUpload = useCallback(
-    async (file: File) => {
-      try {
-        setLoadingAvatar(true);
-        const avatarSource = await FileService.upload(file);
-        setAvatar(avatarSource);
-      } catch (err) {
-        messageError(err);
-      } finally {
-        setLoadingAvatar(false);
-      }
-    },
-    [messageError],
-  );
+  const handleAvatarUpload = useCallback(async (file: File) => {
+    const avatarSource = await FileService.upload(file);
+    setAvatar(avatarSource);
+  }, []);
 
   useEffect(() => {
     form.setFieldsValue({
@@ -461,66 +330,23 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
       <Row gutter={24} align='middle'>
         <Col lg={4} xs={24}>
           <Row justify='center'>
-            <ImageCrop rotate shape={'round'} grid aspect={1}>
-              <Upload
-                maxCount={1}
-                onRemove={() => {
-                  setAvatar('');
-                }}
-                fileList={hasAvatar}
-                beforeUpload={(file) => {
-                  handleAvatarUpload(file);
-                  return false;
-                }}
-              >
-                {loadingAvatar ? (
-                  <Skeleton.Avatar
-                    active
-                    shape='circle'
-                    style={{
-                      width: '128px',
-                      height: '128px',
-                    }}
-                  />
-                ) : (
-                  <Avatar
-                    style={{ cursor: 'pointer' }}
-                    icon={<UserOutlined />}
-                    src={avatar}
-                    size={128}
-                  />
-                )}
-              </Upload>
-            </ImageCrop>
-            <Item name='avatarUrl' hidden>
-              <Input hidden />
-            </Item>
+            <UploadAvatar
+              handleAvatarUpload={handleAvatarUpload}
+              avatar={avatar}
+              setAvatar={setAvatar}
+            />
           </Row>
         </Col>
 
         <Col lg={10} xs={24}>
-          <Item
-            label='Nome'
-            name='name'
-            rules={[
-              {
-                required: true,
-                message: 'O Campo é obrigatório.',
-              },
-            ]}
-          >
+          <Item label='Nome' name='name' rules={ruleRequired}>
             <Input placeholder='E.g.: John Doe' />
           </Item>
 
           <Item
             label='Data de nascimento'
             name='birthdate'
-            rules={[
-              {
-                required: true,
-                message: 'O Campo é obrigatório.',
-              },
-            ]}
+            rules={ruleRequired}
           >
             <DatePicker
               placeholder='Selecione uma data'
@@ -531,24 +357,7 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
         </Col>
 
         <Col lg={10} xs={24}>
-          <Item
-            label='Bio'
-            name='bio'
-            rules={[
-              {
-                required: true,
-                message: 'O Campo é obrigatório.',
-              },
-              {
-                max: 255,
-                message: 'A biografia não pode ter mais de 255 caracteres.',
-              },
-              {
-                min: 10,
-                message: `A biografia não pode ter menos de 10 caracteres`,
-              },
-            ]}
-          >
+          <Item label='Bio' name='bio' rules={ruleBio}>
             <TextArea rows={5} />
           </Item>
         </Col>
@@ -558,21 +367,7 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
         </Col>
 
         <Col lg={12} xs={24}>
-          <Item
-            label='Perfil'
-            name='role'
-            rules={[
-              {
-                required: true,
-                message: 'O Campo é obrigatório.',
-              },
-              {
-                type: 'enum',
-                enum: ['EDITOR', 'ASSISTANT', 'MANAGER'],
-                message: `O Perfil precisar ser editor, assitente ou gerente`,
-              },
-            ]}
-          >
+          <Item label='Perfil' name='role' rules={ruleRole}>
             <Select
               placeholder='Selecione um perfil'
               disabled={userEdit && !userEdit.canSensitiveDataBeUpdated}
@@ -591,16 +386,7 @@ export const UserForm = ({ user: userEdit, onUpdate }: UserFormProps) => {
         </Col>
 
         <Col lg={12} xs={24}>
-          <Item
-            label='E-mail'
-            name='email'
-            rules={[
-              {
-                required: true,
-                message: 'O Campo é obrigatório.',
-              },
-            ]}
-          >
+          <Item label='E-mail' name='email' rules={ruleRequired}>
             <Input
               type='email'
               disabled={userEdit && !userEdit.canSensitiveDataBeUpdated}

@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { useEffect, useMemo } from 'react';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
 import jwtDecode from 'jwt-decode';
 
@@ -30,10 +30,13 @@ import UserCreatePage from '../pages/user/UserCreatePage';
 import UserListPage from '../pages/user/UserListPage';
 import UserEditPage from 'app/pages/user/UserEditPage';
 import HomePage from '../pages/HomePage';
+import { GlobalLoading } from 'app/components/GlobalLoading';
 
 export const MainRoutes = () => {
+  const { user } = useAuth();
   const { fetchUser } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     window.onunhandledrejection = ({ reason }) => {
@@ -97,11 +100,12 @@ export const MainRoutes = () => {
             title: 'Erro',
             description: 'Código não foi informado!',
           });
+          AuthService.imperativelySendToLoginScreen();
           return;
         }
 
         if (!codeVerifier) {
-          // TODO logout
+          AuthService.imperativelySendToLogout();
           return;
         }
 
@@ -132,6 +136,13 @@ export const MainRoutes = () => {
 
     identify();
   }, [navigate, fetchUser]);
+
+  const isAuthorizationRoute = useMemo(
+    () => location.pathname === '/authorize',
+    [location],
+  );
+
+  if (isAuthorizationRoute || !user) return <GlobalLoading />;
 
   return (
     <Routes>

@@ -1618,10 +1618,10 @@ markdown-table@^3.0.0:
   resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-3.0.2.tgz#9b59eb2c1b22fe71954a65ff512887065a7bb57c"
   integrity sha512-y8j3a5/DkJCmS5x4dMCQL+OR0+2EAq3DOtio1COSHsmW2BGXnNCK3v12hJt1LrUz5iZH5g0LmuYOjDdI+czghA==
 
-mauricio.girardi-sdk@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/mauricio.girardi-sdk/-/mauricio.girardi-sdk-5.1.0.tgz#4edf4a5dd26c76ae2a5eafd19815c33ed2a10d03"
-  integrity sha512-DGEHzi1RAEr2tHJFfZ/p0Uc9o8skQ/YGsyseLMjkcUZ+c7E+WiGEyoDHXfazHODNqB+GCz9pErigy4nV/7eFew==
+mauricio.girardi-sdk@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/mauricio.girardi-sdk/-/mauricio.girardi-sdk-5.2.0.tgz#e90b7698c520342ce12a9261272bb503fc143c88"
+  integrity sha512-W+lz2QrZUcKaC4+qKukPj6ShjFwMHQKtW5lqPaNBRzLo9RVueCsxu6NvUhSGbI04l8wPZLQAa7vYI3Wq03j/tw==
   dependencies:
     axios "^0.26.0"
     date-fns "^2.28.0"

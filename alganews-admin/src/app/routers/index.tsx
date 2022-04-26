@@ -38,6 +38,8 @@ export const MainRoutes = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const APP_BASE_URL = process.env.REACT_APP_BASE_URL;
+
   useEffect(() => {
     window.onunhandledrejection = ({ reason }) => {
       if (reason instanceof CustomError) {
@@ -109,7 +111,7 @@ export const MainRoutes = () => {
           return;
         }
 
-        const redirectUri = 'http://localhost:3000/authorize';
+        const redirectUri = `${APP_BASE_URL}/authorize`;
         const { access_token, refresh_token } =
           await AuthService.getFirstAccessToken({
             code,
@@ -135,7 +137,7 @@ export const MainRoutes = () => {
     }
 
     identify();
-  }, [navigate, fetchUser]);
+  }, [navigate, fetchUser, APP_BASE_URL]);
 
   const isAuthorizationRoute = useMemo(
     () => location.pathname === '/authorize',

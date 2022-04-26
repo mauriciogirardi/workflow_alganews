@@ -17,6 +17,8 @@ import { Loading } from 'app/components/Loading';
 import Table from 'app/components/Table';
 import { AuthService } from 'auth/Authorization.service';
 
+const { REACT_APP_BLOG_SERVER_BASE_URL } = process.env;
+
 function PostList() {
     const { fetchingPosts, loading, paginatedPosts } = usePosts();
     const [error, setError] = useState<Error>();
@@ -32,7 +34,7 @@ function PostList() {
     }, [page, fetchingPosts]);
 
     const openInNew = useCallback(async (post: Post.Summary) => {
-        let url = `http://localhost:3002/posts/${post.id}/${post.slug}`;
+        let url = `${REACT_APP_BLOG_SERVER_BASE_URL}/posts/${post.id}/${post.slug}`;
 
         if (!post.published) {
             const codeVerifier = AuthService.getCodeVerifier();

@@ -38,7 +38,6 @@ interface TableActionsProps {
 
 export const UserList = () => {
   const [forbidden, setForbidden] = useState(false);
-  const [page, setPage] = useState(0);
 
   const { fetchUsers, users, toggleUserStatus, fetching, userId } = useUsers();
 
@@ -152,10 +151,6 @@ export const UserList = () => {
 
       <Table<User.Summary>
         rowKey={'id'}
-        pagination={{
-          pageSize: 12,
-          onChange: (page) => setPage(page - 1),
-        }}
         loading={fetching}
         // scroll={{ x: 1000 }} add responsive
         dataSource={users}

@@ -8868,10 +8868,10 @@ material-colors@^1.2.1:
   resolved "https://registry.yarnpkg.com/material-colors/-/material-colors-1.2.6.tgz#6d1958871126992ceecc72f4bcc4d8f010865f46"
   integrity sha512-6qE4B9deFBIa9YSpOc9O0Sgc43zTeVYbgDT5veRKSlB2+ZuHNoVVxA1L/ckMUayV9Ay9y7Z/SZCLcGteW9i7bg==
 
-mauricio.girardi-sdk@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/mauricio.girardi-sdk/-/mauricio.girardi-sdk-5.0.0.tgz#409ab9fe685f1ad11b8e6cf3b05bc285bea8b8b2"
-  integrity sha512-nZggCJ/R/Ysee/eGMy0o60ftBiZs5CjbceFS54Bf/j3Rc4ZFVaIjeug2vh6mCbalVGYqVCPegk0HxoDSZVeyLg==
+mauricio.girardi-sdk@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/mauricio.girardi-sdk/-/mauricio.girardi-sdk-5.3.0.tgz#c58c56a453a73a896341b0f2657381b09ff6640d"
+  integrity sha512-oBsrp3H4rcK+B7l2IB9O78Bnd5kVqPXxEW7xLTMGCbJy1ZF93l2xcFsjWMhCkXfElXkZ2FQHd2YIbmwPY93Vgg==
   dependencies:
     axios "^0.26.0"
     date-fns "^2.28.0"

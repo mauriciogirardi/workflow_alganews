@@ -23,16 +23,18 @@ export interface OAuthAuthorizationTokenResponse {
     [key: string]: string | number;
 }
 
-const BASE_URL = 'http://localhost:8081';
+const BASE_URL = process.env.REACT_APP_BASE_URL;
+const API_BASE_URL = process.env.REACT_APP_AUTH_SERVER_BASE_URL;
+
 const ACCESS_TOKEN = 'accessToken';
 const REFRESH_TOKEN = 'refreshToken';
 const CODE_VERIFIER = 'codeVerifier';
 const CLIENT_ID = 'alganews-cms';
 const PATH_OAUTH_TOKEN = '/oauth/token';
-const PATH_OAUTH_AUTHORIZE = `${BASE_URL}/oauth/authorize`;
+const PATH_OAUTH_AUTHORIZE = `${API_BASE_URL}/oauth/authorize`;
 
 const authServer = axios.create({
-    baseURL: BASE_URL,
+    baseURL: API_BASE_URL,
 });
 
 authServer.interceptors.response.use(undefined, async error => {
@@ -46,7 +48,7 @@ authServer.interceptors.response.use(undefined, async error => {
 export class AuthService {
     public static imperativelySendToLogout() {
         window.localStorage.clear();
-        window.location.href = `http://localhost:8081/logout?redirect=http://localhost:3001`;
+        window.location.href = `${API_BASE_URL}/logout?redirect=${BASE_URL}`;
     }
 
     public static async getNewToken({

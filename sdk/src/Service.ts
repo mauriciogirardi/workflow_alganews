@@ -21,6 +21,10 @@ export class Service {
   protected static Http = Http
   protected static getData = getData
 
+  public static setBaseUrl(baseUrl: string) {
+    this.Http.defaults.baseURL = baseUrl
+  }
+
   public static setRequestInterceptors({
     onFulfilled,
     onRejected,

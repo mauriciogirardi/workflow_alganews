@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { lazy, useEffect, useMemo, Suspense } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import CustomError from 'mauricio.girardi-sdk/dist/CustomError';
 import jwtDecode from 'jwt-decode';
@@ -16,21 +16,29 @@ import {
   USER_EDIT_ID,
 } from '../../core/constants-paths';
 import { Authentication } from 'auth/Auth';
+import { GlobalLoading } from 'app/components/GlobalLoading';
 import { notification } from 'core/utils/notification';
 import { AuthService } from 'auth/Authorization.service';
 import { useAuth } from 'core/hooks/auth/useAuth';
 
-import CashFlowExpensesPage from '../pages/cashFlow/CashFlowExpensesPage';
-import CashFlowRevenuesPage from '../pages/cashFlow/CashFlowRevenuesPage';
-import PaymentDetailsPage from 'app/pages/payment/PaymentDetailsPage';
-import PaymentCreatePage from '../pages/payment/PaymentCreatePage';
-import PaymentListPage from '../pages/payment/PaymentListPage';
-import UserDetailsPage from 'app/pages/user/UserDetailsPage';
-import UserCreatePage from '../pages/user/UserCreatePage';
-import UserListPage from '../pages/user/UserListPage';
-import UserEditPage from 'app/pages/user/UserEditPage';
-import HomePage from '../pages/HomePage';
-import { GlobalLoading } from 'app/components/GlobalLoading';
+const CashFlowExpensesPage = lazy(
+  () => import('../pages/cashFlow/CashFlowExpensesPage'),
+);
+const CashFlowRevenuesPage = lazy(
+  () => import('../pages/cashFlow/CashFlowRevenuesPage'),
+);
+const PaymentDetailsPage = lazy(
+  () => import('app/pages/payment/PaymentDetailsPage'),
+);
+const PaymentCreatePage = lazy(
+  () => import('../pages/payment/PaymentCreatePage'),
+);
+const PaymentListPage = lazy(() => import('../pages/payment/PaymentListPage'));
+const UserDetailsPage = lazy(() => import('app/pages/user/UserDetailsPage'));
+const UserCreatePage = lazy(() => import('../pages/user/UserCreatePage'));
+const UserListPage = lazy(() => import('../pages/user/UserListPage'));
+const UserEditPage = lazy(() => import('app/pages/user/UserEditPage'));
+const HomePage = lazy(() => import('../pages/HomePage'));
 
 export const MainRoutes = () => {
   const { user } = useAuth();
@@ -147,23 +155,25 @@ export const MainRoutes = () => {
   if (isAuthorizationRoute || !user) return <GlobalLoading />;
 
   return (
-    <Routes>
-      <Route path={HOME} element={<HomePage />} />
-      <Route path={EXPENSES} element={<CashFlowExpensesPage />} />
-      <Route path={REVENUES} element={<CashFlowRevenuesPage />} />
+    <Suspense fallback={<GlobalLoading />}>
+      <Routes>
+        <Route path={HOME} element={<HomePage />} />
+        <Route path={EXPENSES} element={<CashFlowExpensesPage />} />
+        <Route path={REVENUES} element={<CashFlowRevenuesPage />} />
 
-      {/* Payments */}
-      <Route path={PAYMENTS} element={<PaymentListPage />} />
-      <Route path={PAYMENTS_DETAILS} element={<PaymentDetailsPage />} />
-      <Route path={PAYMENTS_CREATE} element={<PaymentCreatePage />} />
+        {/* Payments */}
+        <Route path={PAYMENTS} element={<PaymentListPage />} />
+        <Route path={PAYMENTS_DETAILS} element={<PaymentDetailsPage />} />
+        <Route path={PAYMENTS_CREATE} element={<PaymentCreatePage />} />
 
-      {/* Users */}
-      <Route path={USERS} element={<UserListPage />} />
-      <Route path={USER_CREATE} element={<UserCreatePage />} />
+        {/* Users */}
+        <Route path={USERS} element={<UserListPage />} />
+        <Route path={USER_CREATE} element={<UserCreatePage />} />
 
-      <Route path={USER_DETAILS} element={<UserDetailsPage />} />
+        <Route path={USER_DETAILS} element={<UserDetailsPage />} />
 
-      <Route path={USER_EDIT_ID} element={<UserEditPage />} />
-    </Routes>
+        <Route path={USER_EDIT_ID} element={<UserEditPage />} />
+      </Routes>
+    </Suspense>
   );
 };

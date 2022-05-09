@@ -16,10 +16,9 @@ import {
 import { useEntriesCategories } from 'core/hooks/cashFlow/useEntriesCategories';
 import { CurrencyInput } from 'app/components/CurrencyInput';
 import { notification } from 'core/utils/notification';
-import { CashFlow } from 'mauricio.girardi-sdk';
+import { CashFlow, CashFlowService } from 'mauricio.girardi-sdk';
 import { useForm } from 'antd/lib/form/Form';
 import { useCashFlow } from 'core/hooks/cashFlow/useCashFlow';
-import { CashFlowService } from 'danielbonifacio-sdk';
 import { Forbidden } from 'app/components/Forbidden';
 
 type FromProps = Omit<CashFlow.EntryInput, 'transactedOn'> & {

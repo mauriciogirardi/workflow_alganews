@@ -1,6 +1,6 @@
 import { AuthService } from 'auth/Authorization.service';
 import { useCallback } from 'react';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
 import { useAuth } from 'core/hooks/auth/useAuth';
 
 import Skeleton from 'react-loading-skeleton';

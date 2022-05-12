@@ -1,30 +1,27 @@
-import { GiConfirmed } from 'react-icons/gi'
-import { TitleAnchor } from 'app/components/TitleAnchor'
-import { CgCloseO } from 'react-icons/cg'
-import { format } from "date-fns"
+import { GiConfirmed } from 'react-icons/gi';
+import { TitleAnchor } from 'app/components/TitleAnchor';
+import { CgCloseO } from 'react-icons/cg';
+import format from 'date-fns/format';
+import parseISO from 'date-fns/parseISO';
 
-import PostPreview from 'app/features/PostPreview'
-import modal from './modal'
+import PostPreview from 'app/features/PostPreview';
+import modal from './modal';
 
 type positionHeaderNameProps = {
-    title: string
-    position?: 'right' | 'left'
-}
+    title: string;
+    position?: 'right' | 'left';
+};
 
 type dataRowProps = {
-    value: string
-}
+    value: string;
+};
 
 export const positionHeaderName = ({
     title,
-    position = 'left'
+    position = 'left',
 }: positionHeaderNameProps) => {
-    return (
-        <div style={{ textAlign: position }}>
-            {title}
-        </div>
-    )
-}
+    return <div style={{ textAlign: position }}>{title}</div>;
+};
 
 export const dataDateRow = ({ value }: dataRowProps) => {
     return (
@@ -32,25 +29,27 @@ export const dataDateRow = ({ value }: dataRowProps) => {
             style={{
                 textAlign: 'right',
                 fontWeight: 600,
-                fontFamily: '"Roboto mono", monospace'
+                fontFamily: '"Roboto mono", monospace',
             }}
         >
-            {format(new Date(value), 'dd/MM/yyyy')}
-        </div >
-    )
-}
+            {format(parseISO(value), 'dd/MM/yyyy')}
+        </div>
+    );
+};
 
 export const dataTitleWithImageRow = (props: any) => {
-    const postId = props.row.original.id
+    const postId = props.row.original.id;
 
     return (
-        <div style={{
-            textAlign: 'left',
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            maxWidth: 320,
-        }}>
+        <div
+            style={{
+                textAlign: 'left',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                maxWidth: 320,
+            }}
+        >
             <img
                 width={24}
                 height={24}
@@ -62,28 +61,30 @@ export const dataTitleWithImageRow = (props: any) => {
                 href={`/posts/${postId}`}
                 value={props.value}
                 onClick={e => {
-                    e.preventDefault()
+                    e.preventDefault();
                     modal({
-                        children: <PostPreview postId={postId} />
-                    })
+                        children: <PostPreview postId={postId} />,
+                    });
                 }}
             />
         </div>
-    )
-}
+    );
+};
 
 export const isPublished = ({ value }: { value: boolean }) => {
-    const name = value
-        ? <p style={{ display: 'flex', textAlign: 'center' }}>
-            Publicado <GiConfirmed style={{ marginLeft: 5 }} size={15} color="#1ea82c" />
+    const name = value ? (
+        <p style={{ display: 'flex', textAlign: 'center' }}>
+            Publicado{' '}
+            <GiConfirmed style={{ marginLeft: 5 }} size={15} color="#1ea82c" />
         </p>
-        : <p style={{ display: 'flex', textAlign: 'center' }}>
-            Privado <CgCloseO style={{ marginLeft: 5 }} size={15} color="#c92222" />
+    ) : (
+        <p style={{ display: 'flex', textAlign: 'center' }}>
+            Privado{' '}
+            <CgCloseO style={{ marginLeft: 5 }} size={15} color="#c92222" />
         </p>
+    );
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'right' }}>
-            {name}
-        </div>
-    )
-}
+        <div style={{ display: 'flex', justifyContent: 'right' }}>{name}</div>
+    );
+};

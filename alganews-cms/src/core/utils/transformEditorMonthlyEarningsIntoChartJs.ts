@@ -1,23 +1,25 @@
-import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale';
+import format from 'date-fns/format';
+import parseISO from 'date-fns/parseISO';
+import ptBR from 'date-fns/locale/pt-BR';
 import { Metric } from 'mauricio.girardi-sdk';
 
-import { ChartProps } from "app/components/Chart";
+import { ChartProps } from 'app/components/Chart';
 
 export const transformEditorMonthlyEarningsIntoChartJs = (
-    editorEarnings: Metric.EditorMonthlyEarnings
+    editorEarnings: Metric.EditorMonthlyEarnings,
 ): ChartProps['data'] => {
-    const labels: string[] = []
-    const data1: number[] = []
-    const data2: number[] = []
+    const labels: string[] = [];
+    const data1: number[] = [];
+    const data2: number[] = [];
 
     editorEarnings.forEach(earning => {
-        const formattedMonth =
-            format(new Date(earning.yearMonth), 'MMM', { locale: ptBR })
-        labels.push(formattedMonth)
-        data1.push(earning.totalAmount)
-        data2.push(earning.totalPlatformAverageAmount)
-    })
+        const formattedMonth = format(parseISO(earning.yearMonth), 'MMM', {
+            locale: ptBR,
+        });
+        labels.push(formattedMonth);
+        data1.push(earning.totalAmount);
+        data2.push(earning.totalPlatformAverageAmount);
+    });
 
     return {
         labels,
@@ -39,7 +41,7 @@ export const transformEditorMonthlyEarningsIntoChartJs = (
                 borderColor: '#274060',
                 borderWidth: 0.5,
                 yAxisID: 'cashflow',
-            }
-        ]
-    }
-}
+            },
+        ],
+    };
+};

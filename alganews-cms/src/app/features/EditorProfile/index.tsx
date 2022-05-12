@@ -12,7 +12,8 @@ import Skeleton from 'react-loading-skeleton';
 import { useSingleEditor } from 'core/hooks/useSingleEditor';
 import { useAuth } from 'core/hooks/auth/useAuth';
 import { User } from 'mauricio.girardi-sdk';
-import { format } from 'date-fns';
+import format from 'date-fns/format';
+import parseISO from 'date-fns/parseISO';
 import { ptBR } from 'date-fns/locale';
 
 type EditorProfileProps = {
@@ -113,7 +114,7 @@ function EditorProfile({ hidePersonalData }: EditorProfileProps) {
                         <FieldDescriptor
                             field={'Data de nascimento'}
                             value={`${format(
-                                new Date(
+                                parseISO(
                                     (editorData as User.Detailed).birthdate,
                                 ),
                                 "dd 'de' MMMM 'de' yyyy",
